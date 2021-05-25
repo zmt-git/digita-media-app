@@ -1,0 +1,262 @@
+<template>
+  <ul>
+    <li class="paltitem" :key="item.id" v-for="item in playInfoArr">
+      <div class="paltitem_top van-hairline--bottom" @click="viewMedia(item)">
+        <div class="paltitem_top_img">
+          <!-- 判断是否为video -->
+          <div class="isDeviceInfo van-hairline--surround" v-if="isDeviceInfo">
+            <template v-if="item.mediaType === 0">
+              <img class="paltitem_top_img--media" :src="item.addressOld + videoFrame" alt="">
+              <img class="paltitem_top_img--player" src="../../../assets/img/player.png" alt="">
+            </template>
+            <template v-else>
+              <img class="paltitem_top_img--media van-hairline--surround" :src="item.addressOld" alt="">
+            </template>
+          </div>
+          <div class="circle" v-else>
+            <van-circle
+              v-model="item.file.progress"
+              :speed='100'
+              :rate='100'
+              :text="item.file.progress | progress"
+            />
+          </div>
+        </div>
+        <div class="paltitem_top_info">
+          <div class="paltitem_top_info_des">
+            <template v-if="item.state !== 1">
+              <van-tag class="mediaTag" :type="item.state === -2 ? 'danger' : 'warning'">
+                  {{item.state === -2 ? '审核失败' : '审核中'}}
+              </van-tag>
+            </template>
+            <template v-if="isDeviceInfo">
+              <p class="paltitem_top_info_des--type van-ellipsis">
+                {{item.mediaType | filterName}}
+                <span class="ml">{{item.mediaType | filterType}}</span>
+              </p>
+              <p class="paltitem_top_info_des--info van-ellipsis">媒体大小<span class="ml">{{formatterSize(item)}}</span></p>
+              <p class="paltitem_top_info_des--info van-ellipsis">播放时长<span class="ml">{{item.length | filterLength}}</span></p>
+            </template>
+            <template v-else>
+              <p class="paltitem_top_info_des--type van-ellipsis">
+                {{item.mediaType | filterName}}
+                <span class="ml">{{item.file.mediaType | filterType}}</span>
+              </p>
+              <p class="paltitem_top_info_des--info van-ellipsis">媒体大小<span class="ml">{{formatterSize(item.file)}}</span></p>
+              <p class="paltitem_top_info_des--info van-ellipsis">播放时长<span class="ml">{{item.file.length | filterLength}}</span></p>
+            </template>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</template>
+
+<script>
+import { downloadFile, videoFrame } from '@/oss/ossconfig'
+import { secondFormat } from '@/utils/format'
+// import VideoPlayer from '@/components/VideoPlayer/VideoPalyer'
+export default {
+  name: 'palyItem',
+  props: {
+    playInfoArr: {
+      type: Array,
+      default: () => {}
+    },
+    isDeviceInfo: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data () {
+    return {
+      currentRate: 30,
+      videoInfo: '',
+      videoFrame: videoFrame
+    }
+  },
+  filters: {
+    filterType (val) { // 0：mp4，1：jpg；2：png；
+      if (val === 0) {
+        return 'MP4'
+      } else if (val === 1) {
+        return 'JPG'
+      } else {
+        return 'PNG'
+      }
+    },
+    filterName (val) { // 0：mp4，1：jpg；2：png；
+      if (val === 0) {
+        return '视频媒体'
+      } else {
+        return '图片媒体'
+      }
+    },
+    filterSize (val) {
+      if (typeof (val) === 'number') {
+        return (val / 1024).toFixed(2) + 'MB'
+      } else {
+        return '0MB'
+      }
+    },
+    filterLength (val) {
+      if (typeof (val) === 'number') {
+        return secondFormat(val)
+      } else {
+        return '00:00'
+      }
+    },
+    progress (val) {
+      if (typeof (val) !== 'number') {
+        return 0 + '%'
+      } else {
+        return val + '%'
+      }
+    }
+  },
+  methods: {
+    // 获取oss地址
+    getSrc (name) {
+      if (name) {
+        return downloadFile(name)
+      } else {
+        return ''
+      }
+    },
+    // 播放媒体视频
+    viewMedia (palyItem) {
+      this.$emit('viewMedia', palyItem)
+    },
+
+    formatterSize (item) {
+      if (item.mediaType === 0) {
+        if (typeof (item.oldSize) === 'number') {
+          return (item.oldSize / 1024).toFixed(2) + 'MB'
+        } else {
+          return '0MB'
+        }
+      } else {
+        if (typeof (item.oldSize) === 'number') {
+          return item.oldSize + 'KB'
+        } else {
+          return '0KB'
+        }
+      }
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+$bg1: #fff;
+$bg2: #1989f9;
+.paltitem{
+  width: 100%;
+  height: .88rem;
+  margin-bottom: .08rem;
+  background: $bg1;
+  &_top{
+    height: .88rem;
+    width: 100%;
+    &_img{
+      width: 1.05rem;
+      height: .88rem;
+      padding: .08rem .15rem;
+      box-sizing: border-box;
+      position: relative;
+      float: left;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      // background: $bgc;
+      &--media{
+        max-width: 100%;
+        max-height: 100%;
+        // height: 100%;
+        overflow: hidden;
+      }
+      &--player{
+        width: .28rem;
+        height: .28rem;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+      }
+    }
+    &_info{
+      width: calc(100% - 1.05rem);
+      height: .88rem;
+      float: left;
+      &_des{
+        height: 100%;
+        width: 2.7rem;
+        float: left;
+        color: #000;
+        position: relative;
+        &--type{
+          font-size: .15rem;
+          line-height: .375rem;
+        }
+        &--info{
+          font-size: .13rem;
+          line-height: .235rem;
+        }
+      }
+      &_btn{
+        height: 100%;
+        width: calc(100% - 2.32rem);
+        float: left;
+        padding: .125rem 0;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+    }
+  }
+  &_bottom{
+    height: .325rem;
+    width: 100%;
+    text-align: right;
+    box-sizing: border-box;
+    padding: .07rem .14rem;
+    & button{
+      height: .26rem;
+      line-height: .26rem;
+    }
+  }
+}
+.ml{
+  margin-left: .1rem;
+}
+.circle{
+  width: 100%;
+  background: #f6f6f6;
+  height: 100%;
+  box-sizing: border-box;
+  padding: .05rem;
+  overflow: hidden;
+  & .van-circle{
+    width: 100%!important;
+    height: 100%!important;
+  }
+}
+.mediaTag{
+  position: absolute;
+  top: .09rem;
+  right: .09rem;
+}
+.isDeviceInfo{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+</style>

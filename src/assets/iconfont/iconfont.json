@@ -1,0 +1,44 @@
+{
+  "id": "1739012",
+  "name": "projection",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "2289107",
+      "name": "手电筒",
+      "font_class": "shoudiantong",
+      "unicode": "e6b9",
+      "unicode_decimal": 59065
+    },
+    {
+      "icon_id": "1798260",
+      "name": "闪光灯",
+      "font_class": "shanguangdeng",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "8449570",
+      "name": "开启闪光灯",
+      "font_class": "kaiqishanguangdeng",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "8449633",
+      "name": "旋转摄像头",
+      "font_class": "xuanzhuanshexiangtou",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "781880",
+      "name": " 更新内容",
+      "font_class": "update-point",
+      "unicode": "e63a",
+      "unicode_decimal": 58938
+    }
+  ]
+}
