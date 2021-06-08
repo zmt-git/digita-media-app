@@ -47,7 +47,13 @@
             <p class="title"><span class="title_bar"></span><span class="title_word">参数设置</span></p>
           </template>
         </van-cell>
-        <van-cell center title="启用休眠">
+<!--        <van-cell center title="启用休眠">-->
+<!--          <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.timeControl" @change='setTimeControl' slot="right-icon" size="24" />-->
+<!--        </van-cell>-->
+        <van-cell center title="光源控制">
+          <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.timeControl" @change='setTimeControl' slot="right-icon" size="24" />
+        </van-cell>
+        <van-cell center title="光源开关">
           <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.timeControl" @change='setTimeControl' slot="right-icon" size="24" />
         </van-cell>
         <van-cell title="休眠时间" :class="timeDisabled ? 'bg-1' : 'bg-0'" is-link @click="showPopup('timeClose')" :value="dataForm.timeClose" />
@@ -55,11 +61,12 @@
         <!-- <van-cell title="光源控制" is-link @click="showPopup('lightControl')" :value="dataForm.lightControl | statusControl" /> -->
         <!-- <van-cell title="光源亮度" is-link @click="showPopup('lightBrightness')" :value="dataForm.lightBrightness + '%'" /> -->
         <van-cell title="画面方向" is-link @click="showPopup('stateOrient')" :value="dataForm.stateOrient | statusstateOrient" />
-        <van-cell title="媒体音量" class="volume" :border='false'>
-          <div class="volume-box">
-            <van-slider v-model="dataForm.stateVolume" :min="0" :max="15" bar-height="0.04rem" @change='setVolume'/>
-          </div>
-        </van-cell>
+        <van-cell title="切换场景" is-link @click="showPopup('stateOrient')" :value="dataForm.stateOrient | statusstateOrient" />
+<!--        <van-cell title="媒体音量" class="volume" :border='false'>-->
+<!--          <div class="volume-box">-->
+<!--            <van-slider v-model="dataForm.stateVolume" :min="0" :max="15" bar-height="0.04rem" @change='setVolume'/>-->
+<!--          </div>-->
+<!--        </van-cell>-->
       </div>
 
       <!-- 系统设置 -->
