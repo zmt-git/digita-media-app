@@ -263,14 +263,14 @@ export default {
     await devIceDetails(this.id)
       .then(res => {
         if (res.data.stateOnline === 0) {
-          Dialog.alert({
-            title: '提示',
-            message: '智能终端已离线',
-          }).then(() => {
-            // on close
-            this.$router.go(-1)
-          })
-          return
+          // Dialog.alert({
+          //   title: '提示',
+          //   message: '智能终端已离线'
+          // }).then(() => {
+          //   // on close
+          //   this.$router.go(-1)
+          // })
+          // return
         }
         this.detailInfo = res.data
       })
@@ -310,22 +310,22 @@ export default {
     getDeviceDetails (id) {
       setTimeout(async () => {
         await devIceDetails(id)
-        .then(res => {
-          if (res.data.stateOnline === 0) {
-            Dialog.alert({
-              title: '提示',
-              message: '智能终端已离线',
-            }).then(() => {
-              // on close
-              this.$router.go(-1)
-            })
-            return
-          }
-          this.detailInfo = res.data
-        })
-        .catch(e => {
-          console.log(e)
-        })
+          .then(res => {
+            if (res.data.stateOnline === 0) {
+              Dialog.alert({
+                title: '提示',
+                message: '智能终端已离线'
+              }).then(() => {
+                // on close
+                this.$router.go(-1)
+              })
+              return
+            }
+            this.detailInfo = res.data
+          })
+          .catch(e => {
+            console.log(e)
+          })
         this.formatParams()
       }, 1500)
     },

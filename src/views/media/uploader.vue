@@ -1,7 +1,7 @@
 <template>
   <div class="box" @click="beforeRead">
     <div class="boxbtn"></div>
-    <van-uploader ref="uploader" multiple :after-read='afterRead' v-model="fileList" accept='image/png,image/jpg,/image/jpeg,video/mp4' capture='camera'>
+    <van-uploader ref="uploader" multiple :after-read='afterRead' v-model="fileList" accept='image/png,image/jpg,/image/jpeg' capture='camera'>
       <van-button icon="add-o" class="add-o" type="primary"></van-button>
     </van-uploader>
   </div>

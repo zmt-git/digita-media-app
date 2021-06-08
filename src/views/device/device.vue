@@ -105,9 +105,10 @@ export default {
     },
     // 扫描按钮
     onClickRight (icon) {
-      if (icon === 'scan') {
+      if (icon === 'add-o') {
         // 调取cordova的scan插件进行二维码扫描
-        this.$router.push({ path: '/qrscanner' })
+        this.$router.push({ path: '/deviceAddorEdit', query: { isAdd: true } })
+        // this.$router.push({ path: '/qrscanner' })
         // const that = this
         // erweima((code) => {
         //   // 判断序列号是否有效
@@ -129,10 +130,10 @@ export default {
     },
     // 查看设备详情
     viewDevice (item) {
-      if (item.stateOnline !== 1) {
-        this.toast('智能终端离线，无法进行操作！', 'text')
-        return
-      }
+      // if (item.stateOnline !== 1) {
+      //   this.toast('智能终端离线，无法进行操作！', 'text')
+      //   return
+      // }
       this.$router.push({ path: '/details', query: { id: item.id } })
     },
     // 加载数据

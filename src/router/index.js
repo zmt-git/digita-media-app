@@ -52,7 +52,7 @@ const routes = [
           leftArrow: false,
           hiddenBack: true,
           leftIcon: '',
-          rightIcon: ['scan'], // 'question-o'
+          rightIcon: ['add-o'], // 'question-o'
           animate: 0
         }
       },

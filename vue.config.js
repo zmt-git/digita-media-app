@@ -1,11 +1,3 @@
-/*
- * @Description:
- * @version: 1.0
- * @Author: ZMT
- * @Date: 2020-07-14 21:55:59
- * @LastEditors: ZMT
- * @LastEditTime: 2021-05-25 20:37:53
- */
 'use strict'
 const path = require('path')
 const webpack = require('webpack')
@@ -33,7 +25,7 @@ module.exports = {
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
   publicPath: './',
-  outputDir: '../www',
+  outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
@@ -47,8 +39,8 @@ module.exports = {
     // change xxx-api/login => mock/login
     // detail: https://cli.vuejs.org/config/#devserver-proxy
       '/api': {
-      // target: 'http://192.168.1.110:8080/',
-        target: 'http://47.114.6.168:8080/',
+      target: 'http://192.168.2.240:8080',
+      //   target: 'http://47.114.6.168:8080/',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

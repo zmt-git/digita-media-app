@@ -7,7 +7,7 @@
     >
       <van-icon v-show="meta.leftArrow" :name="meta.leftIcon" slot="left" />
       <template v-for='(item, index) in meta.rightIcon'>
-        <template v-if="item === 'add-o'">
+        <template v-if="item === 'add-o' && isMedia">
           <uploader
             :key='index'
             slot="right"
@@ -31,6 +31,11 @@ export default {
     meta: {
       type: Object,
       default: () => {}
+    }
+  },
+  computed: {
+    isMedia () {
+      return this.$route.path === '/media'
     }
   },
   methods: {

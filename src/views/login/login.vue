@@ -135,9 +135,9 @@ export default {
       this.toast('请稍等', 'loading', 0)
       // 验证手机号码是否注册
       // eslint-disable-next-line
-      that.dataForm.uuid = device.uuid
+      // that.dataForm.uuid = device.uuid
       // eslint-disable-next-line
-      that.dataForm.manufacturer = device.manufacturer
+      // that.dataForm.manufacturer = device.manufacturer
 
       await isExist({ mobile: that.dataForm.mobile })
         .then(async res => {

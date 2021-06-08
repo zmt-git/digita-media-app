@@ -81,6 +81,7 @@ export function deleteMedia (devid, params) {
     params
   })
 }
+
 // /device/playlist/delete/{playlistArr} delete
 export function MediaAdjustment (params) {
   return requset({

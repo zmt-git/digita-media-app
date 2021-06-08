@@ -3,18 +3,40 @@
     <TitleBar :title="title"></TitleBar>
     <van-form @submit="onSubmit">
       <van-field
-        v-model="dataForm.location"
-        name="安装位置"
-        label="安装位置"
-        placeholder="请输入安装位置"
-        :rules="[{ required: true, message: '请输入安装位置' }]"
+        v-model="dataForm.code"
+        name="设备编号"
+        label="设备编号"
+        required
+        placeholder="请输入设备编号"
+        :rules="[
+          { required: true, message: '请输入设备编号' },
+          { validator: codeValidator, message: '设备未注册' }
+        ]"
+      />
+      <van-field
+        v-model="dataForm.type"
+        name="设备类型"
+        label="设备类型"
+        required
+        placeholder="请选择设备类型"
+        readonly
+        @click="showPicker = true"
       />
       <van-field
         v-model="dataForm.name"
         name="设备名称"
         label="设备名称"
+        required
         placeholder="请输入设备名称"
         :rules="[{ required: true, message: '请填写设备名称' }]"
+      />
+      <van-field
+        v-model="dataForm.location"
+        name="安装位置"
+        label="安装位置"
+        required
+        placeholder="请输入安装位置"
+        :rules="[{ required: true, message: '请输入安装位置' }]"
       />
       <div class="btn">
         <van-button class="btn--button" type="info" native-type="submit">
@@ -25,16 +47,27 @@
     <van-button type="default" @click.stop="cancel" class="cancel">
       取消
     </van-button>
+    <van-popup v-model="showPicker" position="bottom">
+      <van-picker
+        title="标题"
+        show-toolbar
+        :columns="columns"
+        @confirm="onConfirm"
+        @cancel="showPicker = false"
+      />
+    </van-popup>
   </div>
 </template>
 
 <script>
-// import { Toast } from 'vant'
+import { Toast } from 'vant'
 import common from '@/mixins/common'
 // components
 import TitleBar from '@/components/TitleBar/TitleBar'
 // api
-import { save } from '@/api/device/device'
+import { save, deviceCheckCode } from '@/api/device/device'
+
+import { deviceTypeArr } from '@/common/common'
 export default {
   name: 'forgetWord',
   mixins: [common],
@@ -44,10 +77,13 @@ export default {
   data () {
     return {
       title: '智能终端认证',
+      showPicker: false,
+      columns: deviceTypeArr,
       dataForm: {
         location: '',
         code: '',
-        name: ''
+        name: '',
+        type: ''
       },
       isAdd: true,
       toastInfo: '注册',
@@ -57,9 +93,10 @@ export default {
   mounted () {
     this.isAdd = this.$route.query.isAdd
     if (this.isAdd) {
-      this.dataForm.code = this.$route.query.devCode
       this.dataForm.location = ''
       this.dataForm.name = ''
+      this.dataForm.code = ''
+      this.dataForm.type = ''
       this.title = '请输入信息'
       this.toastInfo = '认证'
     } else {
@@ -67,6 +104,7 @@ export default {
       this.dataForm.location = this.info.location
       this.dataForm.name = this.info.name
       this.dataForm.code = this.info.code
+      this.dataForm.type = this.info.type
       this.title = '请修改信息'
       this.toastInfo = '修改'
     }
@@ -75,6 +113,25 @@ export default {
     async onSubmit () {
       this.toast(`智能终端${this.toastInfo}中`, 'loading', 0)
       await this.deviceRegister(this.dataForm)
+    },
+    codeValidator (val) {
+      Toast.loading('验证中...')
+      return new Promise(async (resolve) => {
+        await deviceCheckCode(val)
+          .then(res => {
+            if (res.msg === 'true') {
+              resolve(true)
+            } else {
+              resolve(false)
+            }
+          })
+          .catch(e => console.log(e))
+        // Toast.clear()
+      })
+    },
+    onConfirm (value, index) {
+      this.dataForm.type = value.text
+      this.showPicker = false
     },
     // 取消添加 编辑
     cancel () {
@@ -107,10 +164,13 @@ export default {
 
 <style lang="scss" scoped>
 .code {
-    height: 100%;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    background: white;
+  height: 100%;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background: white;
+  /deep/ .van-popup{
+    z-index: 2000;
+  }
 }
 .btn{
   width: 100%;
