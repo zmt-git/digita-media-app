@@ -37,11 +37,7 @@ export default {
   },
   computed: {
     empty () {
-      if (this.mediaPlayLists.length > 0) {
-        return false
-      } else {
-        return true
-      }
+      return this.mediaPlayLists.length <= 0
     }
   },
   data () {
