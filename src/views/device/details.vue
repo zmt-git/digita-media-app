@@ -249,6 +249,7 @@ export default {
     await devIceDetails(this.id)
       .then(res => {
         if (res.data.stateOnline === 0) {
+          // todo
           // Dialog.alert({
           //   title: '提示',
           //   message: '智能终端已离线'

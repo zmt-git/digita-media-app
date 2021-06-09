@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view/>
-    <Update-app ref="updateApp" :appInfo='appInfo'></Update-app>
+    <update-app ref="updateApp" :appInfo='appInfo'></update-app>
   </div>
 </template>
 <script>
@@ -51,15 +51,17 @@ export default {
     const route = this.$route
     // eslint-disable-next-line no-undef
     if (route.path === '/mine' || route.path === '/login') {
-        // eslint-disable-next-line no-undef
-        // StatusBar.styleBlackTranslucent()
-        StatusBar.backgroundColorByHexString("#398AFA");
-        StatusBar.styleBlackOpaque()
-      } else {
-        // eslint-disable-next-line no-undef
-        StatusBar.backgroundColorByHexString("#EDEDED");
-        StatusBar.styleDefault()
-      }
+      // StatusBar.styleBlackTranslucent()
+      // eslint-disable-next-line no-undef
+      StatusBar.backgroundColorByHexString('#398AFA')
+      // eslint-disable-next-line no-undef
+      StatusBar.styleBlackOpaque()
+    } else {
+      // eslint-disable-next-line no-undef
+      StatusBar.backgroundColorByHexString('#EDEDED')
+      // eslint-disable-next-line no-undef
+      StatusBar.styleDefault()
+    }
 
     this.ready()
 
@@ -139,7 +141,6 @@ export default {
       }
     },
 
-
     // 判断是否为导航页
     isHomePage () {
       const result = this.homePage.includes(this.$route.path)
@@ -170,22 +171,23 @@ export default {
     },
 
     resume () {
-      const _this = this
       const route = this.$route
-      document.addEventListener("resume", () => {
+      document.addEventListener('resume', () => {
         if (route.path === '/mine' || route.path === '/login') {
           // eslint-disable-next-line no-undef
           StatusBar.styleBlackOpaque()
-          StatusBar.backgroundColorByHexString("#398AFA");
-          
-        } else if (route.path === '/signUp' || route.path === '/forgetWord'|| route.path === '/code') {
+          // eslint-disable-next-line no-undef
+          StatusBar.backgroundColorByHexString('#398AFA')
+        } else if (route.path === '/signUp' || route.path === '/forgetWord' || route.path === '/code') {
           // eslint-disable-next-line no-undef
           StatusBar.styleDefault()
-          StatusBar.backgroundColorByHexString("#FFFFFF");
+          // eslint-disable-next-line no-undef
+          StatusBar.backgroundColorByHexString('#FFFFFF')
         } else {
           // eslint-disable-next-line no-undef
           StatusBar.styleDefault()
-          StatusBar.backgroundColorByHexString("#EDEDED");
+          // eslint-disable-next-line no-undef
+          StatusBar.backgroundColorByHexString('#EDEDED')
         }
       }, false)
     }

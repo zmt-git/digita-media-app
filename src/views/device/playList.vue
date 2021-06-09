@@ -1,8 +1,13 @@
 <template>
   <div class="playList">
     <div class="list">
-      <scenes-list scenes='weatherScenes'></scenes-list>
+      <van-tabs v-model="activeName" sticky :offset-top="46">
+        <van-tab title="默认场景" name="weatherScenes">
+          <scenes-list scenes='weatherScenes'></scenes-list>
+        </van-tab>
+      </van-tabs>
     </div>
+
     <div class="playList-btn">
       <van-button type="default" @click="$router.go(-1)">取消</van-button>
       <van-button type="info" :disabled='empty' @click='confirm'>确认</van-button>
@@ -38,6 +43,7 @@ export default {
   data () {
     return {
       info: {},
+      activeName: '',
       mediaPlayLists: [],
       submitArr: [],
       taskIcon: require('../../assets/img/taskIcon.png')
@@ -72,24 +78,6 @@ export default {
         })
         .catch(e => { console.log(e) })
     },
-    // 隐藏按钮
-    async hiddenMedia (id) {
-      // await this.onStateMedia(id, 0)
-      const index = this.findIndex(this.mediaPlayLists, 'id', id)
-      this.$set(this.mediaPlayLists[index], 'state', 0)
-    },
-    // 恢复按钮
-    async restore (id, state) {
-      // await this.onStateMedia(id, 1)
-      let s = null
-      if (state === 1) {
-        s = 0
-      } else {
-        s = 1
-      }
-      const index = this.findIndex(this.mediaPlayLists, 'id', id)
-      this.$set(this.mediaPlayLists[index], 'state', s)
-    },
     // 删除按钮
     deteleMedia (id) {
       // 删除提示dialog
@@ -98,53 +86,12 @@ export default {
         message: '在播放列表中删除该媒体吗？'
       })
         .then(async () => {
-          // onconfirm
-          const index = this.findIndex(this.mediaPlayLists, 'id', id)
-          // 删除元素sort设置为-1
-          const sort = this.mediaPlayLists[index].sort
-          this.mediaPlayLists[index].sort = -1
-          // 判断是否为最后一个元素媒体
-          if (sort === this.mediaPlayLists.length) return
-          // sort+1目标媒体order-1
-          const index1 = this.findIndex(this.mediaPlayLists, 'sort', sort + 1)
-          for (let i = index1; i < this.mediaPlayLists.length; i++) {
-            const sort = this.mediaPlayLists[i].sort
-            this.$set(this.mediaPlayLists[i], 'sort', sort - 1)
-          }
         })
         .catch(() => {
 
         })
     },
-    // 改变顺序
-    changeOrder (id, type) {
-      // 获取自身元素
-      const num = type === 'up' ? -1 : 1
-      const index = this.mediaPlayLists.findIndex(item => {
-        return item.id === id
-      })
-      // 获取元素order
-      const sort = this.mediaPlayLists[index].sort
-      // 头尾元素判断
-      if ((sort === 1 && num === -1) || (sort === this.mediaPlayLists.length && num === 1)) {
-        const str = type === 'up' ? '已经是最顶部了！' : '已经是最底部了！'
-        this.toast(str, 'text')
-        return
-      }
-      // 获取互换位置元素
-      const tagertIndex = this.mediaPlayLists.findIndex(item => {
-        return item.sort === sort + num
-      })
-      // 修改自身
-      this.changePositionOrder(index, sort + num)
-      // 上一元素
-      if (tagertIndex < 0) return
-      this.changePositionOrder(tagertIndex, sort)
-    },
-    // 通过order进行改变位置 删除存在bug
-    changePositionOrder (index, val) {
-      this.$set(this.mediaPlayLists[index], 'sort', val)
-    },
+
     // 确认播放列表修改
     async confirm () {
       // 提交请求
@@ -165,12 +112,6 @@ export default {
           console.log(e)
           this.toast('媒体发布任务失败', 'fail')
         })
-    },
-    findIndex (arr, key, val) {
-      const index = arr.findIndex(item => {
-        return item[key] === val
-      })
-      return index
     },
     beforeSubmit () {
       this.submitArr = []

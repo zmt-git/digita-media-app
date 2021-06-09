@@ -100,7 +100,9 @@ export default {
     }
   },
   created () {
-    StatusBar.backgroundColorByHexString("#398AFA");
+    // eslint-disable-next-line no-undef
+    StatusBar.backgroundColorByHexString('#398AFA')
+    // eslint-disable-next-line no-undef
     StatusBar.styleBlackOpaque()
   },
   mounted () {
@@ -133,7 +135,7 @@ export default {
       if (!this.empty()) return
 
       this.toast('请稍等', 'loading', 0)
-      // 验证手机号码是否注册
+      // todo 验证手机号码是否注册
       // eslint-disable-next-line
       // that.dataForm.uuid = device.uuid
       // eslint-disable-next-line
