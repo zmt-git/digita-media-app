@@ -50,6 +50,14 @@ export function direction (devid, params) {
   })
 }
 
+export function scenesDevice (devid, params) {
+  return request({
+    url: `device/device/scenes/${devid}`,
+    method: 'POST',
+    params
+  })
+}
+
 // 设置音量大小// device/device/volume/{devid} POST
 export function volume (devid, params) {
   return request({

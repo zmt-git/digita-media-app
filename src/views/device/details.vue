@@ -1,7 +1,7 @@
 <template>
   <div class="deviceInfo">
     <div class="info-status-box">
-      <DeviceItem :itemInfo='detailInfo' @tapImg='tapImg'></DeviceItem>
+      <device-item :itemInfo='detailInfo' @tapImg='tapImg'></device-item>
     </div>
     <div class="infoitem">
       <!-- 媒体 -->
@@ -11,7 +11,7 @@
             <p class="title"><span class="title_bar"></span><span class="title_word">媒体</span></p>
           </template>
         </van-cell>
-        <van-cell title="播放列表" is-link @click="toPlayList(detailInfo.id)"/>
+        <van-cell title="播放列表" is-link @click="toPlayList"/>
       </div>
       <!-- 运行状态 -->
       <div class="infoItem-box">
@@ -34,7 +34,7 @@
           <!-- 使用 title 插槽来自定义标题 -->
           <template slot="title">
             <span class="custom-title">内存使用</span>
-            <template v-if="stor">
+            <template v-if="storageStatus">
               <van-tag type="danger" style="margin-left: .1rem">存储将满</van-tag>
             </template>
           </template>
@@ -51,22 +51,25 @@
 <!--          <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.timeControl" @change='setTimeControl' slot="right-icon" size="24" />-->
 <!--        </van-cell>-->
         <van-cell center title="光源控制">
-          <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.timeControl" @change='setTimeControl' slot="right-icon" size="24" />
+          <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.lightControl" @change='setLight' slot="right-icon" size="24" />
         </van-cell>
         <van-cell center title="光源开关">
-          <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.timeControl" @change='setTimeControl' slot="right-icon" size="24" />
+          <van-switch :active-value='100' :inactive-value='-1' v-model="dataForm.lightBrightness" @change='setLight' slot="right-icon" size="24" />
         </van-cell>
         <van-cell title="休眠时间" :class="timeDisabled ? 'bg-1' : 'bg-0'" is-link @click="showPopup('timeClose')" :value="dataForm.timeClose" />
         <van-cell title="唤醒时间" :class="timeDisabled ? 'bg-1' : 'bg-0'" is-link @click="showPopup('timeOpen')" :value="dataForm.timeOpen" />
         <!-- <van-cell title="光源控制" is-link @click="showPopup('lightControl')" :value="dataForm.lightControl | statusControl" /> -->
         <!-- <van-cell title="光源亮度" is-link @click="showPopup('lightBrightness')" :value="dataForm.lightBrightness + '%'" /> -->
-        <van-cell title="画面方向" is-link @click="showPopup('stateOrient')" :value="dataForm.stateOrient | statusstateOrient" />
-        <van-cell title="切换场景" is-link @click="showPopup('stateOrient')" :value="dataForm.stateOrient | statusstateOrient" />
 <!--        <van-cell title="媒体音量" class="volume" :border='false'>-->
 <!--          <div class="volume-box">-->
 <!--            <van-slider v-model="dataForm.stateVolume" :min="0" :max="15" bar-height="0.04rem" @change='setVolume'/>-->
 <!--          </div>-->
 <!--        </van-cell>-->
+      </div>
+
+      <div  class="infoItem-box">
+        <van-cell title="画面方向" is-link @click="showPopup('stateOrient')" :value="dataForm.stateOrient | stateOrientFilter" />
+        <van-cell title="切换场景" is-link @click="showPopup('scenes')" :value="dataForm.scenes | scenesFilter" />
       </div>
 
       <!-- 系统设置 -->
@@ -108,9 +111,9 @@
       />
       <van-picker
         show-toolbar
+        v-show="!timeShow"
         :default-index='defaultIndex'
         :title="popupTitle"
-        v-show="!timeShow"
         :columns="columns"
         @cancel="showPicker = false"
         @confirm="onConfirm"
@@ -125,8 +128,10 @@ import eventBus from '@/utils/eventBus'
 import DeviceItem from './components/DeviceItem'
 import common from '@/mixins/common'
 // api
-import { devIceDetails, setTime, light, direction, volume, bootAnimation, infoAnimation, rebootAll, rebootApp, uploadLog, reset } from '@/api/device/details'
+import { devIceDetails, setTime, light, direction, scenesDevice, volume, bootAnimation, infoAnimation, rebootAll, rebootApp, uploadLog, reset } from '@/api/device/details'
 import { Toast, Dialog } from 'vant'
+
+import { lightControl, stateOrient, scenes } from '@/common/common'
 export default {
   name: 'deviceDetails',
   mixins: [common],
@@ -135,11 +140,7 @@ export default {
   },
   computed: {
     timeDisabled () {
-      if (this.dataForm.timeControl === 0) {
-        return true
-      } else {
-        return false
-      }
+      return this.dataForm.lightControl === 1
     },
     temp () {
       if (this.detailInfo.alarm) {
@@ -148,8 +149,8 @@ export default {
         return false
       }
     },
-    stor () {
-     if (this.detailInfo.alarm) {
+    storageStatus () {
+      if (this.detailInfo.alarm) {
         return this.detailInfo.alarm.includes('2002')
       } else {
         return false
@@ -175,16 +176,17 @@ export default {
       timeShow: true,
       type: '',
       columns: [],
-      lightControl: ['手动', '自动'],
-      lightBrightness: ['0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'],
-      stateOrient: ['竖屏向上', '竖屏向下', '横屏向右', '横屏向左'],
+      lightControl: lightControl,
+      stateOrient: stateOrient,
+      scenes: scenes,
       popupTitle: '',
       titleObj: {
         timeClose: '休眠时间',
         timeOpen: '唤醒时间',
         lightControl: '光源控制',
         lightBrightness: '光源亮度',
-        stateOrient: '画面方向'
+        stateOrient: '画面方向',
+        scenes: '切换场景'
       },
       dataForm: {
         timeControl: '',
@@ -195,75 +197,52 @@ export default {
         stateOrient: '',
         stateVolume: 10,
         stateLogo: '',
-        stateInfo: ''
+        stateInfo: '',
+        // todo
+        scenes: ''
       },
       dataForm1: {
         bootAnimation: '',
         infoAnimation: ''
       },
-      submitParams: {
-        // 1：命令控制；0：自动控制；
-        lightControl: [{ val: 0, name: '自动' }, { val: 1, name: '手动' }],
-        // 1：竖屏且向上；9：竖屏且向下；0：横屏且向右；8：横屏且向左；
-        stateOrient: [
-          { val: 0, name: '横屏向右' },
-          { val: 1, name: '竖屏向上' },
-          { val: 8, name: '横屏向左' },
-          { val: 9, name: '竖屏向下' }
-        ]
-      },
       controlFunction: {
         timeClose: that.setTimeClose,
         timeOpen: that.setTimeOpen,
-        lightControl: that.setLightControl,
-        lightBrightness: that.setLightBrightness,
-        stateOrient: that.setstateOrient
+        lightControl: that.setLight,
+        lightBrightness: that.setLight,
+        stateOrient: that.setstateOrient,
+        scenes: that.setScenes
       }
     }
   },
   filters: {
     // 在线状态
     statusOnline (val) {
-      if (val === 1) {
-        return '在线'
-      } else {
-        return '离线'
-      }
+      return val === 1 ? '在线' : '离线'
     },
     // 工作状态
     statusWork (val) {
-      if (val === 1) {
-        return '工作'
-      } else {
-        return '休眠'
-      }
+      return val === 1 ? '工作' : '休眠'
     },
     // 画面方向
-    statusstateOrient (val) { //  1: '竖屏且向上', 9: '竖屏且向下', 0: '横屏且向右', 8: '横屏且向左'
-      switch (val) {
-        case 1 : return '竖屏向上'
-        case 9 : return '竖屏向下'
-        case 0 : return '横屏向右'
-        case 8 : return '横屏向左'
-        default : return ''
-      }
+    stateOrientFilter (val) {
+      const obj = stateOrient.find(item => item.val === val)
+      return obj ? obj.text : ''
+    },
+    // todo
+    scenesFilter (val) {
+      const obj = scenes.find(item => item.val === val)
+      return obj ? obj.text : ''
     },
     // 光源控制
     statusControl (val) { // 1：命令控制；0：自动控制；
-      if (val === 1) {
-        return '手动'
-      } else {
-        return '自动'
-      }
+      return val === 1 ? '手动控制' : '自动控制'
     },
     temperature (val) {
-      if (typeof (val) === 'number') {
-        return val + '℃'
-      } else {
-        return '0℃'
-      }
+      return typeof (val) === 'number' ? val + '℃' : '0℃'
     }
   },
+
   async created () {
     this.id = this.$route.query.id
     // 获取终端详情
@@ -274,7 +253,6 @@ export default {
           //   title: '提示',
           //   message: '智能终端已离线'
           // }).then(() => {
-          //   // on close
           //   this.$router.go(-1)
           // })
           // return
@@ -286,12 +264,14 @@ export default {
       })
     this.formatParams()
   },
+
   mounted () {
     // 头部图标点击事件监听
     eventBus.$on('onClickRight', (icon) => {
       this.onClickRight(icon)
     })
   },
+
   methods: {
     tapImg () {
       this.count++
@@ -338,7 +318,7 @@ export default {
     },
     // 显示播放列表
     toPlayList (id) {
-      this.$router.push({ path: '/playList', query: { id: id } })
+      this.$router.push({ path: '/playList', query: { info: this.detailInfo } })
     },
     // 设置休眠状态
     async setTimeControl () {
@@ -379,21 +359,10 @@ export default {
         })
       this.getDeviceDetails(this.id)
     },
+    // todo
     // 光源参数
-    async setLightBrightness () {
-      this.toast('设置中', 'loading', 0)
-      await light(this.id, this.dataForm)
-        .then(res => {
-          this.prompt(res.state)
-        })
-        .catch(e => {
-          console.log(e)
-          Toast.clear()
-        })
-      this.getDeviceDetails(this.id)
-    },
     // 设置光源控制
-    async setLightControl () {
+    async setLight () {
       this.toast('设置中', 'loading', 0)
       await light(this.id, this.dataForm)
         .then(res => {
@@ -419,6 +388,18 @@ export default {
       this.getDeviceDetails(this.id)
     },
 
+    async setScenes () {
+      this.toast('设置中', 'loading', 0)
+      await scenesDevice(this.id, this.dataForm)
+        .then(res => {
+          this.prompt(res.state)
+        })
+        .catch(e => {
+          console.log(e)
+          Toast.clear()
+        })
+      this.getDeviceDetails(this.id)
+    },
     // 设置声音
     async setVolume () {
       this.toast('设置中', 'loading', 0)
@@ -503,37 +484,31 @@ export default {
       this.popupTitle = this.titleObj[type]
       if (type === 'timeOpen' || type === 'timeClose') {
         // 判断是否为禁用模式
-        if (this.dataForm.timeControl === 1) {
-          this.showPicker = true
-          this.timeShow = true
-        }
-        if (type === 'timeOpen') {
-          this.currentTime = this.detailInfo.timeOpen
-        } else if (type === 'timeClose') {
-          this.currentTime = this.detailInfo.timeClose
-        }
+        if (this.timeDisabled) return
+        this.showPicker = true
+        this.timeShow = true
+        type === 'timeOpen' ? this.currentTime = this.detailInfo.timeOpen : this.currentTime = this.detailInfo.timeClose
       } else {
         this.showPicker = true
         this.timeShow = false
         this.columns = this[type]
-        const i = this.statusstateOrient(this.detailInfo.stateOrient)
-        this.defaultIndex = this.stateOrient.findIndex(i)
+        if (type === 'stateOrient') {
+          this.defaultIndex = stateOrient.findIndex(item => item.val === this.detailInfo.stateOrient)
+        } else if (type === 'scenes') {
+          this.defaultIndex = scenes.findIndex(item => item.val === this.detailInfo.scenes)
+        }
       }
     },
     // 选择器确定回调函数
-    onConfirm (val) {
+    onConfirm (obj) {
       if (this.type === 'lightBrightness') {
-        this.dataForm[this.type] = val.slice(0, -1)
+        this.dataForm[this.type] = obj.slice(0, -1)
       } else {
-        const obj = this.submitParams[this.type].find((item) => {
-          return item.name === val
-        })
         this.dataForm[this.type] = obj.val
       }
       this.showPicker = false
       // 调取函数 页面实时更新
       this.controlFunction[this.type]()
-      // 数据转化fliters
     },
     // 时间选择器确定
     onConfirmTime (val) {

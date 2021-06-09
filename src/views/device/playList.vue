@@ -1,18 +1,7 @@
 <template>
   <div class="playList">
     <div class="list">
-      <template v-for="(item, index) in mediaPlayLists">
-        <transition :key='index' name="van-slide-left">
-          <Play-item
-            :index='index'
-            :playInfo='item'
-            @hiddenMedia='hiddenMedia'
-            @restore='restore'
-            @deteleMedia='deteleMedia'
-            @changeOrder='changeOrder'
-          />
-        </transition>
-      </template>
+      <scenes-list scenes='weatherScenes'></scenes-list>
     </div>
     <div class="playList-btn">
       <van-button type="default" @click="$router.go(-1)">取消</van-button>
@@ -25,31 +14,37 @@
 import eventBus from '@/utils/eventBus'
 import common from '@/mixins/common'
 // 组件
-import PlayItem from './components/playItem'
 // api`
 import { listMediaAll, MediaAdjustment } from '@/api/device/playList'
 import { Dialog } from 'vant'
+import ScenesList from './components/ScenesList.vue'
 export default {
   name: 'playList',
+
+  components: { ScenesList },
+
   mixins: [common],
-  components: {
-    PlayItem
-  },
+
   computed: {
     empty () {
       return this.mediaPlayLists.length <= 0
+    },
+
+    id () {
+      return this.info.id
     }
   },
+
   data () {
     return {
-      id: null,
+      info: {},
       mediaPlayLists: [],
       submitArr: [],
       taskIcon: require('../../assets/img/taskIcon.png')
     }
   },
   async created () {
-    this.id = this.$route.query.id
+    this.info = this.$route.query.info
     // 获取该终端的播放列表
     await this.getPlayList()
   },
@@ -161,7 +156,7 @@ export default {
       await MediaAdjustment({ playlistArr: str })
         .then(res => {
           if (res.state === 1) {
-            this.toast(`正在上传新的播放列表<br/>请在【任务】标签卡中查看结果`, 'html', 2000, false)
+            this.toast('正在上传新的播放列表<br/>请在【任务】标签卡中查看结果', 'html', 2000, false)
           } else {
             this.toast('媒体发布任务失败', 'fail')
           }

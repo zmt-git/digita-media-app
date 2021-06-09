@@ -1,5 +1,5 @@
 <template>
-  <div ref="playItem" class="paltitem" :style='{top: (playInfo.sort - 1) * clientHeight + "px"}'>
+  <div class="paltitem">
     <div class="paltitem_top van-hairline--bottom">
       <div class="paltitem_top_img" @click="player()">
         <template v-if="playInfo.mediaType === 0">
@@ -26,19 +26,19 @@
           </p>
         </div>
         <div class="paltitem_top_info_btn">
-          <span class="Triangle Triangle-bottom" @click="changeOrder(playInfo.id, 'up')"></span>
-          <span class="Triangle Triangle-up" @click="changeOrder(playInfo.id, 'down')"></span>
+          <span class="Triangle Triangle-bottom" @click="changeOrder('up')"></span>
+          <span class="Triangle Triangle-up" @click="changeOrder('down')"></span>
         </div>
       </div>
     </div>
     <div class="paltitem_bottom">
-      <van-button
+      <!-- <van-button
         type="default"
         size="mini"
         @click="restore(playInfo.id, playInfo.state)"
       >
         {{playInfo.state === 0 ? '恢复' : '隐藏'}}
-      </van-button>
+      </van-button> -->
       <van-button
         type="danger"
         size="mini"
@@ -57,10 +57,6 @@ export default {
     playInfo: {
       type: Object,
       default: () => {}
-    },
-    index: {
-      type: Number,
-      default: 1
     }
   },
   data () {
@@ -86,9 +82,6 @@ export default {
       }
     }
   },
-  mounted () {
-    this.clientHeight = this.$refs.playItem.clientHeight
-  },
   methods: {
     // 播放媒体视频
     player (palyItem) {
@@ -107,8 +100,8 @@ export default {
       this.$emit('deteleMedia', id)
     },
     // 改变顺序
-    changeOrder (id, type) {
-      this.$emit('changeOrder', id, type)
+    changeOrder (type) {
+      this.$emit('changeOrder', type, this.playInfo)
     }
   }
 }
@@ -123,9 +116,6 @@ $bg3: #f6f6f6;
   height: 1.28rem;
   padding-bottom: .08rem;
   background: $bg3;
-  position: absolute;
-  transition: all .5s;
-  left: 0;
   &_top{
     height: .88rem;
     background: $bg1;
