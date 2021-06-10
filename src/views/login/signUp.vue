@@ -410,7 +410,7 @@ export default {
 
       this.dataForm2 = Object.assign(this.dataForm2, this.dataForm)
 
-      this.dataForm2.city = ''
+      // this.dataForm2.city = ''
       await update(this.dataForm2)
         .then(res => {
           setToken(res.data.token)
@@ -506,12 +506,14 @@ export default {
     },
     // 城市
     onConfirmCity (value) {
+      console.log(value)
       let str = ''
       value.forEach(item => {
         str += item.name + '/'
       })
       this.dataForm2.city = value[value.length - 1]
       this.city = str.slice(0, -1)
+      this.dataForm2.city = value[value.length - 1].code
       this.showPicker = false
       this.change('city')
     },

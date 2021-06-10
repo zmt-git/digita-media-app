@@ -68,3 +68,22 @@ export const playlistType = Object.freeze({
   customizeScenes,
   lightScenes
 })
+
+export const scenesOptions = Object.freeze({
+  A: [
+    { value: 0, text: '默认场景' }
+  ],
+  RG: [
+    { value: 0, text: '红灯' },
+    { value: 1, text: '绿灯' }
+  ],
+  W: [
+    { value: 0, text: '默认场景' },
+    { value: 1, text: '浓雾天气' },
+    { value: 2, text: '雨雪天气' },
+    { value: 3, text: '道路施工' },
+    { value: 4, text: '交通事故' },
+    { value: 5, text: '自定义场景1' },
+    { value: 6, text: '自定义场景2' }
+  ]
+})

@@ -22,7 +22,7 @@
         </van-cell>
         <van-cell title="在线状态" :value="detailInfo.stateOnline | statusOnline" />
         <van-cell title="工作状态" :value="detailInfo.stateWork | statusWork" />
-        <van-cell :value="detailInfo.temperature | temperature">
+        <van-cell :value="temperature">
           <template slot="title">
             <span class="custom-title">核心温度</span>
             <template v-if="temp">
@@ -30,15 +30,15 @@
             </template>
           </template>
         </van-cell>
-        <van-cell :value="filtersStorage(detailInfo.storageTotal - detailInfo.storageUsable) + 'G/' + filtersStorage(detailInfo.storageTotal)+ 'G'">
-          <!-- 使用 title 插槽来自定义标题 -->
-          <template slot="title">
-            <span class="custom-title">内存使用</span>
-            <template v-if="storageStatus">
-              <van-tag type="danger" style="margin-left: .1rem">存储将满</van-tag>
-            </template>
-          </template>
-        </van-cell>
+<!--        <van-cell :value="filtersStorage(detailInfo.storageTotal - detailInfo.storageUsable) + 'G/' + filtersStorage(detailInfo.storageTotal)+ 'G'">-->
+<!--          &lt;!&ndash; 使用 title 插槽来自定义标题 &ndash;&gt;-->
+<!--          <template slot="title">-->
+<!--            <span class="custom-title">内存使用</span>-->
+<!--            <template v-if="storageStatus">-->
+<!--              <van-tag type="danger" style="margin-left: .1rem">存储将满</van-tag>-->
+<!--            </template>-->
+<!--          </template>-->
+<!--        </van-cell>-->
       </div>
       <!-- 参数设置 -->
       <div class="infoItem-box">
@@ -68,12 +68,12 @@
       </div>
 
       <div  class="infoItem-box">
-        <van-cell title="画面方向" is-link @click="showPopup('stateOrient')" :value="dataForm.stateOrient | stateOrientFilter" />
-        <van-cell title="切换场景" is-link @click="showPopup('scenes')" :value="dataForm.scenes | scenesFilter" />
+        <van-cell title="画面方向" is-link @click="showPopup('stateOrient')" :value="stateOrient | stateOrientFilter" />
+        <van-cell title="切换场景" is-link @click="showPopup('scenes')" :value="orderNumber | scenesFilter" />
       </div>
 
-      <!-- 系统设置 -->
-      <div class="infoItem-box" v-if="systemShow">
+      <!-- 系统设置 systemShow-->
+      <div class="infoItem-box" v-if="false">
         <van-cell>
           <template slot="title">
             <p class="title"><span class="title_bar"></span><span class="title_word">系统</span></p>
@@ -87,8 +87,8 @@
         </van-cell>
       </div>
 
-      <!-- 系统设置按钮  -->
-      <div class="system-btns" v-if="systemShow">
+      <!-- 系统设置按钮  systemShow-->
+      <div class="system-btns" v-if="false">
         <van-button type="info" class="system-btns-item" @click="setSystem('rebootAll')">重启智能终端</van-button>
         <van-button type="info" class="system-btns-item" @click="setSystem('rebootApp')">重启核心程序</van-button>
         <van-button type="info" class="system-btns-item" @click="setSystem('uploadLog')">上传工作日志</van-button>
@@ -128,10 +128,10 @@ import eventBus from '@/utils/eventBus'
 import DeviceItem from './components/DeviceItem'
 import common from '@/mixins/common'
 // api
-import { devIceDetails, setTime, light, direction, scenesDevice, volume, bootAnimation, infoAnimation, rebootAll, rebootApp, uploadLog, reset } from '@/api/device/details'
+import { devIceDetails, setTime, light, direction, orderNumber, volume, bootAnimation, infoAnimation, rebootAll, rebootApp, uploadLog, reset } from '@/api/device/details'
 import { Toast, Dialog } from 'vant'
 
-import { lightControl, stateOrient, scenes } from '@/common/common'
+import { lightControl, stateOrient, scenesOptions } from '@/common/common'
 export default {
   name: 'deviceDetails',
   mixins: [common],
@@ -149,12 +149,27 @@ export default {
         return false
       }
     },
+    temperature () {
+      if (this.detailInfo.stateWork !== 1 || this.detailInfo.stateWork !== 0) return ''
+      if (typeof (this.detailInfo.temperature) === 'number') {
+        return this.detailInfo.temperature + '℃'
+      } else {
+        return '0℃'
+      }
+    },
     storageStatus () {
       if (this.detailInfo.alarm) {
         return this.detailInfo.alarm.includes('2002')
       } else {
         return false
       }
+    },
+    scenes () {
+      if (this.detailInfo.type && this.detailInfo.type.indexOf('-') >= 0) {
+        const type = this.info.type.split('-').pop()
+        return scenesOptions[type]
+      }
+      return scenesOptions.A
     }
   },
   data () {
@@ -178,7 +193,6 @@ export default {
       columns: [],
       lightControl: lightControl,
       stateOrient: stateOrient,
-      scenes: scenes,
       popupTitle: '',
       titleObj: {
         timeClose: '休眠时间',
@@ -189,18 +203,13 @@ export default {
         scenes: '切换场景'
       },
       dataForm: {
-        timeControl: '',
-        timeClose: '',
-        timeOpen: '',
-        lightControl: 1,
-        lightBrightness: '',
-        stateOrient: '',
-        stateVolume: 10,
-        stateLogo: '',
-        stateInfo: '',
-        // todo
-        scenes: ''
+        timeClose: '00:00',
+        timeOpen: '00:00',
+        lightControl: 0,
+        lightBrightness: 1
       },
+      stateOrientValue: 0,
+      orderNumber: 0,
       dataForm1: {
         bootAnimation: '',
         infoAnimation: ''
@@ -222,24 +231,25 @@ export default {
     },
     // 工作状态
     statusWork (val) {
-      return val === 1 ? '工作' : '休眠'
+      return this.detailInfo.stateWork === 1
+        ? '工作'
+        : this.detailInfo.stateWork === 0
+          ? '休眠'
+          : ''
     },
     // 画面方向
     stateOrientFilter (val) {
       const obj = stateOrient.find(item => item.val === val)
       return obj ? obj.text : ''
     },
-    // todo
+
     scenesFilter (val) {
-      const obj = scenes.find(item => item.val === val)
+      const obj = this.scenes.find(item => item.value === val)
       return obj ? obj.text : ''
     },
     // 光源控制
     statusControl (val) { // 1：命令控制；0：自动控制；
       return val === 1 ? '手动控制' : '自动控制'
-    },
-    temperature (val) {
-      return typeof (val) === 'number' ? val + '℃' : '0℃'
     }
   },
 
@@ -337,20 +347,18 @@ export default {
     // 设置工作时间
     async setTimeOpen () {
       this.toast('设置中', 'loading', 0)
-      await setTime(this.id, this.dataForm)
-        .then(res => {
-          this.prompt(res.state)
-        })
-        .catch(e => {
-          console.log(e)
-          Toast.clear()
-        })
+      await this.setTimeRequest()
       this.getDeviceDetails(this.id)
     },
     // 设置休息时间
     async setTimeClose () {
       this.toast('设置中', 'loading', 0)
-      await setTime(this.id, this.dataForm)
+      await this.setTimeRequest()
+      this.getDeviceDetails(this.id)
+    },
+
+    setTimeRequest () {
+      return setTime(this.id, { devid: this.detailInfo.id, deviceCode: this.detailInfo.deviceCode, ...this.dataForm, timeControl: 1 })
         .then(res => {
           this.prompt(res.state)
         })
@@ -358,14 +366,12 @@ export default {
           console.log(e)
           Toast.clear()
         })
-      this.getDeviceDetails(this.id)
     },
-    // todo
     // 光源参数
     // 设置光源控制
     async setLight () {
       this.toast('设置中', 'loading', 0)
-      await light(this.id, this.dataForm)
+      await light(this.id, { devid: this.detailInfo.id, deviceCode: this.detailInfo.deviceCode, ...this.dataForm })
         .then(res => {
           this.prompt(res.state)
         })
@@ -378,7 +384,7 @@ export default {
     // 设置播放方向
     async setstateOrient () {
       this.toast('设置中', 'loading', 0)
-      await direction(this.id, this.dataForm)
+      await direction(this.id, { deviceCode: this.detailInfo.deviceCode, devid: this.detailInfo.id, stateOrient: this.stateOrient })
         .then(res => {
           this.prompt(res.state)
         })
@@ -391,7 +397,7 @@ export default {
 
     async setScenes () {
       this.toast('设置中', 'loading', 0)
-      await scenesDevice(this.id, this.dataForm)
+      await orderNumber(this.id, { deviceCode: this.detailInfo.deviceCode, devid: this.detailInfo.id, playListNumber: this.orderNumber })
         .then(res => {
           this.prompt(res.state)
         })
@@ -504,6 +510,10 @@ export default {
     onConfirm (obj) {
       if (this.type === 'lightBrightness') {
         this.dataForm[this.type] = obj.slice(0, -1)
+      } else if (this.type === 'stateOrient') {
+        this.stateOrientValue = obj.val
+      } else if (this.type === 'scenes') {
+        this.orderNumber = obj.val
       } else {
         this.dataForm[this.type] = obj.val
       }
