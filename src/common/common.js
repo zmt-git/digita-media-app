@@ -1,9 +1,25 @@
+// 设备类型-------------------------------------------------------------------------------------------
+const scenesA = { weatherScenes: [{ type: 'sunny', index: 0, title: '默认场景' }] }
+const scenesRG = { lightScenes: [{ type: 'red', index: 0, title: '红灯' }, { type: 'green', index: 1, title: '绿灯' }] }
+const scenesW = {
+  weatherScenes: [
+    { type: 'sunny', index: 0, title: '默认场景' },
+    { type: 'fog', index: 1, title: '浓雾场景' },
+    { type: 'rain-snow', index: 2, title: '雨雪天气' }],
+  roadScenes: [
+    { type: 'construction', index: 3, title: '道路施工' },
+    { type: 'trafficAccident', index: 4, title: '交通事故' }],
+  customizeScenes: [
+    { type: 'customize1', index: 5, title: '自定义场景1' },
+    { type: 'customize2', index: 6, title: '自定义场景1' }]
+}
+
 export const deviceTypeArr = Object.freeze([
-  { text: 'ELF-A', label: 'ELF-A', scenes: { weatherScenes: ['sunny'] } },
-  { text: 'ELF-T1-W', label: 'ELF-T1-W', scenes: { weatherScenes: ['sunny', 'fog', 'rain-snow'], roadScenes: ['construction', 'trafficAccident'], customizeScenes: ['customize1', 'customize2'] } },
-  { text: 'ELF-T1-RG', label: 'ELF-T1-RG', scenes: { lightScenes: ['red', 'green'] } },
-  { text: 'ELF-T2-W', label: 'ELF-T2-W', scenes: { weatherScenes: ['sunny', 'fog', 'rain-snow'], roadScenes: ['construction', 'trafficAccident'], customizeScenes: ['customize1', 'customize2'] } },
-  { text: 'ELF-T2-RG', label: 'ELF-T2-RG', scenes: { lightScenes: ['red', 'green'] } }
+  { text: 'ELF-A', val: 'ELF-A', scenes: scenesA },
+  { text: 'ELF-T1-W', val: 'ELF-T1-W', scenes: scenesW },
+  { text: 'ELF-T1-RG', val: 'ELF-T1-RG', scenes: scenesRG },
+  { text: 'ELF-T2-W', val: 'ELF-T2-W', scenes: scenesW },
+  { text: 'ELF-T2-RG', val: 'ELF-T2-RG', scenes: scenesRG }
 ])
 
 export const lightControl = Object.freeze([{ val: 0, text: '自动' }, { val: 1, text: '手动' }])

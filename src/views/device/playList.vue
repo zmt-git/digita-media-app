@@ -2,9 +2,11 @@
   <div class="playList">
     <div class="list">
       <van-tabs v-model="activeName" sticky :offset-top="46">
-        <van-tab title="默认场景" name="weatherScenes">
-          <scenes-list scenes='weatherScenes'></scenes-list>
-        </van-tab>
+        <template  v-for="(scene) in scenes">
+          <van-tab :title="item.title" :name="item.type" :key="item.type" v-for="item in scene">
+            <scenes-list :list='mediaPlayLists' :index='item.index'></scenes-list>
+          </van-tab>
+        </template>
       </van-tabs>
     </div>
 
@@ -20,9 +22,10 @@ import eventBus from '@/utils/eventBus'
 import common from '@/mixins/common'
 // 组件
 // api`
-import { listMediaAll, MediaAdjustment } from '@/api/device/playList'
+import { getPlaylist, updateContent } from '@/api/device/playList'
 import { Dialog } from 'vant'
 import ScenesList from './components/ScenesList.vue'
+import { deviceTypeArr } from '@/common/common'
 export default {
   name: 'playList',
 
@@ -37,6 +40,11 @@ export default {
 
     id () {
       return this.info.id
+    },
+
+    scenes () {
+      const scenes = deviceTypeArr.find(item => item.text === this.info.type)
+      return scenes ? scenes.scenes : deviceTypeArr[0].scenes
     }
   },
 
@@ -68,12 +76,8 @@ export default {
     },
     // 获取终端设备播放列表all
     getPlayList () {
-      return listMediaAll(this.id)
+      return getPlaylist(this.id)
         .then(res => {
-          // 通过sort排序
-          res.list.sort((itemA, itemB) => {
-            return itemA.sort - itemB.sort
-          })
           this.mediaPlayLists = res.list
         })
         .catch(e => { console.log(e) })
@@ -94,13 +98,14 @@ export default {
 
     // 确认播放列表修改
     async confirm () {
-      // 提交请求
-      this.beforeSubmit()
       this.toast('调整列表中', 'loading', 0)
-      let str = JSON.stringify(this.submitArr)
-      str = str.replace('[', '')
-      str = str.replace(']', '')
-      await MediaAdjustment({ playlistArr: str })
+      const ids = []
+      const contents = []
+      this.mediaPlayLists.forEach(item => {
+        ids.push(item.id)
+        contents.push(item.content)
+      })
+      await updateContent({ devid: this.id, ids: ids, contents: contents })
         .then(res => {
           if (res.state === 1) {
             this.toast('正在上传新的播放列表<br/>请在【任务】标签卡中查看结果', 'html', 2000, false)
@@ -112,16 +117,6 @@ export default {
           console.log(e)
           this.toast('媒体发布任务失败', 'fail')
         })
-    },
-    beforeSubmit () {
-      this.submitArr = []
-      this.mediaPlayLists.forEach(item => {
-        const obj = {}
-        obj.id = item.playListId
-        obj.sort = item.sort
-        obj.state = item.state
-        this.submitArr.push(obj)
-      })
     }
   }
 }

@@ -166,7 +166,7 @@ export default {
     },
     scenes () {
       if (this.detailInfo.type && this.detailInfo.type.indexOf('-') >= 0) {
-        const type = this.info.type.split('-').pop()
+        const type = this.detailInfo.type.split('-').pop()
         return scenesOptions[type]
       }
       return scenesOptions.A
@@ -502,7 +502,7 @@ export default {
         if (type === 'stateOrient') {
           this.defaultIndex = stateOrient.findIndex(item => item.val === this.detailInfo.stateOrient)
         } else if (type === 'scenes') {
-          this.defaultIndex = scenes.findIndex(item => item.val === this.detailInfo.scenes)
+          this.defaultIndex = this.scenes.findIndex(item => item.value === this.detailInfo.scenes)
         }
       }
     },

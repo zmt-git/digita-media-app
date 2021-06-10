@@ -97,7 +97,7 @@ export default {
     },
     // 删除按钮
     deteleMedia (id) {
-      this.$emit('deteleMedia', id)
+      this.$emit('deteleMedia', this.playInfo)
     },
     // 改变顺序
     changeOrder (type) {

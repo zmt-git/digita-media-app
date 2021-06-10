@@ -116,8 +116,8 @@ export default {
     },
     codeValidator (val) {
       Toast.loading('验证中...')
-      return new Promise(async (resolve) => {
-        await deviceCheckCode(val)
+      return new Promise((resolve) => {
+        deviceCheckCode(val)
           .then(res => {
             if (res.msg === 'true') {
               resolve(true)

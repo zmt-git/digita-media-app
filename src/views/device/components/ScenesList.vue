@@ -1,8 +1,5 @@
 <template>
   <div class="scenes-list">
-    <div class="scenes-list-header">
-      <span></span>
-    </div>
     <div class="scenes-list-content">
       <transition-group name="cell">
         <playItem
@@ -10,6 +7,7 @@
          :key="item.id"
          :playInfo='item'
          @changeOrder='changeOrder'
+         @deleteMedia='deleteMedia'
         ></playItem>
       </transition-group>
     </div>
@@ -30,15 +28,14 @@ export default {
   },
 
   props: {
-    scenes: {
-      type: String,
-      default: 'weatherScenes'
-    }
-  },
+    list: {
+      type: Array,
+      default: () => []
+    },
 
-  data () {
-    return {
-      publishList: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }]
+    index: {
+      type: Number,
+      default: 1
     }
   },
 
@@ -52,6 +49,40 @@ export default {
         const nextItem = this.publishList[currentIndex - 1]
         this.publishList.splice(currentIndex - 1, 2, target, nextItem)
       }
+      this.updatePlaylist()
+    },
+
+    deleteMedia (info) {
+      this.$confirm('在播放列表中删除该媒体吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const index = this.scenesList.findeIndex(item => item.id === info.id)
+        if (index >= 0) {
+          this.scenesList.splice(index, 1)
+          this.updatePlaylist()
+        }
+      }).catch(() => {
+
+      })
+    },
+
+    updatePlaylist () {
+      this.$emit('updatePlaylist', this.publishList, this.index)
+    }
+  },
+
+  watch: {
+    list: {
+      handler: function (newVal, oldVal) {
+        try {
+          this.publishList = JSON.parse(newVal[this.index].content)
+        } catch (e) {
+          this.publishList = []
+        }
+      },
+      immediate: true
     }
   }
 }

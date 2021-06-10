@@ -90,3 +90,18 @@ export function MediaAdjustment (params) {
     params
   })
 }
+
+export function getPlaylist (devid) {
+  return requset({
+    url: `/device/playlist/list/${devid}`,
+    method: 'GET'
+  })
+}
+// /update/content
+export function updateContent (data) {
+  return requset({
+    url: '/device/playlist//update/content',
+    method: 'POST',
+    data
+  })
+}
