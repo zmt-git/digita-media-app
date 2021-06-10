@@ -57,9 +57,9 @@
     <van-dialog v-model="showPicker1" title="重要提示" show-cancel-button @confirm='deleteMediaById' @open='checked = false'>
       <div class="deleteMedia">
         <!-- <van-checkbox v-model="checked" shape="square">同时从所有智能终端中删除媒体</van-checkbox> -->
-        
+
         该媒体将从所有智能终端中清除！
-        
+
       </div>
     </van-dialog>
     <!-- 删除媒体终端复选框 -->
@@ -113,6 +113,7 @@ export default {
         return '图片媒体'
       }
     },
+    // TODO
     filterType (val) { // 0：mp4，1：jpg；2：png；
       if (val === 0) {
         return 'MP4'
@@ -358,14 +359,14 @@ export default {
 
     formatterSize (item) {
       if (item.mediaType === 0) {
-        if (typeof (item.oldSize) === 'number') {
-          return (item.oldSize / 1024).toFixed(2) + 'MB'
+        if (typeof (item.size) === 'number') {
+          return (item.size / 1024).toFixed(2) + 'MB'
         } else {
           return '0MB'
         }
       } else {
-        if (typeof (item.oldSize) === 'number') {
-          return item.oldSize + 'KB'
+        if (typeof (item.size) === 'number') {
+          return item.size + 'KB'
         } else {
           return '0KB'
         }
