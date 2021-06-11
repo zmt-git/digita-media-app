@@ -39,6 +39,12 @@ export default {
     }
   },
 
+  data () {
+    return {
+      publishList: []
+    }
+  },
+
   methods: {
     changeOrder (direction, target) {
       const currentIndex = this.publishList.indexOf(target)
@@ -58,9 +64,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const index = this.scenesList.findeIndex(item => item.id === info.id)
+        const index = this.publishList.findeIndex(item => item.id === info.id)
         if (index >= 0) {
-          this.scenesList.splice(index, 1)
+          this.publishList.splice(index, 1)
           this.updatePlaylist()
         }
       }).catch(() => {
