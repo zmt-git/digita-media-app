@@ -4,7 +4,7 @@
       <van-tabs v-model="activeName" sticky :offset-top="46">
         <template  v-for="(scene) in scenes">
           <van-tab :title="item.title" :name="item.type" :key="item.type" v-for="item in scene">
-            <scenes-list :list='mediaPlayLists' :index='item.index'></scenes-list>
+            <scenes-list @changeOrder='changeOrder' :list='mediaPlayLists' :index='item.index'></scenes-list>
           </van-tab>
         </template>
       </van-tabs>
@@ -94,6 +94,10 @@ export default {
         .catch(() => {
 
         })
+    },
+
+    changeOrder (direction, target, index) {
+
     },
 
     // 确认播放列表修改

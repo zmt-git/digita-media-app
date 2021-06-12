@@ -1,4 +1,6 @@
 import requset from '@/utils/request'
+import Qs from 'qs'
+
 // 播放列表 device/playlist/list/{devid} GET "int page(页码1), int limit(条数10) int devid"
 /**
  * @param {int} devid
@@ -91,17 +93,22 @@ export function MediaAdjustment (params) {
   })
 }
 
+// 获取播放列表
 export function getPlaylist (devid) {
   return requset({
     url: `/device/playlist/list/${devid}`,
     method: 'GET'
   })
 }
-// /update/content
-export function updateContent (data) {
+// /device/playlist/update/content
+// 批量修改播放列表内容
+export function updateContent (params, paramsSerializer) {
   return requset({
-    url: '/device/playlist//update/content',
+    url: '/device/playlist/update/content',
     method: 'POST',
-    data
+    params,
+    paramsSerializer: function (params) {
+      return Qs.stringify(params, { indices: false })
+    }
   })
 }

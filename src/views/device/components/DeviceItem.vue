@@ -4,14 +4,15 @@
       <img src="../../../assets/img/device.png" alt="">
     </div>
     <div class="device-list_item--info">
-      <p class="device-list_item--location van-multi-ellipsis--l2">{{itemInfo.location}}<span style="padding-left: .07rem">{{itemInfo.name}}</span></p>
+      <p class="device-list_item--location van-multi-ellipsis--l2">{{itemInfo.type}}<span style="padding-left: .07rem">{{itemInfo.name}}</span></p>
+      <p class="device-list_item--location van-multi-ellipsis--l2">{{itemInfo.location}}</p>
       <!-- <p class="device-list_item--name van-ellipsis">{{itemInfo.name}}</p> -->
       <p class="device-list_item--status">
         <van-tag :type="itemInfo.stateOnline | tagType">{{itemInfo.stateOnline | statusOnline}}</van-tag>
         <template v-if="itemInfo.stateOnline === 1" >
           <van-tag :type="itemInfo.stateWork | tagType2">{{itemInfo.stateWork | statusWork}}</van-tag>
           <van-tag v-show="itemInfo.alarm.includes('2001')" type="danger">高温</van-tag>
-          <van-tag v-show="itemInfo.alarm.includes('2002')" type="danger">存储将满</van-tag>
+          <!-- <van-tag v-show="itemInfo.alarm.includes('2002')" type="danger">存储将满</van-tag> -->
         </template>
       </p>
     </div>
@@ -95,13 +96,13 @@ $bg5: #f3f3f3;
   &--info{
     flex: 1;
     overflow: hidden;
-    padding: .1rem 0;
+    padding: .05rem 0;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     & p{
-      line-height: .22rem;
-      font-size: .13rem;
+      line-height: .2rem;
+      font-size: .1rem;
     }
   }
   &--status{

@@ -3,8 +3,8 @@
     <div class="scenes-list-content">
       <transition-group name="cell">
         <playItem
-         v-for="item in publishList"
-         :key="item.id"
+         v-for="item in mediaList"
+         :key="item.mediaId"
          :playInfo='item'
          @changeOrder='changeOrder'
          @deleteMedia='deleteMedia'
@@ -24,6 +24,13 @@ export default {
   computed: {
     length () {
       return this.publishList.length
+    },
+    mediaList () {
+      try {
+        return JSON.parse(this.list[this.index].content)
+      } catch (e) {
+        return []
+      }
     }
   },
 
@@ -41,15 +48,7 @@ export default {
 
   methods: {
     changeOrder (direction, target) {
-      const currentIndex = this.publishList.indexOf(target)
-      if (direction === 'down' && currentIndex < this.length) {
-        const nextItem = this.publishList[currentIndex + 1]
-        this.publishList.splice(currentIndex, 2, nextItem, target)
-      } else if (direction === 'up' && currentIndex !== 0) {
-        const nextItem = this.publishList[currentIndex - 1]
-        this.publishList.splice(currentIndex - 1, 2, target, nextItem)
-      }
-      this.updatePlaylist()
+      this.$emit('changeOrder', direction, target, this.index)
     },
 
     deleteMedia (info) {
@@ -58,31 +57,10 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const index = this.scenesList.findeIndex(item => item.id === info.id)
-        if (index >= 0) {
-          this.scenesList.splice(index, 1)
-          this.updatePlaylist()
-        }
+        this.$emit('deleteMidea', info, this.index)
       }).catch(() => {
 
       })
-    },
-
-    updatePlaylist () {
-      this.$emit('updatePlaylist', this.publishList, this.index)
-    }
-  },
-
-  watch: {
-    list: {
-      handler: function (newVal, oldVal) {
-        try {
-          this.publishList = JSON.parse(newVal[this.index].content)
-        } catch (e) {
-          this.publishList = []
-        }
-      },
-      immediate: true
     }
   }
 }
