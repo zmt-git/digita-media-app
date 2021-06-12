@@ -46,6 +46,12 @@ export default {
     }
   },
 
+  data () {
+    return {
+      publishList: []
+    }
+  },
+
   methods: {
     changeOrder (direction, target) {
       this.$emit('changeOrder', direction, target, this.index)

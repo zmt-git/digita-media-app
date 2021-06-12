@@ -1,69 +1,62 @@
 <template>
-  <van-swipe-cell :disabled="disabled">
-    <div class="play-item">
-      <div class="play-item_top van-hairline--bottom">
-        <div class="play-item_top_img" @click="player()">
-          <template v-if="playInfo.mediaType === 0">
-            <img class="play-item_top_img--media" :src="playInfo.address + videoFrame" alt="">
-            <img class="play-item_top_img--player" src="../../../assets/img/player.png" alt="">
-          </template>
-          <template v-else>
-            <img class="play-item_top_img--media" :src="playInfo.address" alt="">
-          </template>
+  <div class="paltitem">
+    <div class="paltitem_top van-hairline--bottom">
+      <div class="paltitem_top_img" @click="player()">
+        <template v-if="playInfo.mediaType === 0">
+          <img class="paltitem_top_img--media" :src="playInfo.addressOld + videoFrame" alt="">
+          <img class="paltitem_top_img--player" src="../../../assets/img/player.png" alt="">
+        </template>
+        <template v-else>
+          <img class="paltitem_top_img--media" :src="playInfo.addressOld" alt="">
+        </template>
+      </div>
+      <div class="paltitem_top_info">
+        <div class="paltitem_top_info_des">
+          <p class="paltitem_top_info_des--type van-ellipsis">
+            {{playInfo.mediaType === 0 ? '视频媒体' : '图片媒体'}}
+            <van-tag plain v-if="playInfo.state === 0">隐藏</van-tag>
+          </p>
+          <p class="paltitem_top_info_des--info van-ellipsis">
+            媒体格式
+            <span class="padding-left">{{playInfo.mediaType | mediaTypeFilter }}</span>
+          </p>
+          <p class="paltitem_top_info_des--info van-ellipsis">
+            播放时长
+            <span class="padding-left">{{playInfo.length | filterLength}}</span>
+          </p>
         </div>
-        <div class="play-item_top_info">
-          <div class="play-item_top_info_des">
-            <p class="play-item_top_info_des--type van-ellipsis">
-              {{playInfo.mediaType === 0 ? '视频媒体' : '图片媒体'}}
-              <van-tag plain v-if="playInfo.state === 0">隐藏</van-tag>
-            </p>
-            <p class="play-item_top_info_des--info van-ellipsis">
-              媒体格式
-              <span class="padding-left">{{playInfo.mediaType | mediaTypeFilter }}</span>
-            </p>
-            <p class="play-item_top_info_des--info van-ellipsis">
-              播放时长
-              <van-stepper :disabled="disabled" :value="playInfo.length" :default-value="1" integer @change="onChange" />
-            </p>
-          </div>
-          <div class="play-item_top_info_btn">
-            <span class="Triangle Triangle-bottom" @click="changeOrder('up')"></span>
-            <span class="Triangle Triangle-up" @click="changeOrder('down')"></span>
-          </div>
+        <div class="paltitem_top_info_btn">
+          <span class="Triangle Triangle-bottom" @click="changeOrder('up')"></span>
+          <span class="Triangle Triangle-up" @click="changeOrder('down')"></span>
         </div>
       </div>
     </div>
-    <template #right>
-    <van-button square text="删除" type="danger" class="delete-button" @click="deleteMedia"/>
-  </template>
-  </van-swipe-cell>
+    <div class="paltitem_bottom">
+      <!-- <van-button
+        type="default"
+        size="mini"
+        @click="restore(playInfo.id, playInfo.state)"
+      >
+        {{playInfo.state === 0 ? '恢复' : '隐藏'}}
+      </van-button> -->
+      <van-button
+        type="danger"
+        size="mini"
+        @click="deteleMedia(playInfo.id)"
+      >删除</van-button>
+    </div>
+  </div>
 </template>
 
 <script>
 import { videoFrame } from '@/oss/ossconfig'
 import { secondFormat } from '@/utils/format'
-import { Toast } from 'vant'
 export default {
-  name: 'play-item',
+  name: 'palyItem',
   props: {
     playInfo: {
       type: Object,
       default: () => {}
-    },
-
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-
-    value: {
-      type: [String, Number],
-      default: ''
-    },
-
-    checked: {
-      type: Boolean,
-      default: false
     }
   },
   data () {
@@ -91,28 +84,24 @@ export default {
   },
   methods: {
     // 播放媒体视频
-    player () {
+    player (palyItem) {
       this.$router.push({ path: '/mediaDetails', query: { id: this.playInfo.id } })
     },
+    // 隐藏按钮
+    hiddenMedia (id) {
+      this.$emit('hiddenMedia', id)
+    },
+    // 恢复按钮
+    restore (id, state) {
+      this.$emit('restore', id, state)
+    },
     // 删除按钮
-    deleteMedia (id) {
-      if (this.disabled) {
-        Toast.fail('设备离线')
-        return
-      }
-      this.$emit('deleteMedia', this.playInfo)
+    deteleMedia (id) {
+      this.$emit('deteleMedia', this.playInfo)
     },
     // 改变顺序
     changeOrder (type) {
-      if (this.disabled) {
-        Toast.fail('设备离线')
-        return
-      }
       this.$emit('changeOrder', type, this.playInfo)
-    },
-
-    onChange (value, detail) {
-      this.$emit('change', value, detail, this.playInfo)
     }
   }
 }
@@ -122,7 +111,7 @@ export default {
 $bg1: #fff;
 $bg2: #1989f9;
 $bg3: #f6f6f6;
-.play-item{
+.paltitem{
   width: 100%;
   height: 1.28rem;
   padding-bottom: .08rem;
