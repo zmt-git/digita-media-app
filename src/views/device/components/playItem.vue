@@ -1,38 +1,10 @@
 <template>
   <van-swipe-cell :disabled="disabled">
-    <div class="play-item">
-      <div class="play-item_top van-hairline--bottom">
-        <div class="play-item_top_img" @click="player()">
-          <template v-if="playInfo.mediaType === 0">
-            <img class="play-item_top_img--media" :src="playInfo.address + videoFrame" alt="">
-            <img class="play-item_top_img--player" src="../../../assets/img/player.png" alt="">
-          </template>
-          <template v-else>
-            <img class="play-item_top_img--media" :src="playInfo.address" alt="">
-          </template>
-        </div>
-        <div class="play-item_top_info">
-          <div class="play-item_top_info_des">
-            <p class="play-item_top_info_des--type van-ellipsis">
-              {{playInfo.mediaType === 0 ? '视频媒体' : '图片媒体'}}
-              <van-tag plain v-if="playInfo.state === 0">隐藏</van-tag>
-            </p>
-            <p class="play-item_top_info_des--info van-ellipsis">
-              媒体格式
-              <span class="padding-left">{{playInfo.mediaType | mediaTypeFilter }}</span>
-            </p>
-            <p class="play-item_top_info_des--info van-ellipsis">
-              播放时长
-              <van-stepper :disabled="disabled" :value="playInfo.length" :default-value="1" integer @change="onChange" />
-            </p>
-          </div>
-          <div class="play-item_top_info_btn">
-            <span class="Triangle Triangle-bottom" @click="changeOrder('up')"></span>
-            <span class="Triangle Triangle-up" @click="changeOrder('down')"></span>
-          </div>
-        </div>
-      </div>
-    </div>
+      <van-image
+        class="img"
+        src="https://img01.yzcdn.cn/vant/cat.jpeg"
+      />
+      <van-stepper input-width="40px" button-size="20px" v-model="playInfo.mediaTime" integer />
     <template #right>
     <van-button square text="删除" type="danger" class="delete-button" @click="deleteMedia"/>
   </template>
@@ -124,108 +96,20 @@ $bg2: #1989f9;
 $bg3: #f6f6f6;
 .play-item{
   width: 100%;
-  height: 1.28rem;
-  padding-bottom: .08rem;
-  background: $bg3;
-  &_top{
-    height: .88rem;
-    background: $bg1;
-    width: 100%;
-    &_img{
-      width: 1.05rem;
-      height: .88rem;
-      padding: .08rem .15rem;
-      box-sizing: border-box;
-      position: relative;
-      float: left;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      &--media{
-        max-width: 100%;
-        max-height: 100%;
-      }
-      &--player{
-        width: .28rem;
-        height: .28rem;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: auto;
-      }
-    }
-    &_info{
-      width: calc(100% - 1.05rem);
-      height: .88rem;
-      float: left;
-      &_des{
-        height: 100%;
-        width: 2.32rem;
-        float: left;
-        color: #000;
-        &--type{
-          font-size: .15rem;
-          line-height: .375rem;
-        }
-        &--info{
-          font-size: .13rem;
-          line-height: .215rem;
-        }
-      }
-      &_btn{
-        height: 100%;
-        width: calc(100% - 2.32rem);
-        float: left;
-        padding: .125rem 0;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: flex-start;
-      }
-    }
-  }
-  &_bottom{
-    // height: .325rem;
-    width: 100%;
-    background: $bg1;
-    text-align: right;
-    box-sizing: border-box;
-    padding: .07rem .14rem;
-    & button{
-      height: .235rem;
-      line-height: .235rem;
-      padding: 0 .15rem;
-      margin: 0 .05rem;
-    }
-  }
+  height: .4rem;
+  box-sizing: border-box;
+  background: $bg1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 .1rem;
+  align-items: center;
+  border-top: 1px solid $bg3;
+  justify-content: space-between;
 }
-.padding-left{
-  margin-left: .13rem;
+.delete-button{
+  height: 100%;
 }
-
-.Triangle{
-  width: 0;
-  height: 0;
-  display: block;
-  border-color: transparent;
-  border-style: solid;
-}
-.Triangle-up{
-  border-top-width: .17rem;
-  border-bottom-width: 0;
-  border-left-width: .095rem;
-  border-right-width: .095rem;
-  border-top-color: $bg2;
-}
-.Triangle-bottom{
-  border-bottom-width: .17rem;
-  border-top-width: 0;
-  border-left-width: .095rem;
-  border-right-width: .095rem;
-  border-bottom-color: $bg2;
+.img{
+  width: 100%!important;
 }
 </style>

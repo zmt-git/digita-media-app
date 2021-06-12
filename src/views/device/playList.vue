@@ -1,7 +1,7 @@
 <template>
   <div class="playList">
     <div class="list">
-      <van-tabs v-model="activeName" sticky :offset-top="46">
+      <van-tabs title-active-color='#1989f9' color='#1989f9' v-model="activeName" sticky :offset-top="46">
         <template  v-for="(scene) in scenes">
           <van-tab :title="item.title" :name="item.type" :key="item.type" v-for="item in scene">
             <scenes-list @changeOrder='changeOrder' :list='mediaPlayLists' :index='item.index'></scenes-list>
@@ -9,7 +9,6 @@
         </template>
       </van-tabs>
     </div>
-
     <div class="playList-btn">
       <van-button type="default" @click="$router.go(-1)">取消</van-button>
       <van-button type="info" :disabled='empty' @click='confirm'>确认</van-button>

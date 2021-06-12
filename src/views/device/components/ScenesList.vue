@@ -1,15 +1,18 @@
 <template>
   <div class="scenes-list">
     <div class="scenes-list-content">
-      <transition-group name="cell">
-        <playItem
-         v-for="item in mediaList"
-         :key="item.mediaId"
-         :playInfo='item'
-         @changeOrder='changeOrder'
-         @deleteMedia='deleteMedia'
-        ></playItem>
-      </transition-group>
+      <van-grid :border="false" :column-num="3">
+        <van-grid-item :key="item.mediaId" v-for="item in mediaList">
+        <transition-group name="cell">
+          <playItem
+            :key="item.mediaId"
+            :playInfo='item'
+            @changeOrder='changeOrder'
+            @deleteMedia='deleteMedia'
+            ></playItem>
+          </transition-group>
+        </van-grid-item>
+      </van-grid>
     </div>
   </div>
 </template>
@@ -27,7 +30,7 @@ export default {
     },
     mediaList () {
       try {
-        return JSON.parse(this.list[this.index].content)
+        return JSON.parse(this.list[this.index].content).sort((a, b) => a.mediaOrder - b.mediaOrder)
       } catch (e) {
         return []
       }
