@@ -1,18 +1,18 @@
 <template>
   <div class="playList">
-    <div class="list">
-      <van-tabs title-active-color='#1989f9' color='#1989f9' v-model="activeName" sticky :offset-top="46">
-        <template  v-for="(scene) in scenes">
-          <van-tab :title="item.title" :name="item.type" :key="item.type" v-for="item in scene">
-            <scenes-list @changeOrder='changeOrder' :list='mediaPlayLists' :index='item.index'></scenes-list>
-          </van-tab>
-        </template>
-      </van-tabs>
-    </div>
-    <div class="playList-btn">
-      <van-button type="default" @click="$router.go(-1)">取消</van-button>
-      <van-button type="info" :disabled='empty' @click='confirm'>确认</van-button>
-    </div>
+      <div class="list">
+        <van-tabs title-active-color='#1989f9' color='#1989f9' v-model="activeName" sticky :offset-top="46">
+          <template  v-for="(scene) in scenes">
+            <van-tab :title="item.title" :name="item.type" :key="item.type" v-for="item in scene">
+              <scenes-list @changeOrder='changeOrder' @deleteMedia='deleteMedia' :list='mediaPlayLists' :index='item.index' :info='info'></scenes-list>
+            </van-tab>
+          </template>
+        </van-tabs>
+      </div>
+      <div class="playList-btn">
+        <van-button type="default" @click="$router.go(-1)">取消</van-button>
+        <van-button type="info" :disabled='empty || disabled' @click='confirm'>确认</van-button>
+      </div>
   </div>
 </template>
 
@@ -37,13 +37,13 @@ export default {
       return this.mediaPlayLists.length <= 0
     },
 
-    id () {
-      return this.info.id
-    },
-
     scenes () {
       const scenes = deviceTypeArr.find(item => item.text === this.info.type)
       return scenes ? scenes.scenes : deviceTypeArr[0].scenes
+    },
+
+    disabled () {
+      return this.info.stateOnline !== 1
     }
   },
 
@@ -57,9 +57,13 @@ export default {
     }
   },
   async created () {
-    this.info = this.$route.query.info
+    this.info = JSON.parse(this.$route.query.info)
     // 获取该终端的播放列表
     await this.getPlayList()
+
+    if (this.$route.query.isCheck) {
+      this.addMediaList()
+    }
   },
   mounted () {
     eventBus.$on('onClickRight', (icon) => {
@@ -67,6 +71,22 @@ export default {
     })
   },
   methods: {
+    addMediaList () {
+      try {
+        const list = JSON.parse(this.$route.query.list)
+        const index = this.$route.query.index
+        const targetList = JSON.parse(this.mediaPlayLists[index].content)
+        const length = targetList.length
+        list.forEach((item, i) => {
+          item.mediaOrder = length + i
+        })
+        targetList.push(...list)
+        this.mediaPlayLists[index].content = JSON.stringify(targetList)
+      } catch (e) {
+        this.toast('添加媒体列表失败', 'fail')
+        console.log(e)
+      }
+    },
     // 头部点击回调
     onClickRight (icon) {
       if (icon === 'question-o') {
@@ -75,8 +95,13 @@ export default {
     },
     // 获取终端设备播放列表all
     getPlayList () {
-      return getPlaylist(this.id)
+      return getPlaylist(this.info.id)
         .then(res => {
+          res.list.forEach(item => {
+            const content = JSON.parse(item.content)
+            content.sort((a, b) => a.mediaOrder - b.mediaOrder)
+            item.content = JSON.stringify(content)
+          })
           this.mediaPlayLists = res.list
         })
         .catch(e => { console.log(e) })
@@ -96,7 +121,26 @@ export default {
     },
 
     changeOrder (direction, target, index) {
+      const targetList = JSON.parse(this.mediaPlayLists[index].content)
+      const currentIndex = targetList.findIndex(item => item.mediaId === target.mediaId)
+      const length = targetList.length
+      if (direction === 'down' && currentIndex < length - 1) {
+        const nextItem = targetList[currentIndex + 1]
+        targetList.splice(currentIndex, 2, nextItem, target)
+      } else if (direction === 'up' && currentIndex !== 0) {
+        const nextItem = targetList[currentIndex - 1]
+        targetList.splice(currentIndex - 1, 2, target, nextItem)
+      }
+      this.mediaPlayLists[index].content = JSON.stringify(targetList)
+    },
 
+    deleteMedia (target, index) {
+      const targetList = JSON.parse(this.mediaPlayLists[index].content)
+      const i = targetList.findIndex(item => item.mediaId === target.mediaId)
+      if (i >= 0) {
+      }
+      console.log(targetList)
+      this.mediaPlayLists[index].content = JSON.stringify(targetList)
     },
 
     // 确认播放列表修改
@@ -105,16 +149,22 @@ export default {
       const ids = []
       const contents = []
       this.mediaPlayLists.forEach(item => {
+        const content = JSON.parse(item.content)
+        content.forEach((i, index) => {
+          i.mediaOrder = index + 1
+        })
+        item.content = JSON.stringify(content)
         ids.push(item.id)
         contents.push(item.content)
       })
-      await updateContent({ devid: this.id, ids: ids, contents: contents })
+      await updateContent({ devid: this.info.id, ids: ids, contents: contents })
         .then(res => {
-          if (res.state === 1) {
-            this.toast('正在上传新的播放列表<br/>请在【任务】标签卡中查看结果', 'html', 2000, false)
-          } else {
-            this.toast('媒体发布任务失败', 'fail')
-          }
+          this.toast(res.msg, 'success')
+          // if (res.state === 1) {
+          //   this.toast('正在上传新的播放列表<br/>请在【任务】标签卡中查看结果', 'html', 2000, false)
+          // } else {
+          //   this.toast('媒体发布任务失败', 'fail')
+          // }
         })
         .catch(e => {
           console.log(e)

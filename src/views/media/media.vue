@@ -351,7 +351,7 @@ export default {
 
       this.count++
 
-      if (this.count === countTotal) {
+      if (this.count === this.countTotal) {
         // 上传成功 获取媒体list默认前10条
         this.updataLists = []
 

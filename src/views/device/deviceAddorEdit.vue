@@ -20,7 +20,7 @@
         required
         placeholder="请选择设备类型"
         readonly
-        @click="showPicker = true"
+        @click="show('type')"
       />
       <van-field
         v-model="dataForm.name"
@@ -37,6 +37,15 @@
         required
         placeholder="请输入安装位置"
         :rules="[{ required: true, message: '请输入安装位置' }]"
+      />
+      <van-field
+        v-model="dataForm.orient"
+        name="安装方向"
+        label="安装方向"
+        required
+        placeholder="请选择安装方向"
+        readonly
+        @click="show('orient')"
       />
       <div class="btn">
         <van-button class="btn--button" type="info" native-type="submit">
@@ -67,7 +76,7 @@ import TitleBar from '@/components/TitleBar/TitleBar'
 // api
 import { save, deviceCheckCode } from '@/api/device/device'
 
-import { deviceTypeArr } from '@/common/common'
+import { deviceTypeArr, orientArr } from '@/common/common'
 export default {
   name: 'forgetWord',
   mixins: [common],
@@ -78,12 +87,16 @@ export default {
     return {
       title: '智能终端认证',
       showPicker: false,
-      columns: deviceTypeArr,
+      currentType: 'type',
+      orient: orientArr,
+      type: deviceTypeArr,
+      columns: [],
       dataForm: {
         location: '',
         code: '',
         name: '',
-        type: ''
+        type: '',
+        orient: ''
       },
       isAdd: true,
       toastInfo: '注册',
@@ -110,6 +123,11 @@ export default {
     }
   },
   methods: {
+    show (type) {
+      this.currentType = type
+      this.columns = this[type]
+      this.showPicker = true
+    },
     async onSubmit () {
       this.toast(`智能终端${this.toastInfo}中`, 'loading', 0)
       await this.deviceRegister(this.dataForm)
@@ -130,9 +148,10 @@ export default {
       })
     },
     onConfirm (value, index) {
-      this.dataForm.type = value.text
+      this.dataForm[this.currentType] = value.text
       this.showPicker = false
     },
+
     // 取消添加 编辑
     cancel () {
       this.$router.go(-1)

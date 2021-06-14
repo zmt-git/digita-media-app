@@ -22,6 +22,11 @@ export const deviceTypeArr = Object.freeze([
   { text: 'ELF-T2-RG', val: 'ELF-T2-RG', scenes: scenesRG }
 ])
 
+export const orientArr = Object.freeze([
+  { val: 0, text: '正向安装' },
+  { val: 8, text: '方向安装' }
+])
+
 export const lightControl = Object.freeze([{ val: 0, text: '自动' }, { val: 1, text: '手动' }])
 
 export const stateOrient = Object.freeze([

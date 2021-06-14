@@ -1,6 +1,11 @@
 <template>
   <ul>
-    <li class="paltitem" :key="item.id" v-for="item in playInfoArr">
+    <li class="paltitem"
+    :class="[isCheckMedia(item) ? 'isCheck' : '']"
+    :key="item.id"
+    v-for="item in playInfoArr"
+    @click="check(item)">
+      <van-icon v-if="isCheck" class="isCheck_icon" name="success" />
       <div class="paltitem_top van-hairline--bottom" @click="viewMedia(item)">
         <div class="paltitem_top_img">
           <!-- 判断是否为video -->
@@ -61,18 +66,27 @@ export default {
   props: {
     playInfoArr: {
       type: Array,
-      default: () => {}
+      default: () => []
     },
     isDeviceInfo: {
       type: Boolean,
       default: true
+    },
+    isCheck: {
+      type: Boolean,
+      default: false
+    },
+    checkList: {
+      type: Array,
+      default: () => []
     }
   },
   data () {
     return {
       currentRate: 30,
       videoInfo: '',
-      videoFrame: videoFrame
+      videoFrame: videoFrame,
+      checkArr: []
     }
   },
   filters: {
@@ -123,8 +137,23 @@ export default {
         return ''
       }
     },
+    isCheckMedia (info) {
+      const index = this.checkArr.findIndex(item => item.id === info.id)
+      return index >= 0
+    },
+    check (info) {
+      if (!this.isCheck) return
+      const index = this.checkArr.findIndex(item => item.id === info.id)
+      if (index >= 0) {
+        this.checkArr.splice(index, 1)
+      } else {
+        this.checkArr.push(info)
+      }
+      this.$emit('update:checkList', this.checkArr)
+    },
     // 播放媒体视频
     viewMedia (palyItem) {
+      if (this.isCheck) return
       this.$emit('viewMedia', palyItem)
     },
 
@@ -150,11 +179,13 @@ export default {
 <style lang="scss" scoped>
 $bg1: #fff;
 $bg2: #1989f9;
+
 .paltitem{
   width: 100%;
   height: .88rem;
   margin-bottom: .08rem;
   background: $bg1;
+  box-sizing: border-box;
   &_top{
     height: .88rem;
     width: 100%;
@@ -229,6 +260,31 @@ $bg2: #1989f9;
       height: .26rem;
       line-height: .26rem;
     }
+  }
+}
+.isCheck{
+  border: 1px solid $bg2;
+  position: relative;
+  animation: all ease .3s;
+  &::after{
+    display: block;
+    content: '';
+    width: 0px;
+    height: 0px;
+    border: .1rem solid transparent;
+    border-right-color: $bg2;
+    border-top-color: $bg2;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  &_icon{
+    color: #fff;
+    font-size: 12px;
+    position: absolute;
+    top: 0;
+    right: 0px;
+    z-index: 1;
   }
 }
 .ml{

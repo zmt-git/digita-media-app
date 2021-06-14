@@ -341,7 +341,7 @@ export default {
     },
     // 显示播放列表
     toPlayList (id) {
-      this.$router.push({ path: '/playList', query: { info: this.detailInfo } })
+      this.$router.push({ path: '/playList', query: { info: JSON.stringify(this.detailInfo) } })
     },
     // 设置休眠状态
     async setTimeControl () {

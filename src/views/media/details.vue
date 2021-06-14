@@ -78,7 +78,6 @@ import common from '@/mixins/common'
 import eventBus from '@/utils/eventBus'
 // 组件
 import VideoPlayers from '@/components/VideoPlayer/VideoPalyer'
-import VideojsPlayer from '@/components/VideojsPlayer/VideojsPlayer'
 
 export default {
   name: 'mediadetails',
@@ -86,7 +85,6 @@ export default {
   components: {
     TitleBar,
     VideoPlayers,
-    VideojsPlayer,
     [ImagePreview.Component.name]: ImagePreview.Component
   },
   computed: {

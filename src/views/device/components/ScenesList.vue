@@ -1,24 +1,32 @@
 <template>
   <div class="scenes-list">
     <div class="scenes-list-content">
-      <van-grid :border="false" :column-num="3">
-        <van-grid-item :key="item.mediaId" v-for="item in mediaList">
-        <transition-group name="cell">
+      <transition-group name="cell">
+        <playItem
+          v-for="item in mediaList"
+          :key="item.mediaOrder"
+          :index='index'
+          :playInfo='item'
+          :disabled='disabled'
+          @changeOrder='changeOrder'
+          @deleteMedia='deleteMedia'
+          :info='info'
+          ></playItem>
           <playItem
-            :key="item.mediaId"
-            :playInfo='item'
-            @changeOrder='changeOrder'
-            @deleteMedia='deleteMedia'
-            ></playItem>
-          </transition-group>
-        </van-grid-item>
-      </van-grid>
+          key="add"
+          isAdd
+          :index='index'
+          :playInfo='{}'
+          :info='info'
+          ></playItem>
+      </transition-group>
     </div>
   </div>
 </template>
 
 <script>
 import playItem from './playItem'
+import { Dialog } from 'vant'
 export default {
   name: 'scenes-list',
 
@@ -30,7 +38,7 @@ export default {
     },
     mediaList () {
       try {
-        return JSON.parse(this.list[this.index].content).sort((a, b) => a.mediaOrder - b.mediaOrder)
+        return JSON.parse(this.list[this.index].content)
       } catch (e) {
         return []
       }
@@ -42,10 +50,17 @@ export default {
       type: Array,
       default: () => []
     },
-
     index: {
       type: Number,
       default: 1
+    },
+    disabled: {
+      type: Boolean,
+      default: true
+    },
+    info: {
+      type: Object,
+      default: () => {}
     }
   },
 
@@ -61,15 +76,17 @@ export default {
     },
 
     deleteMedia (info) {
-      this.$confirm('在播放列表中删除该媒体吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$emit('deleteMidea', info, this.index)
-      }).catch(() => {
-
+      Dialog.confirm({
+        title: '提示',
+        message: '在播放列表中删除该媒体吗？'
       })
+        .then(() => {
+          console.log(info)
+          this.$emit('deleteMedia', info, this.index)
+        })
+        .catch(() => {
+          // on cancel
+        })
     }
   }
 }

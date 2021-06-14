@@ -98,6 +98,21 @@ const routes = [
           rightIcon: [], // question-o
           animate: 2
         }
+      },
+      // playList
+      {
+        path: '/playListAdd',
+        component: () => import(/* webpackChunkName: "about" */ '@/views/device/playlistAdd.vue'),
+        meta: {
+          title: '媒体列表',
+          hasFooter: false,
+          hasHeader: true,
+          leftArrow: false,
+          hiddenBack: false,
+          leftIcon: 'arrow-left',
+          rightIcon: [], // question-o
+          animate: 2
+        }
       }
     ]
   },
