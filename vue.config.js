@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path')
+// eslint-disable-next-line no-unused-vars
 const webpack = require('webpack')
 function resolve (dir) {
   return path.join(__dirname, dir)
