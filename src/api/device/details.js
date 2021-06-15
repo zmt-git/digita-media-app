@@ -60,7 +60,6 @@ export function orderNumber (devid, params) {
   })
 }
 
-
 // 设置音量大小// device/device/volume/{devid} POST
 export function volume (devid, params) {
   return request({

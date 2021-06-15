@@ -4,7 +4,7 @@
         <van-tabs title-active-color='#1989f9' color='#1989f9' v-model="activeName" sticky :offset-top="46">
           <template  v-for="(scene) in scenes">
             <van-tab :title="item.title" :name="item.type" :key="item.type" v-for="item in scene">
-              <scenes-list @changeOrder='changeOrder' @deleteMedia='deleteMedia' :list='mediaPlayLists' :index='item.index' :info='info'></scenes-list>
+              <scenes-list @changeOrder='changeOrder' @deleteMedia='deleteMedia' @changeTime='changeTime' :list='mediaPlayLists' :index='item.index' :info='info'></scenes-list>
             </van-tab>
           </template>
         </van-tabs>
@@ -120,9 +120,18 @@ export default {
         })
     },
 
+    changeTime (value, info, index) {
+      console.log(value, info, index)
+      const targetList = JSON.parse(this.mediaPlayLists[index].content)
+      const obj = targetList.find(item => item.mediaOrder === info.mediaOrder)
+      obj.mediaTime = value
+      this.mediaPlayLists[index].content = JSON.stringify(targetList)
+      console.log(targetList)
+    },
+
     changeOrder (direction, target, index) {
       const targetList = JSON.parse(this.mediaPlayLists[index].content)
-      const currentIndex = targetList.findIndex(item => item.mediaId === target.mediaId)
+      const currentIndex = targetList.findIndex(item => item.mediaOrder === target.mediaOrder)
       const length = targetList.length
       if (direction === 'down' && currentIndex < length - 1) {
         const nextItem = targetList[currentIndex + 1]
@@ -136,7 +145,7 @@ export default {
 
     deleteMedia (target, index) {
       const targetList = JSON.parse(this.mediaPlayLists[index].content)
-      const i = targetList.findIndex(item => item.mediaId === target.mediaId)
+      const i = targetList.findIndex(item => item.mediaOrder === target.mediaOrder)
       if (i >= 0) {
       }
       console.log(targetList)
@@ -160,11 +169,6 @@ export default {
       await updateContent({ devid: this.info.id, ids: ids, contents: contents })
         .then(res => {
           this.toast(res.msg, 'success')
-          // if (res.state === 1) {
-          //   this.toast('正在上传新的播放列表<br/>请在【任务】标签卡中查看结果', 'html', 2000, false)
-          // } else {
-          //   this.toast('媒体发布任务失败', 'fail')
-          // }
         })
         .catch(e => {
           console.log(e)

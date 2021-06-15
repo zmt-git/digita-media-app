@@ -9,6 +9,7 @@
           :playInfo='item'
           :disabled='disabled'
           @changeOrder='changeOrder'
+          @changeTime='changeTime'
           @deleteMedia='deleteMedia'
           :info='info'
           ></playItem>
@@ -33,9 +34,6 @@ export default {
   components: { playItem },
 
   computed: {
-    length () {
-      return this.publishList.length
-    },
     mediaList () {
       try {
         return JSON.parse(this.list[this.index].content)
@@ -64,15 +62,13 @@ export default {
     }
   },
 
-  data () {
-    return {
-      publishList: []
-    }
-  },
-
   methods: {
     changeOrder (direction, target) {
       this.$emit('changeOrder', direction, target, this.index)
+    },
+
+    changeTime (value, info, detail) {
+      this.$emit('changeTime', value, info, this.index)
     },
 
     deleteMedia (info) {

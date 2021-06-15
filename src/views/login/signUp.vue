@@ -327,8 +327,10 @@ export default {
     }
   },
   created () {
+    // eslint-disable-next-line
     StatusBar.styleDefault()
-    StatusBar.backgroundColorByHexString("#FFFFFF");
+    // eslint-disable-next-line
+    StatusBar.backgroundColorByHexString("#FFFFFF")
   },
   mounted () {
     setTimeout(() => {

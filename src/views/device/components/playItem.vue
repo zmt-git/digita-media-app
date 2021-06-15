@@ -8,7 +8,7 @@
             <img class="paltitem_top_img--player" src="../../../assets/img/player.png" alt="">
           </template>
           <template v-else>
-            <img class="paltitem_top_img--media" :src="playInfo.addressOld" alt="">
+            <img class="paltitem_top_img--media" :src="playInfo.address" alt="">
           </template>
         </div>
         <div class="paltitem_top_info">
@@ -42,7 +42,7 @@
         </van-button> -->
         <span class="time">
           <span class="time-name">设置时长</span>
-        <van-stepper :disabled='disabled' integer :value='playInfo.mediaTime' theme="round" button-size="22" />
+        <van-stepper :disabled='!disabled' integer :value='playInfo.mediaTime' theme="round" button-size="22" @change="onchange" />
         </span>
         <van-button
           type="danger"
@@ -139,6 +139,9 @@ export default {
         return
       }
       this.$emit('changeOrder', type, this.playInfo)
+    },
+    onchange (value, detail) {
+      this.$emit('changeTime', value, this.playInfo)
     }
   }
 }
