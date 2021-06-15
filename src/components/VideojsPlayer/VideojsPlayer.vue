@@ -10,7 +10,7 @@
       ref="myPlayer"
       class="videoBox video-js vjs-default-skin vjs-big-play-centered"
       preload="auto"
-      :poster="videoInfo.addressOld + videoFrame"
+      :poster="videoInfo.address"
       crossorigin="anonymous"
       data-setup='{"html5" : { "nativeTextTracks" : false }}'
     >
@@ -19,7 +19,7 @@
   </div>
 </template>
 <script>
-import { downloadFile, videoFrame } from '@/oss/ossconfig'
+import { videoFrame } from '@/oss/ossconfig'
 import { setOrientation } from '@/utils/cordovaMethod'
 
 import videojs from 'video.js'
@@ -29,7 +29,7 @@ export default {
   props: {
     videoInfo: {
       type: Object,
-      default: ''
+      default: () => {}
     },
     videoOption: {
       type: Object,
@@ -88,10 +88,12 @@ export default {
         that.isFullscreen = !that.isFullscreen
         if (that.isFullscreen) {
           console.log('全屏')
+          // eslint-disable-next-line no-undef
           StatusBar.hide()
           setOrientation(false)
         } else {
           console.log('非全屏')
+          // eslint-disable-next-line no-undef
           StatusBar.show()
           setOrientation(true)
         }
@@ -108,7 +110,6 @@ export default {
 
   mounted () {
     this.init()
-    const _this = this
   },
 
   beforeDestroy () {

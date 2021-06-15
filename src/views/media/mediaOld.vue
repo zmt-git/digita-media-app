@@ -29,13 +29,13 @@
                 <template v-for='(item) in updataLists'>
                   <van-grid-item
                     class="material-img circle"
-                    :key='item.id'
+                    :key='item.osskey'
                   >
                     <van-circle
-                      v-model="item.progress"
+                      v-model="item.file.progress"
                       :rate='100'
                       :speed='100'
-                      :text="item.progress | progress"
+                      :text="item.file.progress | progress"
                     />
                     <template v-if="item.file.state !== 1 && item.file.showState">
                       <van-tag class="mediaTag" :type="item.state === -2 ? 'danger' : 'warning'">
@@ -53,10 +53,10 @@
                   >
                   <template v-if="item.mediaType === 0">
                     <img class="player" src="../../assets/img/player.png" alt="">
-                    <img class="mediaImg" :src="item.address" alt="">
+                    <img class="mediaImg" :src="item.addressOld + videoFrame" alt="">
                   </template>
                   <template v-else>
-                    <img class="mediaImg" :src="item.address" alt="">
+                    <img class="mediaImg" :src="item.addressOld" alt="">
                   </template>
                   <template v-if="item.state !== 1">
                     <van-tag class="mediaTag" :type="item.state === -2 ? 'danger' : 'warning'">
@@ -96,12 +96,13 @@
 import eventBus from '@/utils/eventBus'
 import common from '@/mixins/common'
 import { mapGetters } from 'vuex'
-import { videoFrame } from '@/oss/ossconfig'
+import { downloadFile, videoFrame } from '@/oss/ossconfig'
 // 组件
 import mediaList from './components/mediaList'
 import RefreshLoad from '@/components/RefreshLoad/RefreshLoad'
 
 import { getMediaList } from '@/api/media/media'
+import { mediaSave } from '@/api/media/uploader'
 import { getUserInfo } from '@/api/system/system'
 export default {
   mixins: [common],
@@ -162,25 +163,20 @@ export default {
       this.$route.meta.rightIcon = ['apps-o', 'add-o']
     }
     this.container = this.$refs.container
-
     eventBus.$on('onClickRight', (icon) => {
       this.onClickRight(icon)
     })
-
-    eventBus.$on('startUpload', (fileInfo) => {
-      this.startUpload(fileInfo)
+    eventBus.$on('progress', (checkpoint, fileList) => {
+      this.progress(checkpoint, fileList)
     })
-
-    eventBus.$on('progress', (fileInfo) => {
-      this.progress(fileInfo)
+    eventBus.$on('uploadSuccess', (res, fileList) => {
+      this.uploadSuccess(res, fileList)
     })
-
-    eventBus.$on('uploadSuccess', (fileInfo) => {
-      this.uploadSuccess(fileInfo)
+    eventBus.$on('uploadError', (res, fileList) => {
+      this.uploadError(res, fileList)
     })
-
-    eventBus.$on('uploadError', (fileInfo) => {
-      this.uploadError(fileInfo)
+    eventBus.$on('startUpload', (fileList) => {
+      this.startUpload(fileList)
     })
   },
   beforeDestroy () {
@@ -197,6 +193,14 @@ export default {
           this.storageTotal = res.user.storageTotal
         })
         .catch(e => console.log(e))
+    },
+    // 获取oss地址
+    getSrc (name) {
+      if (name) {
+        return downloadFile(name)
+      } else {
+        return ''
+      }
     },
     reset () {
       this.storageUsedPrecent = 0
@@ -264,31 +268,99 @@ export default {
       }
     },
     // 开始上传
-    startUpload (fileInfo) {
+    startUpload (fileList) {
       this.toast('上传中', 'loading', 0, false)
-      this.updataLists.push(fileInfo)
+      this.updataLists = []
+      this.updataLists.push(...fileList)
+      this.count = 0
+      this.countTotal = this.updataLists.length
     },
     // 设置上传进度
-    progress (fileInfo) {
+    progress (checkpoint, fileList) {
       this.toast('上传中', 'loading', 0, false)
-      const index = this.updataLists.findIndex(item => item.id === fileInfo.id)
-      index >= 0 && this.updataLists.splice(index, 1, fileInfo)
+      this.updataLists = []
+      this.updataLists.push(...fileList)
+      // 解决无法更新视图bug
+      this.updataLists.forEach(item => {
+        this.$set(item.file, 'progress', item.file.progress)
+        this.$set(item.file, 'oldSize', item.file.oldSize)
+        this.$set(item.file, 'length', item.file.length)
+        this.$set(item.file, 'mediaType', item.file.mediaType)
+      })
     },
     // 上传成功
-    async uploadSuccess (fileInfo) {
-      const index = this.updataLists.findIndex(item => item.id === fileInfo.id)
+    async uploadSuccess (res, fileList) {
+      this.updataLists = fileList
 
-      index >= 0 && this.updataLists.splice(index, 1)
+      // 删除上传列表对应的dome
 
-      this.onRefresh()
+      const index = this.updataLists.findIndex(item => {
+        return item.ossKey === res.name
+      })
+
+      // 添加媒体
+      const endIndex = res.res.requestUrls[0].indexOf('?uploadId')
+
+      let addressOld = ''
+      if (endIndex !== -1) {
+        addressOld = res.res.requestUrls[0].slice(0, endIndex)
+      } else {
+        addressOld = res.res.requestUrls[0]
+      }
+
+      await mediaSave({
+        addressOld: addressOld,
+        oldSize: Math.ceil(this.updataLists[index].file.oldSize),
+        length: Math.ceil(this.updataLists[index].file.length),
+        mediaType: this.updataLists[index].file.mediaType,
+        name: res.name
+      })
+        .then(res => {
+          this.toast('上传成功', 'success')
+        })
+        .catch(err => {
+          this.toast('上传失败', 'fail')
+          console.log(err)
+        })
+
+      this.count++
+
+      this.updataLists.splice(index, 1)
+
+      if (this.count === this.countTotal) {
+        // 上传成功 获取媒体list默认前10条
+        this.updataLists = []
+
+        this.mediaLists = []
+
+        this.refreshOption.refreshing = true
+
+        this.onRefresh()
+      }
 
       this.getUser()
     },
     // 上传失败
-    uploadError (fileInfo) {
-      const index = this.updataLists.findIndex(item => item.id === fileInfo.id)
+    uploadError (res, fileList) {
+      this.toast('上传失败', 'fail')
+      this.updataLists = fileList
+      const index = this.updataLists.findIndex(item => {
+        return item.osskey === res.name
+      })
+      this.updataLists.splice(index, 1)
 
-      index >= 0 && this.updataLists.splice(index, 1)
+      this.count++
+
+      if (this.count === this.countTotal) {
+        // 上传成功 获取媒体list默认前10条
+        this.updataLists = []
+
+        this.mediaLists = []
+
+        this.refreshOption.refreshing = true
+
+        this.onRefresh()
+      }
     }
   }
 }

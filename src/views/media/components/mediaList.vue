@@ -11,19 +11,25 @@
           <!-- 判断是否为video -->
           <div class="isDeviceInfo van-hairline--surround" v-if="isDeviceInfo">
             <template v-if="item.mediaType === 0">
-              <img class="paltitem_top_img--media" :src="item.addressOld + videoFrame" alt="">
+              <img class="paltitem_top_img--media" :src="item.address + videoFrame" alt="">
               <img class="paltitem_top_img--player" src="../../../assets/img/player.png" alt="">
             </template>
             <template v-else>
-              <img class="paltitem_top_img--media van-hairline--surround" :src="item.addressOld" alt="">
+              <van-image
+                fit="contain"
+                height=".75rem"
+                width=".75rem"
+                :src="item.address"
+              />
+              <!-- <img class="paltitem_top_img--media van-hairline--surround" :src="item.address" alt=""> -->
             </template>
           </div>
           <div class="circle" v-else>
             <van-circle
-              v-model="item.file.progress"
+              v-model="item.progress"
               :speed='100'
               :rate='100'
-              :text="item.file.progress | progress"
+              :text="item.progress | progress"
             />
           </div>
         </div>
@@ -48,7 +54,7 @@
                 <span class="ml">{{item.file.mediaType | filterType}}</span>
               </p>
               <p class="paltitem_top_info_des--info van-ellipsis">媒体大小<span class="ml">{{formatterSize(item.file)}}</span></p>
-              <p class="paltitem_top_info_des--info van-ellipsis">播放时长<span class="ml">{{item.file.length | filterLength}}</span></p>
+              <p class="paltitem_top_info_des--info van-ellipsis">播放时长<span class="ml">{{item.length | filterLength}}</span></p>
             </template>
           </div>
         </div>
@@ -159,14 +165,14 @@ export default {
 
     formatterSize (item) {
       if (item.mediaType === 0) {
-        if (typeof (item.oldSize) === 'number') {
-          return (item.oldSize / 1024).toFixed(2) + 'MB'
+        if (typeof (item.size) === 'number') {
+          return (item.size / 1024).toFixed(2) + 'MB'
         } else {
           return '0MB'
         }
       } else {
-        if (typeof (item.oldSize) === 'number') {
-          return item.oldSize + 'KB'
+        if (typeof (item.size) === 'number') {
+          return item.size + 'KB'
         } else {
           return '0KB'
         }

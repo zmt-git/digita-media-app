@@ -8,7 +8,7 @@
           <!-- <VideojsPlayer :videoInfo='mediaInfo'></VideojsPlayer> -->
         </template>
         <template v-else>
-          <img class="mediaSrc_img" :src="mediaInfo.addressOld" alt="" @click="showBigImg(mediaInfo.addressOld)">
+          <img class="mediaSrc_img" :src="mediaInfo.address" alt="" @click="showBigImg(mediaInfo.address)">
         </template>
       </div>
       <!-- 媒体信息 -->

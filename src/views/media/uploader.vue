@@ -10,9 +10,9 @@
 <script>
 import eventBus from '@/utils/eventBus'
 import common from '@/mixins/common'
-import { OSSclient } from '@/oss/ossconfig'
-// import { getTimes } from '@/utils/format'
 import { mapGetters } from 'vuex'
+import { uploadMedia, mediaSave } from '@/api/media/uploader'
+import { Toast } from 'vant'
 export default {
   name: 'upploader',
   mixins: [common],
@@ -21,30 +21,9 @@ export default {
   },
   data () {
     return {
+      id: 1,
       fileList: [],
-      // 当前分片上传进度点
-      currentCheckpoint: '',
-      // 上传人的手机号，上传人
-      model: '',
-      // 上传文件oss对象
-      uploadFileClient: OSSclient,
-      retryCount: 0,
-      retryCountMax: 3,
-      progressNum: 0,
-      progressText: '0%',
-      Attributes: [
-        { key: 'progressNum', value: 0 },
-        { key: 'success', value: false },
-        { key: 'error', value: false },
-        { key: 'oldSize', value: false },
-        // { key: 'progressText', value: '0%' },
-        // { key: 'length', value: false },
-        { key: 'mediaType', value: -1 },
-        // { key: 'currentRate', value: 0 },
-        { key: 'showState', value: false }
-      ],
       mediaType: {
-        mp4: 0,
         jpg: 1,
         jpeg: 1,
         png: 2
@@ -79,133 +58,101 @@ export default {
       if (files instanceof Array) {
         for (let i = 0; i < files.length; i++) {
           setTimeout(() => {
-            const date = new Date().getTime() + i
-            this.uploadFile(OSSclient, files[i], date)
+            this.uploadFile(files[i].file)
           }, 2000)
         }
       } else {
-        this.uploadFile(OSSclient, files)
+        this.uploadFile(files.file)
       }
     },
-    // 进度
-    progress (p, checkpoint) {
-      const that = this
-      if (!checkpoint) return
-      that.currentCheckpoint = checkpoint
-      const progress = Math.floor(p * 100)
-      // const progressText = `${Math.floor(p * 100)}%`
-      const index = this.fileList.findIndex(item => {
-        return item.ossKey === checkpoint.file.ossKey
-      })
-      this.setAttributes(index, progress, checkpoint)
-      eventBus.$emit('progress', checkpoint, this.fileList)
-    },
-
     // 上传文件
-    uploadFile (client, file, date = new Date().getTime()) {
-      const that = this
+    async uploadFile (file, date = new Date().getTime()) {
+      const fileInfo = this.getUploadInfo(file)
 
-      if (!that.uploadFileClient || Object.keys(that.uploadFileClient).length === 0) {
-        that.uploadFileClient = client
-      }
+      eventBus.$emit('startUpload', fileInfo)
 
-      // 创建属性
-      // this.createAttributes(file.file)
+      const formData = new FormData()
 
-      // 上传文件名称
-      // const date = date
+      formData.append('file', file)
 
-      const type = file.file.type.slice(file.file.type.lastIndexOf('/') + 1).toLowerCase()
-
-      file.file.mediaType = that.mediaType[type]
-
-      file.file.oldSize = Math.ceil(file.file.size / 1024)
-
-      // 用户名 (文件夹名称)/ 年 + 月 + 时 + 分 + 秒（文件名）+ 文件类型格式
-      const key = (that.user.mobile || 'unknown') + '/' + date + '.' + type
-
-      // oss object name
-      file.ossKey = key
-
-      file.file.ossKey = key
-
-      // 获取文件播放时长
-      if (file.file.mediaType === 0) {
-        this.getLength(file.file)
-      } else {
-        file.file.length = 10
-      }
-
-      // 上传文件的配置信息
-      const options = {
-        // 进度监听
-        progress: that.progress,
-        // 上传大小？？
-        // partSize: 500 * 1024,
-        // 上传文件信息描述
-        meta: {
-          year: date,
-          people: that.user.mobile || 'unknown',
-          author: key
-        },
-        // 超时
-        timeout: 60000
-      }
-      if (that.currentCheckpoint) {
-        options.checkpoint = that.currentCheckpoint
-      }
-      // 上传方法
-      eventBus.$emit('startUpload', that.fileList)
-      that.uploadFileClient.multipartUpload(key, file.file, options)
-        .then((res) => {
-          that.currentCheckpoint = null
-          that.uploadFileClient = null
-          // console.log(res)
-          eventBus.$set(file, 'success', true)
-          eventBus.$emit('uploadSuccess', res, that.fileList)
-          // console.log(res)
-        })
-        .catch((err) => {
-          if (that.uploadFileClient && that.uploadFileClient.isCancel()) {
-            eventBus.$emit('uploadPause')
-          } else {
-            console.error(err)
-            if (err.name.toLowerCase().indexOf('connectiontimeout') !== -1) {
-              if (that.retryCount < that.retryCountMax) {
-                that.retryCount++
-                console.error(`retryCount : ${that.retryCount}`)
-                // 重试 重新上传
-                this.uploadFile(client, file)
-              } else {
-                // 提示上传失败
-                this.$set(file, 'error', true)
-                eventBus.$emit('uploadError', err, that.fileList)
-              }
-            } else {
-              eventBus.$emit('uploadError', err, that.fileList)
-            }
-          }
-        })
-    },
-    // 创建属性
-    createAttributes (file) {
-      this.Attributes.forEach(item => {
-        this.$set(file, item.key, item.value)
+      const res = await this.uploadMediaRequest(formData, (progressEvent) => {
+        if (progressEvent.lengthComputable) {
+          const currentProgress = (progressEvent.loaded / progressEvent.total * 100).toFixed(0)
+          fileInfo.progress = currentProgress
+          eventBus.$emit('progress', fileInfo)
+        }
       })
-    },
-    // 设置属性
-    setAttributes (index, progress, checkpoint) {
-      this.$set(this.fileList[index].file, 'progressNum', progress)
-      this.$set(this.fileList[index].file, 'oldSize', checkpoint.fileSize / 1024)
-      if (progress === 100) {
-        this.$set(this.fileList[index].file, 'success', true)
-        this.$set(this.fileList[index].file, 'showState', true)
+
+      if (res) {
+        const dataForm = this.getSaveParams(res, file)
+
+        const result = await this.saveMediaRequest(dataForm)
+
+        if (result) {
+          eventBus.$emit('uploadSuccess', fileInfo)
+        } else {
+          eventBus.$emit('uploadError', fileInfo)
+          Toast.fail('上传失败')
+        }
       } else {
-        this.$set(this.fileList[index].file, 'success', false)
-        this.$set(this.fileList[index].file, 'showState', false)
+        eventBus.$emit('uploadError', fileInfo)
+        Toast.fail('上传失败')
       }
     },
-    // 获取播放时长
+
+    uploadMediaRequest (formData, onprogress) {
+      return uploadMedia(formData, onprogress)
+        .then(res => {
+          return res
+        })
+        .catch(e => console.log(e))
+    },
+
+    saveMediaRequest (data) {
+      return mediaSave(data)
+        .then(res => {
+          return true
+        })
+        .catch(e => {
+          console.log(e)
+          return false
+        })
+    },
+    getId () {
+      if (this.id > 99) {
+        this.id = 1
+      } else {
+        this.id++
+      }
+      return this.id
+    },
+
+    getUploadInfo (file) {
+      const fileInfo = {}
+      const type = file.type.split('/').pop()
+      const name = (this.user.mobile || 'unknown') + '/' + new Date().getTime() + '.' + type
+      fileInfo.id = this.getId()
+      fileInfo.progress = 0
+      fileInfo.name = name
+      fileInfo.size = file.size / 1024
+      fileInfo.mediaType = this.mediaType[type]
+      fileInfo.length = 10
+      return fileInfo
+    },
+
+    getSaveParams (res, file) {
+      const dataForm = {}
+      const type = file.type.split('/').pop()
+      const name = (this.user.mobile || 'unknown') + '/' + new Date().getTime() + '.' + type
+      dataForm.name = name
+      dataForm.size = file.size / 1024
+      dataForm.mediaType = this.mediaType[type]
+      dataForm.address = res.url
+      dataForm.length = 10
+
+      return dataForm
+    },
+
     getLength (file) {
       var video = document.createElement('video')
       video.src = URL.createObjectURL(file)

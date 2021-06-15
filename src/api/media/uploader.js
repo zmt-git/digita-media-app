@@ -11,3 +11,13 @@ export function mediaSave (data) {
   })
 }
 export const mediaSaveUrl = 'device/media/save'
+
+// sys/oss/upload
+export function uploadMedia (data, onUploadProgress) {
+  return request({
+    url: '/sys/oss/upload',
+    method: 'POST',
+    data,
+    onUploadProgress
+  })
+}
