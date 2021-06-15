@@ -51,7 +51,7 @@
             <template v-else>
               <p class="paltitem_top_info_des--type van-ellipsis">
                 {{item.mediaType | filterName}}
-                <span class="ml">{{item.file.mediaType | filterType}}</span>
+                <span class="ml">{{item.mediaType | filterType}}</span>
               </p>
               <p class="paltitem_top_info_des--info van-ellipsis">媒体大小<span class="ml">{{formatterSize(item.file)}}</span></p>
               <p class="paltitem_top_info_des--info van-ellipsis">播放时长<span class="ml">{{item.length | filterLength}}</span></p>

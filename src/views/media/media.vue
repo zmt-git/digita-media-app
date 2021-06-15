@@ -37,9 +37,9 @@
                       :speed='100'
                       :text="item.progress | progress"
                     />
-                    <template v-if="item.file.state !== 1 && item.file.showState">
+                    <template v-if="item.state !== 1">
                       <van-tag class="mediaTag" :type="item.state === -2 ? 'danger' : 'warning'">
-                        {{item.state === 0 ? '审核失败' : '审核中'}}
+                        {{item.state === -2 ? '审核失败' : '审核中'}}
                       </van-tag>
                     </template>
                   </van-grid-item>

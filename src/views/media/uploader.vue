@@ -78,7 +78,7 @@ export default {
       const res = await this.uploadMediaRequest(formData, (progressEvent) => {
         if (progressEvent.lengthComputable) {
           const currentProgress = (progressEvent.loaded / progressEvent.total * 100).toFixed(0)
-          fileInfo.progress = currentProgress
+          fileInfo.progress = parseInt(currentProgress)
           eventBus.$emit('progress', fileInfo)
         }
       })
@@ -137,6 +137,7 @@ export default {
       fileInfo.size = file.size / 1024
       fileInfo.mediaType = this.mediaType[type]
       fileInfo.length = 10
+      fileInfo.state = -1
       return fileInfo
     },
 
