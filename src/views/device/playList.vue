@@ -4,7 +4,7 @@
         <van-tabs title-active-color='#1989f9' color='#1989f9' v-model="activeName" sticky :offset-top="46">
           <template  v-for="(scene) in scenes">
             <van-tab :title="item.title" :name="item.type" :key="item.type" v-for="item in scene">
-              <scenes-list @changeOrder='changeOrder' @deleteMedia='deleteMedia' @changeTime='changeTime' :list='mediaPlayLists' :index='item.index' :info='info'></scenes-list>
+              <scenes-list @changeOrder='changeOrder' @deleteMedia='deleteMedia' @changeTime='changeTime' :disabled='disabled' :list='mediaPlayLists' :index='item.index' :info='info'></scenes-list>
             </van-tab>
           </template>
         </van-tabs>

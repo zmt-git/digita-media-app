@@ -53,19 +53,19 @@
         <van-cell center title="光源控制">
           <div class="cell-slot" slot="right-icon">
             <span class="cell-slot-left" :class="dataForm.lightControl !== 1 ? 'active' : ''">自动</span>
-            <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.lightControl" @change='setLight' slot="right-icon" size="24" />
+            <van-switch :disabled='disabled' :active-value='1' :inactive-value='0' v-model="dataForm.lightControl" @change='setLight' slot="right-icon" size="24" />
             <span class="cell-slot-right" :class="dataForm.lightControl === 1 ? 'active' : ''">手动</span>
           </div>
         </van-cell>
         <van-cell center title="光源开关">
           <div class="cell-slot" slot="right-icon">
             <span class="cell-slot-left" :class="!lightBrightness ? 'active' : ''">OFF</span>
-            <van-switch :disabled='!timeDisabled' :active-value='true' :inactive-value='false' v-model="lightBrightness" @change='setLight'  size="24" />
+            <van-switch :disabled='!timeDisabled || disabled' :active-value='true' :inactive-value='false' v-model="lightBrightness" @change='setLight'  size="24" />
             <span class="cell-slot-right" :class="lightBrightness ? 'active' : ''">ON</span>
           </div>
         </van-cell>
         <van-cell title="休眠时间" :class="timeDisabled ? 'bg-1' : 'bg-0'" is-link @click="showPopup('timeClose')" :value="dataForm.timeClose" />
-        <van-cell title="唤醒时间" :class="timeDisabled ? 'bg-1' : 'bg-0'" is-link @click="showPopup('timeOpen')" :value="dataForm.timeOpen" />
+        <van-cell title="唤醒时间" :class="timeDisabled? 'bg-1' : 'bg-0'" is-link @click="showPopup('timeOpen')" :value="dataForm.timeOpen" />
         <!-- <van-cell title="光源控制" is-link @click="showPopup('lightControl')" :value="dataForm.lightControl | statusControl" /> -->
         <!-- <van-cell title="光源亮度" is-link @click="showPopup('lightBrightness')" :value="dataForm.lightBrightness + '%'" /> -->
 <!--        <van-cell title="媒体音量" class="volume" :border='false'>-->
@@ -178,6 +178,9 @@ export default {
         return scenesOptions[type]
       }
       return scenesOptions.A
+    },
+    disabled () {
+      return this.detailInfo.stateOnline !== 1
     }
   },
   data () {
@@ -501,6 +504,10 @@ export default {
     },
     // 弹出层弹出
     showPopup (type) {
+      if (this.disabled) {
+        Toast('设备离线, 无法进行该操作')
+        return
+      }
       this.type = type
       this.popupTitle = this.titleObj[type]
       if (type === 'timeOpen' || type === 'timeClose') {

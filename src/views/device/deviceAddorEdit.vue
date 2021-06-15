@@ -3,6 +3,7 @@
     <TitleBar :title="title"></TitleBar>
     <van-form @submit="onSubmit">
       <van-field
+        v-if="isAdd"
         v-model="dataForm.code"
         name="设备编号"
         label="设备编号"
@@ -14,6 +15,7 @@
         ]"
       />
       <van-field
+        v-if="isAdd"
         v-model="dataForm.type"
         name="设备类型"
         label="设备类型"
@@ -39,15 +41,19 @@
         :rules="[{ required: true, message: '请输入安装位置' }]"
       />
       <van-field
+        v-if="isAdd"
         v-model="dataForm.orient"
         name="安装方向"
         label="安装方向"
         required
         placeholder="请选择安装方向"
         readonly
+        right-icon="warning-o"
+        @click-right-icon.stop='clickRightIcon'
         @click="show('orient')"
       />
       <van-field
+        v-if="isAdd"
         v-model="dataForm.power"
         name="供电方式"
         label="供电方式"
@@ -78,7 +84,7 @@
 </template>
 
 <script>
-import { Toast } from 'vant'
+import { Toast, ImagePreview } from 'vant'
 import common from '@/mixins/common'
 // components
 import TitleBar from '@/components/TitleBar/TitleBar'
@@ -90,7 +96,8 @@ export default {
   name: 'forgetWord',
   mixins: [common],
   components: {
-    TitleBar
+    TitleBar,
+    [ImagePreview.Component.name]: ImagePreview.Component
   },
   data () {
     return {
@@ -116,11 +123,14 @@ export default {
   },
   mounted () {
     this.isAdd = this.$route.query.isAdd
+    console.log(this.$route.query)
     if (this.isAdd) {
       this.dataForm.location = ''
       this.dataForm.name = ''
       this.dataForm.code = ''
       this.dataForm.type = ''
+      this.dataForm.orient = ''
+      this.dataForm.power = ''
       this.title = '请输入信息'
       this.toastInfo = '认证'
     } else {
@@ -129,6 +139,8 @@ export default {
       this.dataForm.name = this.info.name
       this.dataForm.code = this.info.code
       this.dataForm.type = this.info.type
+      this.dataForm.orient = this.info.orient
+      this.dataForm.power = this.power.type
       this.title = '请修改信息'
       this.toastInfo = '修改'
     }
@@ -139,10 +151,32 @@ export default {
       this.columns = this[type]
       this.showPicker = true
     },
+
+    clickRightIcon () {
+      console.log(1)
+      ImagePreview({
+        images: [
+          require('../../assets/img/orient.png')
+        ],
+        closeable: true,
+        showIndex: false
+      })
+    },
+
+    getParams () {
+      if (this.isAdd) {
+        return this.dataForm
+      } else {
+        return Object.assign(this.info, this.dataForm)
+      }
+    },
+
     async onSubmit () {
       this.toast(`智能终端${this.toastInfo}中`, 'loading', 0)
-      await this.deviceRegister(this.dataForm)
+      const params = this.getParams()
+      await this.deviceRegister(params)
     },
+
     codeValidator (val) {
       Toast.loading('验证中...')
       return new Promise((resolve) => {
@@ -158,6 +192,7 @@ export default {
         // Toast.clear()
       })
     },
+
     onConfirm (value, index) {
       this.dataForm[this.currentType] = value.text
       this.showPicker = false
@@ -167,6 +202,7 @@ export default {
     cancel () {
       this.$router.go(-1)
     },
+
     deviceRegister (obj) {
       return save(obj)
         .then(res => {
