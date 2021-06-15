@@ -100,9 +100,9 @@ export default {
       this.setAttributes(index, progress, checkpoint)
       eventBus.$emit('progress', checkpoint, this.fileList)
     },
+
     // 上传文件
     uploadFile (client, file, date = new Date().getTime()) {
-
       const that = this
 
       if (!that.uploadFileClient || Object.keys(that.uploadFileClient).length === 0) {

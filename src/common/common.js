@@ -27,6 +27,11 @@ export const orientArr = Object.freeze([
   { val: 8, text: '方向安装' }
 ])
 
+export const powerArr = Object.freeze([
+  { val: 0, text: '电网市电' },
+  { val: 1, text: '太阳能蓄电池' }
+])
+
 export const lightControl = Object.freeze([{ val: 0, text: '自动' }, { val: 1, text: '手动' }])
 
 export const stateOrient = Object.freeze([

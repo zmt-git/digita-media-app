@@ -23,7 +23,6 @@
         <span>{{taskInfo.timeFinish | formatTime}}</span>
         <van-tag class="taskItem-info--tag" :type="getTagInfo(taskInfo.jobState, 'type')">{{getTagInfo(taskInfo.jobState, 'name')}}</van-tag>
       </p>
-      
     </div>
   </div>
 </template>
@@ -40,11 +39,12 @@ export default {
   data () {
     return {
       that: this,
-      tagList: [
-        { type: 'danger', name: '失败', state: -1 },
+      tagList: [ // 任务列表中，1成功，0等待执行，-1失败，-2执行中，-3 执行超时
         { type: 'success', name: '成功', state: 1 },
+        { type: 'warning', name: '等待执行', state: 0 },
+        { type: 'danger', name: '失败', state: -1 },
         { type: 'primary', name: '执行中', state: -2 },
-        { type: 'warning', name: '等待', state: 0 }
+        { type: 'danger', name: '执行超时', state: -3 }
       ],
       tag: {}
     }
@@ -54,7 +54,7 @@ export default {
       return val
     },
     device (val) {
-      let arr = val.split('&&')
+      const arr = val.split('&&')
       if (arr[0]) {
         return arr[0]
       } else {
@@ -62,7 +62,7 @@ export default {
       }
     },
     content (val) {
-      let arr = val.split('&&')
+      const arr = val.split('&&')
       if (arr[1]) {
         return arr[1]
       } else {

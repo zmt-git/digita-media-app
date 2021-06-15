@@ -1,4 +1,3 @@
-
 // eslint-disable-next-line no-unused-vars
 import { Toast, Dialog } from 'vant'
 import eventBus from '@/utils/eventBus'

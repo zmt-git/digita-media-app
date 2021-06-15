@@ -8,7 +8,12 @@
             <img class="paltitem_top_img--player" src="../../../assets/img/player.png" alt="">
           </template>
           <template v-else>
-            <img class="paltitem_top_img--media" :src="playInfo.address" alt="">
+            <van-image
+              fit="contain"
+              height=".75rem"
+              width=".75rem"
+              :src="url"
+            />
           </template>
         </div>
         <div class="paltitem_top_info">
@@ -42,7 +47,7 @@
         </van-button> -->
         <span class="time">
           <span class="time-name">设置时长</span>
-        <van-stepper :disabled='!disabled' integer :value='playInfo.mediaTime' theme="round" button-size="22" @change="onchange" />
+        <van-stepper :disabled='disabled' integer :value='playInfo.mediaTime' theme="round" button-size="22" @change="onchange" />
         </span>
         <van-button
           type="danger"
@@ -63,6 +68,7 @@
 import { videoFrame } from '@/oss/ossconfig'
 import { secondFormat } from '@/utils/format'
 import { Toast } from 'vant'
+import { mediaDetails } from '@/api/media/details'
 export default {
   name: 'palyItem',
   props: {
@@ -92,7 +98,8 @@ export default {
     return {
       id: null,
       clientHeight: 0,
-      videoFrame: videoFrame
+      videoFrame: videoFrame,
+      url: ''
     }
   },
   filters: {
@@ -111,14 +118,27 @@ export default {
       }
     }
   },
+  created () {
+    if (this.isAdd) return
+    this.getMediaUrl()
+  },
   methods: {
+    getMediaUrl () {
+      return mediaDetails(this.playInfo.mediaId)
+        .then(res => {
+          this.url = res.data.address
+        })
+        .catch(e => {
+          console.log(e)
+        })
+    },
     add () {
       if (!this.isAdd) return
       this.$router.replace({ path: '/playListAdd', query: { index: this.index, info: JSON.stringify(this.info) } })
     },
     // 播放媒体视频
     player (palyItem) {
-      this.$router.push({ path: '/mediaDetails', query: { id: this.playInfo.id } })
+      this.$router.push({ path: '/mediaDetails', query: { id: this.playInfo.mediaId } })
     },
     // 隐藏按钮
     hiddenMedia (id) {

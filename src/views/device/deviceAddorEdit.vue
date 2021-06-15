@@ -47,6 +47,15 @@
         readonly
         @click="show('orient')"
       />
+      <van-field
+        v-model="dataForm.power"
+        name="供电方式"
+        label="供电方式"
+        required
+        placeholder="请选择供电方式"
+        readonly
+        @click="show('power')"
+      />
       <div class="btn">
         <van-button class="btn--button" type="info" native-type="submit">
           确认
@@ -76,7 +85,7 @@ import TitleBar from '@/components/TitleBar/TitleBar'
 // api
 import { save, deviceCheckCode } from '@/api/device/device'
 
-import { deviceTypeArr, orientArr } from '@/common/common'
+import { deviceTypeArr, orientArr, powerArr } from '@/common/common'
 export default {
   name: 'forgetWord',
   mixins: [common],
@@ -90,13 +99,15 @@ export default {
       currentType: 'type',
       orient: orientArr,
       type: deviceTypeArr,
+      power: powerArr,
       columns: [],
       dataForm: {
         location: '',
         code: '',
         name: '',
         type: '',
-        orient: ''
+        orient: '',
+        power: ''
       },
       isAdd: true,
       toastInfo: '注册',

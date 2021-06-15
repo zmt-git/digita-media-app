@@ -550,12 +550,12 @@ export default {
         return 0
       }
     },
-    prompt (state) {
+    prompt (state) { // 1成功，-1失败，-3 执行超时
       if (state === 1) {
         this.toast('设置成功', 'success')
-      } else if (state === 0) {
-        this.toast('通讯超时', 'fail')
-      } else if (state === -2) {
+      } else if (state === -3) {
+        this.toast('执行超时', 'fail')
+      } else if (state === -1) {
         this.toast('执行失败', 'fail')
       } else {
         this.toast('操作失败，请重试！', 'fail')
