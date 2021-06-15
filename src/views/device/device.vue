@@ -131,10 +131,10 @@ export default {
     // 查看设备详情
     viewDevice (item) {
       // todo
-      // if (item.stateOnline !== 1) {
-      //   this.toast('智能终端离线，无法进行操作！', 'text')
-      //   return
-      // }
+      if (item.stateOnline !== 1) {
+        this.toast('智能终端离线，无法进行操作！', 'text')
+        return
+      }
       this.$router.push({ path: '/details', query: { id: item.id } })
     },
     // 加载数据

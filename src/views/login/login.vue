@@ -135,11 +135,14 @@ export default {
       if (!this.empty()) return
 
       this.toast('请稍等', 'loading', 0)
-      // todo 验证手机号码是否注册
-      // eslint-disable-next-line
-      // that.dataForm.uuid = device.uuid
-      // eslint-disable-next-line
-      // that.dataForm.manufacturer = device.manufacturer
+      try {
+        // eslint-disable-next-line
+        that.dataForm.uuid = device.uuid
+        // eslint-disable-next-line
+        that.dataForm.manufacturer = device.manufacturer
+      } catch (e) {
+        console.log(e)
+      }
 
       await isExist({ mobile: that.dataForm.mobile })
         .then(async res => {
