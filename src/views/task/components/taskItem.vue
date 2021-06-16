@@ -15,6 +15,10 @@
         <span>{{taskInfo.jobContent | content}}</span>
       </p>
       <p class="taskItem-info--des van-ellipsis">
+        任务主体
+        <span>{{content}}</span>
+      </p>
+      <p class="taskItem-info--des van-ellipsis">
         创建时间
         <span>{{taskInfo.timeCreate | formatTime}}</span>
       </p>
@@ -41,12 +45,20 @@ export default {
       that: this,
       tagList: [ // 任务列表中，1成功，0等待执行，-1失败，-2执行中，-3 执行超时
         { type: 'success', name: '成功', state: 1 },
-        { type: 'warning', name: '等待执行', state: 0 },
+        { type: 'primary', name: '等待', state: 0 },
         { type: 'danger', name: '失败', state: -1 },
         { type: 'primary', name: '执行中', state: -2 },
-        { type: 'danger', name: '执行超时', state: -3 }
+        { type: 'danger', name: '超时', state: -3 }
       ],
       tag: {}
+    }
+  },
+  computed: {
+    content () {
+      if (this.taskInfo.deviceInfo.location && this.taskInfo.deviceInfo.name) {
+        return `【${this.taskInfo.deviceInfo.location}】-【${this.taskInfo.deviceInfo.name}】`
+      }
+      return ''
     }
   },
   filters: {

@@ -22,14 +22,14 @@
         </van-cell>
         <van-cell title="在线状态" :value="detailInfo.stateOnline | statusOnline" />
         <van-cell title="工作状态" :value="detailInfo.stateWork | statusWork" />
-        <van-cell :value="temperature">
+        <!-- <van-cell :value="temperature">
           <template slot="title">
             <span class="custom-title">核心温度</span>
             <template v-if="temp">
               <van-tag type="danger" style="margin-left: .1rem">高温</van-tag>
             </template>
           </template>
-        </van-cell>
+        </van-cell> -->
 <!--        <van-cell :value="filtersStorage(detailInfo.storageTotal - detailInfo.storageUsable) + 'G/' + filtersStorage(detailInfo.storageTotal)+ 'G'">-->
 <!--          &lt;!&ndash; 使用 title 插槽来自定义标题 &ndash;&gt;-->
 <!--          <template slot="title">-->
@@ -53,14 +53,30 @@
         <van-cell center title="光源控制">
           <div class="cell-slot" slot="right-icon">
             <span class="cell-slot-left" :class="dataForm.lightControl !== 1 ? 'active' : ''">自动</span>
-            <van-switch :disabled='disabled' :active-value='1' :inactive-value='0' v-model="dataForm.lightControl" @change='setLight' slot="right-icon" size="24" />
+            <van-switch
+              :disabled='disabled'
+              :active-value='1'
+              :inactive-value='0'
+              v-model="dataForm.lightControl"
+              @change='setLight'
+              active-color="#07c160"
+              inactive-color="#1989fa"
+              slot="right-icon"
+              size="24" />
             <span class="cell-slot-right" :class="dataForm.lightControl === 1 ? 'active' : ''">手动</span>
           </div>
         </van-cell>
         <van-cell center title="光源开关">
           <div class="cell-slot" slot="right-icon">
             <span class="cell-slot-left" :class="!lightBrightness ? 'active' : ''">OFF</span>
-            <van-switch :disabled='!timeDisabled || disabled' :active-value='true' :inactive-value='false' v-model="lightBrightness" @change='setLight'  size="24" />
+            <van-switch
+              :disabled='!timeDisabled || disabled'
+              :active-value='true'
+              :inactive-value='false'
+              v-model="lightBrightness"
+              active-color="#07c160"
+              inactive-color="#ee0a24"
+              @change='setLight'  size="24" />
             <span class="cell-slot-right" :class="lightBrightness ? 'active' : ''">ON</span>
           </div>
         </van-cell>
@@ -76,7 +92,7 @@
       </div>
 
       <div  class="infoItem-box">
-        <van-cell title="画面方向" is-link @click="showPopup('stateOrient')" :value="stateOrientValue | stateOrientFilter" />
+        <van-cell v-if="hasOrient" title="画面方向"  is-link @click="showPopup('stateOrient')" :value="stateOrientValue | stateOrientFilter" />
         <van-cell title="切换场景" is-link @click="showPopup('scenes')" :value="orderNumberFormatter(orderNumber)" />
       </div>
 
@@ -181,6 +197,9 @@ export default {
     },
     disabled () {
       return this.detailInfo.stateOnline !== 1
+    },
+    hasOrient () {
+      return this.detailInfo.type === 'ELF-A'
     }
   },
   data () {

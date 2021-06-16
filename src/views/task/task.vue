@@ -24,6 +24,7 @@ import TaskItem from './components/taskItem'
 import RefreshLoad from '@/components/RefreshLoad/RefreshLoad'
 // api
 import { taskList, clean } from '@/api/task/task'
+import { devIceDetails } from '@/api/device/details'
 import { Dialog } from 'vant'
 
 export default {
@@ -66,6 +67,7 @@ export default {
     getTaskList () {
       return taskList(this.page)
         .then(res => {
+          this.addDeviceInfo(res.page.list)
           this.taskLists.push(...res.page.list)
           this.totalCount = res.page.totalCount
         })
@@ -73,6 +75,32 @@ export default {
           console.log(e)
           this.refreshOption.finished = true
         })
+    },
+    addDeviceInfo (list) {
+      let deviceIds = []
+
+      list.forEach(item => {
+        deviceIds.push(item.deviceId)
+        item.deviceInfo = { location: '', name: '' }
+      })
+
+      deviceIds = Array.from(new Set(deviceIds))
+
+      deviceIds.forEach(id => {
+        this.getDeviceInfo(id, list)
+      })
+    },
+    getDeviceInfo (deviceId, list) {
+      return devIceDetails(deviceId)
+        .then(res => {
+          if (!res.data) return
+          list.forEach(item => {
+            if (item.deviceId === deviceId) {
+              item.deviceInfo = res.data
+            }
+          })
+        })
+        .catch(e => console.log(e))
     },
     // 清除任务
     cleanTask () {

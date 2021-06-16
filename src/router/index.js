@@ -224,7 +224,7 @@ const routes = [
           leftArrow: false,
           hiddenBack: true,
           leftIcon: '',
-          rightIcon: ['delete'], // question-o
+          rightIcon: [], // question-o
           animate: 0
         }
       }
