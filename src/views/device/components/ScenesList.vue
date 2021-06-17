@@ -12,10 +12,12 @@
           @changeTime='changeTime'
           @deleteMedia='deleteMedia'
           :info='info'
+          :activeName='activeName'
           ></playItem>
           <playItem
           key="add"
           isAdd
+          :activeName='activeName'
           :index='index'
           :playInfo='{}'
           :info='info'
@@ -59,6 +61,10 @@ export default {
     info: {
       type: Object,
       default: () => {}
+    },
+    activeName: {
+      type: String,
+      default: ''
     }
   },
 

@@ -39,7 +39,8 @@ export default {
       mediaLists: [],
       checkList: [],
       index: 0,
-      info: ''
+      info: '',
+      activeName: ''
     }
   },
 
@@ -47,6 +48,7 @@ export default {
     this.checkList = []
     this.index = this.$route.query.index
     this.info = this.$route.query.info
+    this.activeName = this.$route.query.activeName
   },
 
   methods: {
@@ -58,7 +60,7 @@ export default {
       this.checkList.forEach(item => {
         list.push({ mediaId: item.id, mediaTime: item.length ? item.length : 1, mediaOrder: undefined })
       })
-      this.$router.replace({ path: '/playList', query: { isCheck: true, index: this.index, info: this.info, list: JSON.stringify(list) } })
+      this.$router.replace({ path: '/playList', query: { isCheck: true, index: this.index, info: this.info, list: JSON.stringify(list), activeName: this.activeName } })
     },
     getMediaLists () {
       return getMediaList(this.page)

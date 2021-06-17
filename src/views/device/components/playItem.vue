@@ -92,6 +92,10 @@ export default {
     info: {
       type: Object,
       default: () => {}
+    },
+    activeName: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -134,7 +138,7 @@ export default {
     },
     add () {
       if (!this.isAdd) return
-      this.$router.replace({ path: '/playListAdd', query: { index: this.index, info: JSON.stringify(this.info) } })
+      this.$router.replace({ path: '/playListAdd', query: { index: this.index, activeName: this.activeName, info: JSON.stringify(this.info) } })
     },
     // 播放媒体视频
     player (palyItem) {

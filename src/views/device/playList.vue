@@ -4,7 +4,16 @@
         <van-tabs title-active-color='#1989f9' color='#1989f9' v-model="activeName" sticky :offset-top="46">
           <template  v-for="(scene) in scenes">
             <van-tab :title="item.title" :name="item.type" :key="item.type" v-for="item in scene">
-              <scenes-list @changeOrder='changeOrder' @deleteMedia='deleteMedia' @changeTime='changeTime' :disabled='disabled' :list='mediaPlayLists' :index='item.index' :info='info'></scenes-list>
+              <scenes-list
+                @changeOrder='changeOrder'
+                @deleteMedia='deleteMedia'
+                @changeTime='changeTime'
+                :activeName='activeName'
+                :disabled='disabled'
+                :list='mediaPlayLists'
+                :index='item.index'
+                :info='info'>
+              </scenes-list>
             </van-tab>
           </template>
         </van-tabs>
@@ -22,7 +31,6 @@ import common from '@/mixins/common'
 // 组件
 // api`
 import { getPlaylist, updateContent } from '@/api/device/playList'
-import { Dialog } from 'vant'
 import ScenesList from './components/ScenesList.vue'
 import { deviceTypeArr } from '@/common/common'
 export default {
@@ -50,7 +58,7 @@ export default {
   data () {
     return {
       info: {},
-      activeName: '',
+      activeName: 0,
       mediaPlayLists: [],
       submitArr: [],
       taskIcon: require('../../assets/img/taskIcon.png')
@@ -58,6 +66,12 @@ export default {
   },
   async created () {
     this.info = JSON.parse(this.$route.query.info)
+    if (this.$route.query.activeName) {
+      this.activeName = this.$route.query.activeName
+    } else {
+      const arr = Object.keys(this.scenes)
+      this.activeName = arr[0].type
+    }
     // 获取该终端的播放列表
     await this.getPlayList()
 
@@ -105,19 +119,6 @@ export default {
           this.mediaPlayLists = res.list
         })
         .catch(e => { console.log(e) })
-    },
-    // 删除按钮
-    deteleMedia (id) {
-      // 删除提示dialog
-      Dialog.confirm({
-        title: '提示',
-        message: '在播放列表中删除该媒体吗？'
-      })
-        .then(async () => {
-        })
-        .catch(() => {
-
-        })
     },
 
     changeTime (value, info, index) {
