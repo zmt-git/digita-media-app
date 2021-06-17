@@ -10,7 +10,7 @@ import { freelogin } from '@/api/system/system'
 import { mapGetters } from 'vuex'
 import { setToken, removeToken, getToken } from '@/utils/auth'
 import UpdateApp from './components/UpdateApp/UpdateApp.vue'
-import { websocketDestory, initWebSocket } from './utils/websocket'
+import { websocketDestroy, initWebSocket } from './utils/websocket'
 import eventBus from './utils/eventBus'
 export default {
   name: 'app',
@@ -38,7 +38,7 @@ export default {
 
   async created () {
     if (!this.websocket && getToken()) {
-      websocketDestory()
+      websocketDestroy()
       initWebSocket()
     }
     this.resume()
@@ -73,7 +73,7 @@ export default {
 
   beforeDestroy () {
     eventBus.$off('close')
-    websocketDestory()
+    websocketDestroy()
     document.removeEventListener('backbutton')
     document.removeEventListener('resume')
   },
