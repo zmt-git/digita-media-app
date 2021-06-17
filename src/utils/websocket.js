@@ -29,7 +29,7 @@ function getUrl (optionsObj) {
   return `${url + getToken()}?token=${getToken()}&userId=${store.getters.user.userId}`
 }
 
-function reconnect () {
+export function reconnect () {
   if (reconnectNum > reconnectMaxNum) {
     console.log('websocket重连失败')
     reconnectTimer && clearTimeout(reconnectTimer)
