@@ -8,7 +8,13 @@
           <!-- <VideojsPlayer :videoInfo='mediaInfo'></VideojsPlayer> -->
         </template>
         <template v-else>
-          <img class="mediaSrc_img" :src="mediaInfo.address" alt="" @click="showBigImg(mediaInfo.address)">
+          <van-image
+            fit="contain"
+            class="mediaSrc_img"
+            :src="mediaInfo.address"
+            @click="showBigImg(mediaInfo.address)"
+          />
+          <!-- <img class="mediaSrc_img" :src="mediaInfo.address" alt="" @click="showBigImg(mediaInfo.address)"> -->
         </template>
       </div>
       <!-- 媒体信息 -->
@@ -18,17 +24,18 @@
           <van-cell title="媒体编号" :value="mediaInfo.id" />
           <van-cell title="媒体格式" :value="mediaInfo.mediaType | filterType" />
           <van-cell title="媒体大小" :value="formatterSize(mediaInfo)" />
-          <van-cell title="播放时长" :value="mediaInfo.length | filterLength" :is-link='setLength' @click="changeTime(mediaInfo.length)" />
+          <van-cell title="播放时长" :value="mediaInfo.length | filterLength" />
+          <!-- <van-cell title="播放时长" :value="mediaInfo.length | filterLength" :is-link='setLength' @click="changeTime(mediaInfo.length)" /> -->
         </div>
         <!-- 终端设备发布媒体列表 -->
-        <div class="mediaInfo margin-bottom">
+        <!-- <div class="mediaInfo margin-bottom">
           <TitleBar title="已发布的智能终端"></TitleBar>
           <van-cell :title="item.name" :key="index" v-for="(item, index) in releaseList">
             <template slot="default">
               <van-button class="retract" type="default" size="mini" :disabled='item.stateOnline === 0 ? true : false' @click="retract(item)">撤回</van-button>
             </template>
           </van-cell>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="btn">
@@ -413,8 +420,8 @@ export default {
   text-align: center;
   &_img{
     // width: 100%;
-    max-height: 2.5rem;
-    max-width: 3.75rem;
+    height: 2.5rem;
+    width: 3.75rem;
     // float: left;
   }
   &_player{

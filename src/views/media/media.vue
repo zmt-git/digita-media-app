@@ -56,7 +56,12 @@
                     <img class="mediaImg" :src="item.address" alt="">
                   </template>
                   <template v-else>
-                    <img class="mediaImg" :src="item.address" alt="">
+                     <van-image
+                      fit="contain"
+                      class="mediaImg"
+                      :src="item.address"
+                    />
+                    <!-- <img class="mediaImg" :src="item.address" alt=""> -->
                   </template>
                   <template v-if="item.state !== 1">
                     <van-tag class="mediaTag" :type="item.state === -2 ? 'danger' : 'warning'">
@@ -376,8 +381,8 @@ $bgc: #f6f6f6;
   }
 }
 .mediaImg{
-  max-height: 100%;
-  max-width: 100%;
+  height: 100%;
+  width: 100%;
 }
 .player{
   width: .28rem!important;
