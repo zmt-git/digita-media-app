@@ -122,7 +122,7 @@ export default {
     }
   },
   mounted () {
-    this.isAdd = this.$route.query.isAdd
+    this.isAdd = this.$route.query.isAdd === 'true'
     console.log(this.$route.query)
     if (this.isAdd) {
       this.dataForm.location = ''

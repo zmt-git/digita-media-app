@@ -138,6 +138,7 @@ export default {
       box-sizing: border-box;
       justify-content: center;
       float: right;
+      padding: .03rem 0;
     }
     &--des{
       line-height: .2rem;
