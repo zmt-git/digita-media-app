@@ -180,7 +180,6 @@ export default {
     })
 
     eventBus.$on('startUpload', (filelist) => {
-      console.log(filelist)
       filelist.forEach(file => {
         const info = this.createFileInfo(file.file)
         this.updataLists.push(info)
