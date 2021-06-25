@@ -40,6 +40,18 @@
 <!--          </template>-->
 <!--        </van-cell>-->
       </div>
+      <!-- 设备信息 -->
+      <div class="infoItem-box">
+        <van-cell>
+          <template slot="title">
+            <p class="title"><span class="title_bar"></span><span class="title_word">设备信息</span></p>
+          </template>
+        </van-cell>
+        <van-cell title="设备编号" :value="detailInfo.code"/>
+        <van-cell title="安装方向" :value="orient"/>
+        <van-cell title="供电方式" :value="power"/>
+      </div>
+
       <!-- 参数设置 -->
       <div class="infoItem-box">
         <van-cell>
@@ -155,7 +167,7 @@ import common from '@/mixins/common'
 import { devIceDetails, setTime, light, direction, orderNumber, volume, bootAnimation, infoAnimation, rebootAll, rebootApp, uploadLog, reset } from '@/api/device/details'
 import { Toast, Dialog } from 'vant'
 
-import { lightControl, stateOrient, scenesOptions } from '@/common/common'
+import { lightControl, stateOrient, scenesOptions, orientArr, powerArr } from '@/common/common'
 export default {
   name: 'deviceDetails',
   mixins: [common],
@@ -163,6 +175,14 @@ export default {
     DeviceItem
   },
   computed: {
+    orient () {
+      const obj = orientArr.find(item => item.val === this.detailInfo.stateOrient)
+      return obj ? obj.text : ''
+    },
+    power () {
+      const obj = powerArr.find(item => item.val === this.detailInfo.power)
+      return obj ? obj.text : ''
+    },
     timeDisabled () {
       return this.dataForm.lightControl === 1
     },
