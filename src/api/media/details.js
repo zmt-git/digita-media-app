@@ -47,13 +47,14 @@ export function publishAll (params) {
   })
 }
 // POST/device/media/delete删除媒体信息
+// /device/media/delete/{id} 删除媒体信息
 /**
  * @param {Array Longid} id
  * @param {0 1} isDeletMedia
  */
-export function deleteMediaFormedia (params) {
+export function deleteMedia (params) {
   return request({
-    url: 'device/media/delete',
+    url: `device/media/delete/${params.id}`,
     method: 'POST',
     params
   })

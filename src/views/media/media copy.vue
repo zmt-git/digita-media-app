@@ -37,7 +37,7 @@
                       :speed='100'
                       :text="item.progress | progress"
                     />
-                    <template v-if="item.state !== 1 && item.progress === 100">
+                    <template v-if="item.state !== 1">
                       <van-tag class="mediaTag" :type="item.state === -2 ? 'danger' : 'warning'">
                         {{item.state === -2 ? '审核失败' : '审核中'}}
                       </van-tag>
@@ -108,7 +108,6 @@ import RefreshLoad from '@/components/RefreshLoad/RefreshLoad'
 
 import { getMediaList } from '@/api/media/media'
 import { getUserInfo } from '@/api/system/system'
-import { uploadMedia, mediaSave } from '@/api/media/uploader'
 export default {
   mixins: [common],
   components: {
@@ -130,7 +129,6 @@ export default {
   },
   data () {
     return {
-      id: 0,
       videoFrame: videoFrame,
       updataLists: [], // 上传列表
       mediaLists: [], // 媒体列表
@@ -139,12 +137,7 @@ export default {
       storageUsed: 0,
       totalCount: 0,
       count: 0,
-      countTotal: 0,
-      mediaType: {
-        jpg: 1,
-        jpeg: 1,
-        png: 2
-      }
+      countTotal: 0
     }
   },
   filters: {
@@ -179,16 +172,26 @@ export default {
       this.onClickRight(icon)
     })
 
-    eventBus.$on('startUpload', (filelist) => {
-      console.log(filelist)
-      filelist.forEach(file => {
-        const info = this.createFileInfo(file.file)
-        this.updataLists.push(info)
-      })
-      this.upload()
+    eventBus.$on('startUpload', (fileInfo) => {
+      this.startUpload(fileInfo)
+    })
+
+    eventBus.$on('progress', (fileInfo) => {
+      this.progress(fileInfo)
+    })
+
+    eventBus.$on('uploadSuccess', (fileInfo) => {
+      this.uploadSuccess(fileInfo)
+    })
+
+    eventBus.$on('uploadError', (fileInfo) => {
+      this.uploadError(fileInfo)
     })
   },
   beforeDestroy () {
+    eventBus.$off('progress')
+    eventBus.$off('uploadSuccess')
+    eventBus.$off('uploadError')
     eventBus.$off('startUpload')
   },
   methods: {
@@ -265,114 +268,32 @@ export default {
         return false
       }
     },
-
-    async upload () {
-      const promiseUpload = []
-
-      const promiseInfo = []
-
-      this.updataLists.forEach(item => {
-        promiseUpload.push(this.createUploadPromise(item.file, item))
-      })
-      // 上传媒体至视频服务器
-      await Promise.allSettled(promiseUpload)
-        .then(res => {
-          res.forEach(item => {
-            const p = this.createInfoPromise(item.value, item.value.file)
-            promiseInfo.push(p)
-          })
-        })
-        .catch(e => console.log(e))
-
-      // 上传媒体信息
-      await Promise.allSettled(promiseInfo)
-        .catch(e => console.log(e))
-
-      // 刷新列表
-      this.updataLists = []
-
-      this.onRefresh()
+    // 开始上传
+    startUpload (fileInfo) {
+      this.toast('上传中', 'loading', 0, false)
+      this.updataLists.push(fileInfo)
     },
-
-    getId () {
-      if (this.id > 99) {
-        this.id = 1
-      } else {
-        this.id++
-      }
-      return this.id
+    // 设置上传进度
+    progress (fileInfo) {
+      this.toast('上传中', 'loading', 0, false)
+      const index = this.updataLists.findIndex(item => item.id === fileInfo.id)
+      index >= 0 && this.updataLists.splice(index, 1, fileInfo)
     },
+    // 上传成功
+    async uploadSuccess (fileInfo) {
+      const index = this.updataLists.findIndex(item => item.id === fileInfo.id)
 
-    // 创建上传信息
-    createFileInfo (file) {
-      const fileInfo = {}
-      const type = file.type.split('/').pop()
-      const name = (this.user.mobile || 'unknown') + '/' + new Date().getTime() + '.' + type
-      fileInfo.id = this.getId()
-      fileInfo.progress = 0
-      fileInfo.name = name
-      fileInfo.size = file.size / 1024
-      fileInfo.mediaType = this.mediaType[type]
-      fileInfo.length = 10
-      fileInfo.state = -1
-      fileInfo.file = file
-      return fileInfo
+      index >= 0 && this.updataLists.splice(index, 1)
+
+      await this.onRefresh()
+
+      this.getUser()
     },
+    // 上传失败
+    uploadError (fileInfo) {
+      const index = this.updataLists.findIndex(item => item.id === fileInfo.id)
 
-    // 上传文件媒体服务器
-    async createUploadPromise (file, fileInfo) {
-      const formData = new FormData()
-
-      formData.append('file', file)
-
-      return this.uploadMediaRequest(formData, (progressEvent) => {
-        if (progressEvent.lengthComputable) {
-          const currentProgress = (progressEvent.loaded / progressEvent.total * 100).toFixed(0)
-          fileInfo.progress = parseInt(currentProgress)
-        }
-      })
-        .then(res => {
-          return { ...res, file: fileInfo.file }
-        })
-        .catch(e => console.log(e))
-    },
-
-    // 上传媒体信息
-    createInfoPromise (res, file) {
-      const dataForm = this.getSaveParams(res, file)
-
-      return this.saveMediaRequest(dataForm)
-    },
-
-    // 获取上传媒体信息参数
-    getSaveParams (res, file) {
-      const dataForm = {}
-      const type = file.type.split('/').pop()
-      const name = (this.user.mobile || 'unknown') + '/' + new Date().getTime() + '.' + type
-      dataForm.name = name
-      dataForm.size = file.size / 1024
-      dataForm.mediaType = this.mediaType[type]
-      dataForm.address = res.url
-      dataForm.length = 10
-
-      return dataForm
-    },
-
-    // 媒体上传请求
-    uploadMediaRequest (formData, file) {
-      return uploadMedia(formData, file)
-        .then(res => {
-          return { ...res, file }
-        })
-        .catch(e => console.log(e))
-    },
-
-    // 媒体信息上传请求
-    saveMediaRequest (data) {
-      return mediaSave(data)
-        .catch(e => {
-          console.log(e)
-        })
+      index >= 0 && this.updataLists.splice(index, 1)
     }
   }
 }

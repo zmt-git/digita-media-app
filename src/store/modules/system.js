@@ -26,7 +26,7 @@ const system = {
     },
     SET_FULLSCREEN: (state, isFullscreen) => {
       state.isFullscreen = isFullscreen
-    },
+    }
   },
   actions: {
     getLatesVersion ({ commit }) {

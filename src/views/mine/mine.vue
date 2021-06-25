@@ -49,7 +49,7 @@ export default {
     }
   },
   mounted () {
-    this.version() 
+    this.version()
   },
   filters: {
     hiddenMobile (val) {

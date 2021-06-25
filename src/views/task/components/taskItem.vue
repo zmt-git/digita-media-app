@@ -95,7 +95,7 @@ export default {
 
 <style lang="scss" scoped>
 .taskItem{
-  height: 1.1rem;
+  height: 1.2rem;
   width: 100%;
   &-img{
     height: 100%;

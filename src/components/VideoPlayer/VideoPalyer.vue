@@ -180,11 +180,13 @@ export default {
       if (this.dataFullscreen === true) {
         // this.controlColor = '#000'
         // 设置为竖屏状态
+        // eslint-disable-next-line
         StatusBar.hide()
         setOrientation(false)
       } else {
         // 设置为横屏状态
         // this.controlColor = '#fff'
+        // eslint-disable-next-line
         StatusBar.show()
         setOrientation(true)
       }

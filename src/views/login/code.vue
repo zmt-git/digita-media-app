@@ -79,7 +79,9 @@ export default {
     }
   },
   created () {
+    // eslint-disable-next-line
     StatusBar.styleDefault()
+    // eslint-disable-next-line
     StatusBar.backgroundColorByHexString("#FFFFFF");
   },
   methods: {
@@ -117,7 +119,6 @@ export default {
         })
         .catch(e => {
           console.log(e)
-          
         })
     },
     // 清空密码验证码

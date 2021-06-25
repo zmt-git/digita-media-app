@@ -53,25 +53,28 @@ export default {
     })
   },
   watch: {
-    '$route': {
+    $route: {
       handler: function (to, from) {
-      this.meta = to.meta
-      if (to.meta.animate === from.meta.animate) {
-        this.transitionName = 'van-fade'
-      } else {
-        this.transitionName = 'van-slide-left'
-      }
-      if (to.path === '/mine' || to.path === '/login') {
+        this.meta = to.meta
+        if (to.meta.animate === from.meta.animate) {
+          this.transitionName = 'van-fade'
+        } else {
+          this.transitionName = 'van-slide-left'
+        }
+        if (to.path === '/mine' || to.path === '/login') {
         // eslint-disable-next-line no-undef
         // StatusBar.styleBlackTranslucent()
-        StatusBar.backgroundColorByHexString("#398AFA");
-        StatusBar.styleBlackOpaque()
-      } else {
+        // eslint-disable-next-line
+          StatusBar.backgroundColorByHexString('#398AFA')
+          // eslint-disable-next-line
+          StatusBar.styleBlackOpaque()
+        } else {
         // eslint-disable-next-line no-undef
-        StatusBar.backgroundColorByHexString("#EDEDED");
-        StatusBar.styleDefault()
-      }
-    },
+          StatusBar.backgroundColorByHexString('#EDEDED')
+          // eslint-disable-next-line
+          StatusBar.styleDefault()
+        }
+      },
       immediate: true
     }
   },

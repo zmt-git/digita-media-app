@@ -14,15 +14,15 @@
           :info='info'
           :activeName='activeName'
           ></playItem>
-          <playItem
-          key="add"
-          isAdd
-          :activeName='activeName'
-          :index='index'
-          :playInfo='{}'
-          :info='info'
-          ></playItem>
       </transition-group>
+          <playItem
+            key="add"
+            isAdd
+            :activeName='activeName'
+            :index='index'
+            :playInfo='{}'
+            :info='info'
+            ></playItem>
     </div>
   </div>
 </template>

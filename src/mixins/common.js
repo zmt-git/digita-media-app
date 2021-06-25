@@ -47,7 +47,7 @@ export default {
     cancelDialog () {
       console.log('取消')
     },
-    onRefresh () {
+    async onRefresh () {
       Toast.clear()
       // 清空列表数据
       this.refreshOption.finished = false
@@ -55,7 +55,7 @@ export default {
       this.page = { page: 0, limit: 10 }
       // 将 loading 设置为 true，表示处于加载状态
       this.refreshOption.loading = true
-      this.loading()
+      await this.loading()
     }
   }
 }

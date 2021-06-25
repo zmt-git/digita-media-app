@@ -3,7 +3,7 @@
       <div class="list">
         <van-tabs title-active-color='#1989f9' color='#1989f9' v-model="activeName" sticky :offset-top="46">
           <template  v-for="(scene) in scenes">
-            <van-tab :title="item.title" :name="item.type" :key="item.type" v-for="item in scene">
+            <van-tab :ellipsis='false' :title="item.title" :name="item.type" :key="item.type" v-for="item in scene">
               <scenes-list
                 @changeOrder='changeOrder'
                 @deleteMedia='deleteMedia'

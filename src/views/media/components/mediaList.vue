@@ -42,16 +42,16 @@
             </template>
             <template v-if="isDeviceInfo">
               <p class="paltitem_top_info_des--type van-ellipsis">
-                {{item.mediaType | filterName}}
-                <span class="ml">{{item.mediaType | filterType}}</span>
+                {{item.name | filterName}}
+                <span class="ml">{{item.name | filterType}}</span>
               </p>
               <p class="paltitem_top_info_des--info van-ellipsis">媒体大小<span class="ml">{{formatterSize(item)}}</span></p>
               <p class="paltitem_top_info_des--info van-ellipsis">播放时长<span class="ml">{{item.length | filterLength}}</span></p>
             </template>
             <template v-else>
               <p class="paltitem_top_info_des--type van-ellipsis">
-                {{item.mediaType | filterName}}
-                <span class="ml">{{item.mediaType | filterType}}</span>
+                {{item.name | filterName}}
+                <span class="ml">{{item.name | filterType}}</span>
               </p>
               <p class="paltitem_top_info_des--info van-ellipsis">媒体大小<span class="ml">{{formatterSize(item.file)}}</span></p>
               <p class="paltitem_top_info_des--info van-ellipsis">播放时长<span class="ml">{{item.length | filterLength}}</span></p>
@@ -97,13 +97,7 @@ export default {
   },
   filters: {
     filterType (val) { // 0：mp4，1：jpg；2：png；
-      if (val === 0) {
-        return 'MP4'
-      } else if (val === 1) {
-        return 'JPG'
-      } else {
-        return 'PNG'
-      }
+      return val.split('.').pop().toUpperCase()
     },
     filterName (val) { // 0：mp4，1：jpg；2：png；
       if (val === 0) {

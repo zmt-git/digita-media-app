@@ -5,7 +5,7 @@
         <van-checkbox :disabled='allDisabled' v-model="allCheck" class="allselect" shape="square"  ref="checkboxes" @change="allChoose" />
       </TitleBar>
     </div>
-    
+
     <!-- <Refresh-load
      :options='refreshOption'
       @onLoad='loading'
@@ -57,7 +57,7 @@ export default {
   },
   computed: {
     empty () {
-      if (this.list.length > 0 &&  this.result.length > 0) {
+      if (this.list.length > 0 && this.result.length > 0) {
         return false
       } else {
         return true
@@ -108,7 +108,7 @@ export default {
   methods: {
     allChoose () {
       if (this.allCheck) {
-        let result = []
+        const result = []
 
         this.list.forEach(item => {
           if (item.stateOnline === 1) {
@@ -117,7 +117,6 @@ export default {
         })
 
         this.result = result
-
       } else {
         this.result = []
       }
@@ -154,7 +153,7 @@ export default {
       }
     },
     groupChange () {
-      let a = this.allOnline.sort().join()
+      const a = this.allOnline.sort().join()
 
       const arr = JSON.parse(JSON.stringify(this.result))
       const r = arr.sort().join()

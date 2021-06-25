@@ -40,9 +40,9 @@
     </div>
     <div class="btn">
       <van-button type="danger" @click="deleteM">删除</van-button>
-      <van-button v-if="mediaInfo.state === 1" type="info" @click="release">发布</van-button>
-      <van-button v-else-if="mediaInfo.state === 0" :disabled="true" type="danger" @click="release">审核失败</van-button>
-      <van-button v-else :disabled="true" type="warning" @click="release">审核中</van-button>
+      <!-- <van-button v-if="mediaInfo.state === 1" type="info" @click="release">发布</van-button> -->
+      <!-- <van-button v-else-if="mediaInfo.state === 0" :disabled="true" type="danger" @click="release">审核失败</van-button> -->
+      <!-- <van-button v-else :disabled="true" type="warning" @click="release">审核中</van-button> -->
     </div>
     <!-- 播放时长弹出层 -->
      <van-popup
@@ -69,9 +69,7 @@
 
       </div>
     </van-dialog>
-    <!-- 删除媒体终端复选框 -->
-    <van-image-preview v-model="previewShow" :images="images" :showIndex='false' :closeable='true' @close='closePreview'>
-    </van-image-preview>
+    <!-- <van-image-preview v-model="previewShow" :images="images" :showIndex='false' :closeable='true' @close='closePreview'></van-image-preview> -->
   </div>
 </template>
 
@@ -80,7 +78,7 @@ import { Dialog, Toast, ImagePreview } from 'vant'
 import { downloadFile } from '@/oss/ossconfig'
 import { secondFormat, formatTosecond } from '@/utils/format'
 import TitleBar from '@/components/TitleBar/TitleBar'
-import { mediaDetails, recall, deleteMediaFormedia, setLength, publishList } from '@/api/media/details'
+import { mediaDetails, recall, deleteMedia, setLength, publishList } from '@/api/media/details'
 import common from '@/mixins/common'
 import eventBus from '@/utils/eventBus'
 // 组件
@@ -179,7 +177,7 @@ export default {
     // 1.获取媒体详情
     this.getMediaDetails(this.id)
     // 2.获取媒体发布终端列表
-    this.getPublishList(this.id)
+    // this.getPublishList(this.id)
   },
   mounted () {
     eventBus.$on('close', () => {
@@ -228,7 +226,7 @@ export default {
       this.toast('删除中', 'loading', 0)
       let isDeletMedia
       this.checked ? isDeletMedia = 1 : isDeletMedia = 0
-      deleteMediaFormedia({ id: this.mediaInfo.id, isDeletMedia: isDeletMedia })
+      deleteMedia({ id: this.mediaInfo.id, isDeletMedia: isDeletMedia })
         .then(res => {
           if (res.state === 1) {
             this.$router.go(-1)
@@ -342,22 +340,15 @@ export default {
     },
     // 图片预览
     showBigImg (addressOld) {
-      // this.$store.commit('SET_IS_IMG_VIEW', true)
-      // this.images = [addressOld]
-      // this.previewShow = true
-      // ImagePreview({
-      //   images: [addressOld],
-      //   showIndex: false,
-      //   closeable: true,
-      //   closeOnPopstate: true,
-      //   onClose() {
-      //     // do something
-      //     _this.$store.commit('SET_IS_IMG_VIEW', false)
-      //   },
-      // })
+      ImagePreview({
+        images: [addressOld],
+        showIndex: false,
+        closeable: true,
+        closeOnPopstate: true
+      })
     },
     closePreview () {
-      this.$store.commit('SET_IS_IMG_VIEW', false)
+      // this.$store.commit('SET_IS_IMG_VIEW', false)
 
       this.previewShow = false
     },
@@ -401,7 +392,7 @@ export default {
     height: .39rem;
     line-height: .39rem;
     font-size: .17rem;
-    width: 50%;
+    width: 100%;
     border-radius: 0;
     border-bottom: none;
     border-right: none;
