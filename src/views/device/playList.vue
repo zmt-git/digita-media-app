@@ -2,17 +2,20 @@
   <div class="playList">
       <div class="list">
         <van-tabs title-active-color='#1989f9' color='#1989f9' v-model="activeName" sticky :offset-top="46">
-          <template  v-for="(scene) in scenes">
+          <template  v-for="scene in scenes.scenes">
             <van-tab :ellipsis='false' :title="item.title" :name="item.type" :key="item.type" v-for="item in scene">
               <scenes-list
-                @changeOrder='changeOrder'
-                @deleteMedia='deleteMedia'
-                @changeTime='changeTime'
                 :activeName='activeName'
                 :disabled='disabled'
                 :list='mediaPlayLists'
                 :index='item.index'
-                :info='info'>
+                :info='info'
+                :hasSwitch='scenes.hasSwitch'
+                @changeOrder='changeOrder'
+                @deleteMedia='deleteMedia'
+                @changeTime='changeTime'
+                @changeColor='changeColor'
+              >
               </scenes-list>
             </van-tab>
           </template>
@@ -30,7 +33,7 @@ import eventBus from '@/utils/eventBus'
 import common from '@/mixins/common'
 // 组件
 // api`
-import { getPlaylist, updateContent } from '@/api/device/playList'
+import { getPlaylist, updateContent, setColor } from '@/api/device/playList'
 import ScenesList from './components/ScenesList.vue'
 import { deviceTypeArr } from '@/common/common'
 export default {
@@ -47,7 +50,7 @@ export default {
 
     scenes () {
       const scenes = deviceTypeArr.find(item => item.text === this.info.type)
-      return scenes ? scenes.scenes : deviceTypeArr[0].scenes
+      return scenes || deviceTypeArr[0]
     },
 
     disabled () {
@@ -119,6 +122,20 @@ export default {
           this.mediaPlayLists = res.list
         })
         .catch(e => { console.log(e) })
+    },
+
+    async changeColor (list, index, val) {
+      this.toast('调整灯光颜色中', 'loading', 0)
+      const id = list[index].id
+      await setColor(id, { playlistid: id, color: val })
+        .then(res => {
+          // this.toast('调整灯光颜色成功', 'success')
+        })
+        .catch(e => {
+          console.log(e)
+        })
+      this.getPlayList()
+      this.toastClear()
     },
 
     changeTime (value, info, index) {

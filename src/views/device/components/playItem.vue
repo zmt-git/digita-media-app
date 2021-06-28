@@ -1,8 +1,8 @@
 <template>
-  <div class="paltitem" @click="add" :class="[isAdd ? 'isAdd' : '', 'van-hairline--top']">
+  <div class="paltitem" @click="add" :class="[isAdd ? 'isAdd' : '']">
     <template v-if="!isAdd">
-      <div class="paltitem_top van-hairline--bottom">
-        <div class="paltitem_top_img" @click="player()">
+      <div class="paltitem_top">
+        <div class="paltitem_top_img" @click="player">
           <template v-if="playInfo.mediaType === 0">
             <img class="paltitem_top_img--media" :src="playInfo.addressOld + videoFrame" alt="">
             <img class="paltitem_top_img--player" src="../../../assets/img/player.png" alt="">

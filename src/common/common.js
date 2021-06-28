@@ -1,25 +1,55 @@
 // 设备类型-------------------------------------------------------------------------------------------
-const scenesA = { weatherScenes: [{ type: 'sunny', index: 0, title: '默认场景' }] }
-const scenesRG = { lightScenes: [{ type: 'red', index: 0, title: '红灯' }, { type: 'green', index: 1, title: '绿灯' }] }
-const scenesW = {
+// 播放列表类型
+const scenesOne = { weatherScenes: [{ type: 'sunny', index: 0 }] }
+const scenesTwo = {
   weatherScenes: [
-    { type: 'sunny', index: 0, title: '默认场景' },
-    { type: 'fog', index: 1, title: '浓雾场景' },
-    { type: 'rain-snow', index: 2, title: '雨雪天气' }],
+    { type: 'sunny', title: '默认场景', index: 0 },
+    { type: 'fog', title: '浓雾', index: 1 },
+    { type: 'rain', title: '阵雨', index: 2 },
+    { type: 'rain-snow', title: '积雪', index: 3 },
+    { type: 'freeze', title: '结冰', index: 4 }
+  ],
   roadScenes: [
-    { type: 'construction', index: 3, title: '道路施工' },
-    { type: 'trafficAccident', index: 4, title: '交通事故' }],
+    { type: 'construction', title: '道路施工', index: 3 },
+    { type: 'trafficAccident', title: '交通事故', index: 4 }
+  ],
   customizeScenes: [
-    { type: 'customize1', index: 5, title: '自定义场景1' },
-    { type: 'customize2', index: 6, title: '自定义场景1' }]
+    { type: 'customize1', title: '自定义场景1', index: 5 },
+    { type: 'customize2', title: '自定义场景2', index: 6 }
+  ]
+}
+const scenesThree = scenesTwo
+
+const scenesFour = {
+  weatherScenes: [
+    { type: 'sunny', title: '默认场景', index: 0 },
+    { type: 'fog', title: '浓雾', index: 1 },
+    { type: 'rain', title: '阵雨', index: 2 },
+    { type: 'rain-snow', title: '积雪', index: 3 },
+    { type: 'freeze', title: '结冰', index: 4 }
+  ]
+}
+const scenesFive = {
+  lightScenes: [
+    { type: 'red', title: '红灯', index: 0 },
+    { type: 'green', title: '绿灯', index: 1 }
+  ]
 }
 
+// 设备类型-------------------------------------------------------------------------------------------
 export const deviceTypeArr = Object.freeze([
-  { text: 'ELF-A', val: 'ELF-A', scenes: scenesA },
-  { text: 'ELF-T1-W', val: 'ELF-T1-W', scenes: scenesW },
-  { text: 'ELF-T1-RG', val: 'ELF-T1-RG', scenes: scenesRG },
-  { text: 'ELF-T2-W', val: 'ELF-T2-W', scenes: scenesW },
-  { text: 'ELF-T2-RG', val: 'ELF-T2-RG', scenes: scenesRG }
+  // ELF-A
+  { val: 'ELF-A', text: 'ELF-A', scenes: scenesOne, hasSwitch: false },
+  // TA
+  { val: 'TA-W', text: 'TA-W', scenes: scenesTwo, hasSwitch: false },
+  { val: 'TA-RG', text: 'TA-RG', scenes: scenesThree, hasSwitch: true },
+  { val: 'TA-RG-S', text: 'TA-RG-S', scenes: scenesFour, hasSwitch: true },
+  { val: 'TA-RG-C', text: 'TA-RG-C', scenes: scenesFive, hasSwitch: false },
+  // TB
+  { val: 'TB-W', text: 'TB-W', scenes: scenesTwo, hasSwitch: false },
+  { val: 'TB-RG', text: 'TB-RG', scenes: scenesThree, hasSwitch: true },
+  { val: 'TB-RG-S', text: 'TB-RG-S', scenes: scenesFour, hasSwitch: true },
+  { val: 'TB-RG-C', text: 'TB-RG-C', scenes: scenesFive, hasSwitch: false }
 ])
 
 export const orientArr = Object.freeze([
@@ -51,18 +81,27 @@ export const scenes = Object.freeze([
   { val: 6, text: '绿灯' }
 ])
 
+// 天气场景-------------------------------------------------------------------------------------------
 const weatherScenes = Object.freeze([
-  { type: 'sunny', title: '默认场景', des: '适用于一般情况下的播放列表' },
+  // ********************
+  { type: 'sunny', title: '默认场景', des: '适用于路况良好时' },
+  // ********************
   { type: 'cloudy', title: '多云天气', des: '适用于一般情况下的播放列表' },
   { type: 'shade', title: '阴天天气', des: '适用于一般情况下的播放列表' },
-  { type: 'rain', title: '雨天天气', des: '适用于一般情况下的播放列表' },
+  // ********************
+  { type: 'rain', title: '阵雨', des: '适用于降雨天气道路湿滑时' },
+  // ********************
   { type: 'thundershower', title: '雷阵雨天气', des: '适用于一般情况下的播放列表' },
   { type: 'thundershower-hail', title: '雷阵雨冰雹天气', des: '适用于一般情况下的播放列表' },
   { type: 'rain-hail', title: '雨加冰雹天气', des: '适用于一般情况下的播放列表' },
   { type: 'freezing-rain', title: '冻雨天气', des: '适用于一般情况下的播放列表' },
   { type: 'snow', title: '雪天天气', des: '适用于一般情况下的播放列表' },
-  { type: 'rain-snow', title: '雨夹雪天气', des: '适用于雨雪天气下的播放列表' },
-  { type: 'fog', title: '浓雾天气', des: '适用于浓雾天气情况下的播放列表' },
+  // ********************
+  { type: 'rain-snow', title: '积雪', des: '适用于降雪天气道路积雪时' },
+  // ********************
+  // ********************
+  { type: 'fog', title: '浓雾', des: '适用于浓雾及其他行车视线较差时' },
+  // ********************
   { type: 'heat', title: '高温天气', des: '适用于一般情况下的播放列表' },
   { type: 'cold', title: '低温天气', des: '适用于一般情况下的播放列表' },
   { type: 'gale', title: '大风天气', des: '适用于一般情况下的播放列表' },
@@ -70,22 +109,28 @@ const weatherScenes = Object.freeze([
   { type: 'sandstorm', title: '沙尘暴天气', des: '适用于一般情况下的播放列表' },
   { type: 'haze', title: '雾霾天气', des: '适用于一般情况下的播放列表' },
   { type: 'smoke', title: '浓烟天气', des: '适用于一般情况下的播放列表' },
-  { type: 'unknown', title: '未知', des: '适用于一般情况下的播放列表' }
+  { type: 'unknown', title: '未知', des: '适用于一般情况下的播放列表' },
+  // ********************
+  { type: 'freeze', title: '结冰', des: '适用于路面发生结冰时' }
+  // ********************
 ])
 
+// 道路场景-------------------------------------------------------------------------------------------
 const roadScenes = Object.freeze([
   { type: 'construction', title: '道路施工', des: '适用于前方道路施工时' },
-  { type: 'trafficAccident', title: '交通事故', des: '适用于前方交通事故时' }
+  { type: 'trafficAccident', title: '交通事故', des: '适用于前方发生交通事故时' }
 ])
 
+// 自定义场景-------------------------------------------------------------------------------------------
 const customizeScenes = Object.freeze([
   { type: 'customize1', title: '自定义场景1', des: '用户可根据需要自行配置' },
   { type: 'customize2', title: '自定义场景2', des: '用户可根据需要自行配置' }
 ])
 
+// 交通灯场景-------------------------------------------------------------------------------------------
 const lightScenes = Object.freeze([
-  { type: 'red', title: '红灯', des: '适用于红灯亮起情况下的播放列表' },
-  { type: 'green', title: '绿灯', des: '适用于绿灯亮起情况下的播放列表' }
+  { type: 'red', title: '红灯', des: '适用于红色信号灯开启时' },
+  { type: 'green', title: '绿灯', des: '适用于绿色信号灯开启时' }
 ])
 
 export const playlistType = Object.freeze({

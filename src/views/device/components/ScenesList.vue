@@ -1,5 +1,19 @@
 <template>
-  <div class="scenes-list">
+  <div class="scenes-list van-hairline--top">
+    <van-cell title="灯光颜色" v-if="hasSwitch">
+      <template #right-icon>
+        <van-switch
+          active-color="#13ce66"
+          inactive-color="#ee0a24"
+          size="24"
+          :disabled='disabled'
+          :value='lightColor'
+          :active-value='2'
+          :inactive-value='1'
+          @change='onChange'
+        />
+      </template>
+    </van-cell>
     <div class="scenes-list-content">
       <transition-group name="cell">
         <playItem
@@ -42,6 +56,13 @@ export default {
       } catch (e) {
         return []
       }
+    },
+    lightColor () {
+      if (this.list.length > 0 && this.index !== undefined) {
+        return this.list[this.index] ? this.list[this.index].color : 0
+      } else {
+        return 0
+      }
     }
   },
 
@@ -65,6 +86,10 @@ export default {
     activeName: {
       type: String,
       default: ''
+    },
+    hasSwitch: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -89,6 +114,9 @@ export default {
         .catch(() => {
           // on cancel
         })
+    },
+    onChange (val) {
+      this.$emit('changeColor', this.list, this.index, val)
     }
   }
 }

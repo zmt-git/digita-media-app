@@ -29,6 +29,9 @@ export default {
         forbidClick: forbidClick
       })
     },
+    toastClear () {
+      Toast.clear()
+    },
     dialog (success = this.successDialog, cancel = this.cancelDialog, message = '确定要执行该操作吗？', type = 'confirm') {
       Dialog({
         type: type,
