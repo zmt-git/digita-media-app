@@ -4,7 +4,7 @@
       <img src="../../../assets/img/device.png" alt="">
     </div>
     <div class="device-list_item--info">
-      <p class="device-list_item--location van-multi-ellipsis--l2">{{itemInfo.type}}<span style="padding-left: .07rem">{{itemInfo.name}}</span></p>
+      <p class="device-list_item--location van-multi-ellipsis--l2">{{itemInfo.type}}<span >{{itemInfo.name}}</span></p>
       <p class="device-list_item--location van-multi-ellipsis--l2">{{itemInfo.location}}</p>
       <!-- <p class="device-list_item--name van-ellipsis">{{itemInfo.name}}</p> -->
       <p class="device-list_item--status">
