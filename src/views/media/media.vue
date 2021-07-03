@@ -143,7 +143,7 @@ export default {
       mediaType: {
         jpg: 1,
         jpeg: 1,
-        png: 2
+        bmp: 2
       }
     }
   },

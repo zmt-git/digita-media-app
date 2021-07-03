@@ -139,22 +139,39 @@ export const playlistType = Object.freeze({
   customizeScenes,
   lightScenes
 })
-
+// 切换场景 -------------------------------------------------------------------------------------------
+const w = [
+  { text: '默认场景', value: 1 },
+  { text: '浓雾', value: 2 },
+  { text: '降雨', value: 3 },
+  { text: '积雪', value: 4 },
+  { text: '结冰', value: 5 },
+  { text: '道路施工', value: 6 },
+  { text: '交通事故', value: 7 },
+  { text: '自定义场景1', value: 8 },
+  { text: '自定义场景2', value: 9 }
+]
+const s = [
+  { text: '默认场景', value: 1 },
+  { text: '浓雾', value: 2 },
+  { text: '降雨', value: 3 },
+  { text: '积雪', value: 4 },
+  { text: '结冰', value: 5 }
+]
+const c = [
+  { text: '红灯', value: 1 },
+  { text: '绿灯', value: 2 }
+]
 export const scenesOptions = Object.freeze({
-  A: [
+  'ELF-A': [
     { value: 0, text: '默认场景' }
   ],
-  RG: [
-    { value: 0, text: '红灯' },
-    { value: 1, text: '绿灯' }
-  ],
-  W: [
-    { value: 0, text: '默认场景' },
-    { value: 1, text: '浓雾天气' },
-    { value: 2, text: '雨雪天气' },
-    { value: 3, text: '道路施工' },
-    { value: 4, text: '交通事故' },
-    { value: 5, text: '自定义场景1' },
-    { value: 6, text: '自定义场景2' }
-  ]
+  'TA-W': w,
+  'TA-RG': w,
+  'TA-RG-S': s,
+  'TA-RG-C': c,
+  'TB-W': w,
+  'TB-RG': w,
+  'TB-RG-S': s,
+  'TB-RG-C': c
 })

@@ -14,7 +14,7 @@
         <van-cell title="播放列表" is-link @click="toPlayList"/>
       </div>
       <!-- 运行状态 -->
-      <div class="infoItem-box">
+      <!-- <div class="infoItem-box">
         <van-cell>
           <template slot="title">
             <p class="title"><span class="title_bar"></span><span class="title_word">运行状态</span></p>
@@ -22,24 +22,24 @@
         </van-cell>
         <van-cell title="在线状态" :value="detailInfo.stateOnline | statusOnline" />
         <van-cell title="工作状态" :value="detailInfo.stateWork | statusWork" />
-        <!-- <van-cell :value="temperature">
+        <van-cell :value="temperature">
           <template slot="title">
             <span class="custom-title">核心温度</span>
             <template v-if="temp">
               <van-tag type="danger" style="margin-left: .1rem">高温</van-tag>
             </template>
           </template>
-        </van-cell> -->
-<!--        <van-cell :value="filtersStorage(detailInfo.storageTotal - detailInfo.storageUsable) + 'G/' + filtersStorage(detailInfo.storageTotal)+ 'G'">-->
-<!--          &lt;!&ndash; 使用 title 插槽来自定义标题 &ndash;&gt;-->
-<!--          <template slot="title">-->
-<!--            <span class="custom-title">内存使用</span>-->
-<!--            <template v-if="storageStatus">-->
-<!--              <van-tag type="danger" style="margin-left: .1rem">存储将满</van-tag>-->
-<!--            </template>-->
-<!--          </template>-->
-<!--        </van-cell>-->
-      </div>
+        </van-cell>
+       <van-cell :value="filtersStorage(detailInfo.storageTotal - detailInfo.storageUsable) + 'G/' + filtersStorage(detailInfo.storageTotal)+ 'G'">
+         &lt;!&ndash; 使用 title 插槽来自定义标题 &ndash;&gt;
+         <template slot="title">
+           <span class="custom-title">内存使用</span>
+           <template v-if="storageStatus">
+             <van-tag type="danger" style="margin-left: .1rem">存储将满</van-tag>
+           </template>
+         </template>
+       </van-cell>
+      </div> -->
       <!-- 设备信息 -->
       <div class="infoItem-box">
         <van-cell>
@@ -209,11 +209,11 @@ export default {
       }
     },
     scenes () {
-      if (this.detailInfo.type && this.detailInfo.type.indexOf('-') >= 0) {
-        const type = this.detailInfo.type.split('-').pop()
+      if (this.detailInfo.type) {
+        const type = this.detailInfo.type
         return scenesOptions[type]
       }
-      return scenesOptions.A
+      return scenesOptions['ELF-A']
     },
     disabled () {
       return this.detailInfo.stateOnline !== 1
@@ -339,7 +339,7 @@ export default {
     },
 
     orderNumberFormatter () {
-      const obj = this.scenes.find(item => item.value === this.detailInfo.ordernumber)
+      const obj = this.scenes.find(item => item.value === this.detailInfo.playListNumber)
       return obj ? obj.text : ''
     },
 
@@ -373,7 +373,7 @@ export default {
             }
             this.detailInfo = res.data
             this.stateOrientValue = res.data.stateOrient
-            this.ordernumber = res.data.ordernumber
+            this.ordernumber = res.data.playListNumber
           })
           .catch(e => {
             console.log(e)
@@ -401,18 +401,18 @@ export default {
     // 设置工作时间
     async setTimeOpen () {
       this.toast('设置中', 'loading', 0)
-      await this.setTimeRequest()
+      await this.setLightRequest()
       this.getDeviceDetails(this.id)
     },
     // 设置休息时间
     async setTimeClose () {
       this.toast('设置中', 'loading', 0)
-      await this.setTimeRequest()
+      await this.setLightRequest()
       this.getDeviceDetails(this.id)
     },
 
-    setTimeRequest () {
-      return setTime(this.id, { devid: this.detailInfo.id, deviceCode: this.detailInfo.deviceCode, ...this.dataForm, timeControl: 1 })
+    setLightRequest () {
+      return light(this.id, { devid: this.detailInfo.id, deviceCode: this.detailInfo.code, ...this.dataForm })
         .then(res => {
           this.prompt(res.state)
         })
@@ -425,16 +425,7 @@ export default {
     // 设置光源控制
     async setLight () {
       this.toast('设置中', 'loading', 0)
-      this.lightBrightness ? this.dataForm.lightBrightness = 100 : this.dataForm.lightBrightness = 0
-
-      await light(this.id, { devid: this.detailInfo.id, deviceCode: this.detailInfo.code, ...this.dataForm })
-        .then(res => {
-          this.prompt(res.state)
-        })
-        .catch(e => {
-          console.log(e)
-          Toast.clear()
-        })
+      await this.setLightRequest()
       this.getDeviceDetails(this.id)
     },
     // 设置播放方向
@@ -562,7 +553,7 @@ export default {
         if (type === 'stateOrient') {
           this.defaultIndex = stateOrient.findIndex(item => item.val === this.detailInfo.stateOrient)
         } else if (type === 'scenes') {
-          this.defaultIndex = this.scenes.findIndex(item => item.value === this.detailInfo.ordernumber)
+          this.defaultIndex = this.scenes.findIndex(item => item.value === this.detailInfo.playListNumber)
         }
       }
     },
