@@ -304,16 +304,6 @@ export default {
     // 获取终端详情
     await devIceDetails(this.id)
       .then(res => {
-        if (res.data.stateOnline === 0) {
-          // todo
-          // Dialog.alert({
-          //   title: '提示',
-          //   message: '智能终端已离线'
-          // }).then(() => {
-          //   this.$router.go(-1)
-          // })
-          // return
-        }
         this.detailInfo = res.data
         this.lightBrightness = this.detailInfo.lightBrightness > 0
       })
