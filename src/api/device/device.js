@@ -53,10 +53,11 @@ export function getDevicesStatus () {
   })
 }
 // GET /device/device/register/check/{code} 终端注册码验证
-export function deviceCheckCode (code) {
+export function deviceCheckCode (params) {
   return request({
-    url: `device/device/register/check/${code}`,
-    method: 'GET'
+    url: 'device/device/check/',
+    method: 'POST',
+    params
   })
 }
 // PSOT /device/device/save 新增设备和修改设备调用同一个接口
