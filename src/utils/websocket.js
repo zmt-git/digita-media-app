@@ -64,7 +64,15 @@ export function onMessage (agentData) {
 
     const content = JSON.parse(jsonData)
 
-    eventBus.$emit('updateDeviceStatus', content)
+    const code = content.code
+
+    if (code === 'devStatus') {
+      eventBus.$emit('devStatus', content.data)
+    }
+
+    if (code === 'devList') {
+      eventBus.$emit('devList', content.data)
+    }
   } catch (e) {
     console.log(e)
   }

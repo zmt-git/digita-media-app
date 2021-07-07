@@ -311,6 +311,12 @@ export default {
         console.log(e)
       })
     this.formatParams()
+
+    eventBus.$on('devList', this.updateList)
+
+    this.$once('hook:beforeDestroy', () => {
+      eventBus.$off('devList', this.updateList)
+    })
   },
 
   mounted () {
@@ -321,6 +327,14 @@ export default {
   },
 
   methods: {
+    updateList (data) {
+      const obj = data.find(item => item.id === this.id)
+
+      if (obj) {
+        this.detailInfo = Object.assign(this.detailInfo, obj)
+      }
+    },
+
     tapImg () {
       this.count++
       if (this.count >= 5) {

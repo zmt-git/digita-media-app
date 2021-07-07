@@ -86,11 +86,39 @@ export default {
     eventBus.$on('onClickRight', (icon) => {
       this.onClickRight(icon)
     })
-    eventBus.$on('updateDeviceStatus', (data) => {
-      this.updateList(data)
+
+    eventBus.$on('devStatus', this.updateStatus)
+
+    eventBus.$on('devList', this.updateList)
+
+    this.$once('hook:beforeDestroy', () => {
+      eventBus.$off('devStatus', this.updateStatus)
+      eventBus.$off('devList', this.updateList)
     })
   },
+
   methods: {
+    // 更新设备状态统计
+    updateStatus (data) {
+      const obj = JSON.parse(data)
+      for (const key in obj) {
+        if (obj[key] > 9999) {
+          obj[key] = 9999 + '+'
+        }
+        this.statusList[key].value = obj[key]
+      }
+    },
+    // 更新设备数据
+    updateList (data) {
+      data.forEach(item => {
+        const index = this.deviceLists.findIndex(el => {
+          return el.id === item.id
+        })
+        if (index >= 0) {
+          this.deviceLists.splice(index, 1, item)
+        }
+      })
+    },
     // 获取设备列表
     getDeviceList () {
       return deviceList(this.page)
@@ -106,24 +134,7 @@ export default {
     // 扫描按钮
     onClickRight (icon) {
       if (icon === 'add-o') {
-        // 调取cordova的scan插件进行二维码扫描
         this.$router.push({ path: '/deviceAddorEdit', query: { isAdd: true } })
-        // this.$router.push({ path: '/qrscanner' })
-        // const that = this
-        // erweima((code) => {
-        //   // 判断序列号是否有效
-        //   that.scanResult = code.text
-        //   const result = that.judgeSerialNumber()
-
-        //   if (!result) {
-        //     that.toast('无效的序列号', 'fail')
-        //     return
-        //   }
-        //   that.$router.push({ path: '/deviceAddorEdit', query: { isAdd: true, devCode: that.scanResult } })
-        // }, () => {
-        //   that.toast('扫码失败, 稍后重试', 'fail')
-        // })
-      // 帮助
       } else if (icon === 'question-o') {
         this.$router.push({ path: '/question', query: { type: this.$route.path } })
       }
@@ -166,28 +177,6 @@ export default {
         return true
       } else {
         return false
-      }
-    },
-
-    // 更新数据
-    updateList (data) {
-      if (data.code === 'devStatus') {
-        const obj = JSON.parse(data.data)
-        for (const key in obj) {
-          if (obj[key] > 9999) {
-            obj[key] = 9999 + '+'
-          }
-          this.statusList[key].value = obj[key]
-        }
-      } else if (data.code === 'devList') {
-        data.data.forEach(item => {
-          const index = this.deviceLists.findIndex(el => {
-            return el.id === item.id
-          })
-          if (index >= 0) {
-            this.deviceLists.splice(index, 1, item)
-          }
-        })
       }
     }
   }

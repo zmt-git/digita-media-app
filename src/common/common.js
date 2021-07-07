@@ -1,6 +1,6 @@
 // 设备类型-------------------------------------------------------------------------------------------
 // 播放列表类型
-const scenesOne = { weatherScenes: [{ type: 'sunny', index: 0 }] }
+const scenesOne = { weatherScenes: [{ type: 'sunny', title: '默认场景', index: 0 }] }
 const scenesTwo = {
   weatherScenes: [
     { type: 'sunny', title: '默认场景', index: 0 },
