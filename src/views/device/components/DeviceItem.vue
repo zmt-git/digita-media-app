@@ -2,6 +2,7 @@
   <div class="device-list_item van-hairline--bottom" @click="viewDevice(itemInfo)">
     <div class="device-list_item--img" @click.stop="tapImg(itemInfo)">
       <img src="../../../assets/img/device.png" alt="">
+      <van-icon v-show="hasError" class="icon" name="clear" />
     </div>
     <div class="device-list_item--info">
       <p class="device-list_item--location van-multi-ellipsis--l2">{{itemInfo.type}}<span >{{itemInfo.name}}</span></p>
@@ -57,6 +58,11 @@ export default {
       }
     }
   },
+  computed: {
+    hasError () {
+      return this.itemInfo.stateMedia === -1
+    }
+  },
   methods: {
     viewDevice (id) {
       this.$emit('viewDevice', id)
@@ -88,6 +94,7 @@ $bg5: #f3f3f3;
     background: $bg5;
     padding: .05rem;
     box-sizing: border-box;
+    position: relative;
     & img{
       width: 100%;
       height: 100%;
@@ -114,5 +121,12 @@ $bg5: #f3f3f3;
     margin-right: .08rem;
   }
   }
+}
+.icon{
+  position: absolute;
+  top: .05rem;
+  right: .05rem;
+  font-size: .15rem;
+  color: #ee0a24;
 }
 </style>

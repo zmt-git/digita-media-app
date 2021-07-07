@@ -22,8 +22,13 @@
         </van-tabs>
       </div>
       <div class="playList-btn">
-        <van-button type="default" @click="$router.go(-1)">取消</van-button>
-        <van-button type="info" :disabled='empty || disabled' @click='confirm'>确认</van-button>
+        <template v-if="info.stateMedia === 0">
+          <span>{{releaseName}}</span>
+        </template>
+        <template v-else>
+          <van-button type="default" @click="$router.go(-1)">取消</van-button>
+          <van-button :type="uploadType" :disabled='empty || disabled' @click='confirm'>{{releaseName}}</van-button>
+        </template>
       </div>
   </div>
 </template>
@@ -55,6 +60,25 @@ export default {
 
     disabled () {
       return this.info.stateOnline !== 1
+    },
+    uploadType () {
+      if (this.info.stateMedia === 1) {
+        return 'info'
+      } else {
+        return 'danger'
+      }
+    },
+
+    releaseName () {
+      if (this.info.stateMedia === 0) {
+        return '正在上传播放列表，请稍侯！'
+      } else if (this.info.stateMedia === 1) {
+        return '发布'
+      } else if (this.info.stateMedia === -1) {
+        return '重新发布'
+      } else {
+        return ''
+      }
     }
   },
 
@@ -81,6 +105,12 @@ export default {
     if (this.$route.query.isCheck) {
       this.addMediaList()
     }
+
+    eventBus.$on('devList', this.updateList)
+
+    this.$once('hook:beforeDestroy', () => {
+      eventBus.$off('devList', this.updateList)
+    })
   },
   mounted () {
     eventBus.$on('onClickRight', (icon) => {
@@ -88,6 +118,13 @@ export default {
     })
   },
   methods: {
+    updateList (data) {
+      const obj = data.find(item => item.id === this.id)
+
+      if (obj) {
+        this.info = Object.assign(this.info, obj)
+      }
+    },
     addMediaList () {
       try {
         const list = JSON.parse(this.$route.query.list)
@@ -216,6 +253,9 @@ $bg1: #f6f6f6;
 .playList-btn{
   height: .4rem;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   & button{
     height: .4rem;
     line-height: .4rem;

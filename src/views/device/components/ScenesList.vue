@@ -36,7 +36,8 @@
             :index='index'
             :playInfo='{}'
             :info='info'
-            ></playItem>
+            >
+            </playItem>
     </div>
   </div>
 </template>
@@ -46,25 +47,6 @@ import playItem from './playItem'
 import { Dialog } from 'vant'
 export default {
   name: 'scenes-list',
-
-  components: { playItem },
-
-  computed: {
-    mediaList () {
-      try {
-        return JSON.parse(this.list[this.index].content)
-      } catch (e) {
-        return []
-      }
-    },
-    lightColor () {
-      if (this.list.length > 0 && this.index !== undefined) {
-        return this.list[this.index] ? this.list[this.index].color : 0
-      } else {
-        return 0
-      }
-    }
-  },
 
   props: {
     list: {
@@ -90,6 +72,25 @@ export default {
     hasSwitch: {
       type: Boolean,
       default: false
+    }
+  },
+
+  components: { playItem },
+
+  computed: {
+    mediaList () {
+      try {
+        return JSON.parse(this.list[this.index].content)
+      } catch (e) {
+        return []
+      }
+    },
+    lightColor () {
+      if (this.list.length > 0 && this.index !== undefined) {
+        return this.list[this.index] ? this.list[this.index].color : 0
+      } else {
+        return 0
+      }
     }
   },
 
@@ -125,5 +126,14 @@ export default {
 <style scoped>
 .cell-move {
   transition: transform 1s;
+}
+.releaseName{
+  color: #000;
+}
+.primary{
+  background: #1989fa;
+}
+.danger{
+  background: #ee0a24;
 }
 </style>
