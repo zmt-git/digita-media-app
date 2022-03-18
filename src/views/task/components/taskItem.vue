@@ -5,26 +5,28 @@
       <img src="../../../assets/img/taskImg.png" alt="">
     </div>
     <div class="taskItem-info">
-      <div class="taskItem-info-box">
+      <!-- <div class="taskItem-info-box">
         <p class="taskItem-info--title van-ellipsis">
           {{taskInfo.jobContent | device}}
         </p>
-      </div>
+      </div> -->
       <p class="taskItem-info--des van-ellipsis">
-        任务内容
-        <span>{{taskInfo.jobContent | content}}</span>
-      </p>
-      <p class="taskItem-info--des van-ellipsis">
-        任务主体
+        <span class="taskItem-info--label">智能终端</span>
+        <!-- <span>{{taskInfo.jobContent | device}}</span> -->
         <span>{{content}}</span>
       </p>
       <p class="taskItem-info--des van-ellipsis">
-        创建时间
-        <span>{{taskInfo.timeCreate | formatTime}}</span>
+        <span class="taskItem-info--label">任务内容</span>
+        <span>{{taskInfo.jobContent | device}}</span>
+        <!-- <span>{{content}}</span> -->
       </p>
       <p class="taskItem-info--des van-ellipsis">
-        执行时间
-        <span>{{taskInfo.timeFinish | formatTime}}</span>
+        <span class="taskItem-info--label">创建时间</span>
+        <span>{{taskInfo.timeCreate | formatTime}}</span>
+      </p>
+      <p class="taskItem-info--des">
+        <span class="taskItem-info--label">执行时间</span>
+        <span class="van-ellipsis">{{taskInfo.timeFinish | formatTime}}</span>
         <van-tag class="taskItem-info--tag" :type="getTagInfo(taskInfo.jobState, 'type')">{{getTagInfo(taskInfo.jobState, 'name')}}</van-tag>
       </p>
     </div>
@@ -55,8 +57,8 @@ export default {
   },
   computed: {
     content () {
-      if (this.taskInfo.deviceInfo.location && this.taskInfo.deviceInfo.name) {
-        return `【${this.taskInfo.deviceInfo.location}】-【${this.taskInfo.deviceInfo.name}】`
+      if (this.taskInfo.deviceInfo.name) {
+        return `${this.taskInfo.deviceInfo.name}`
       }
       return ''
     }
@@ -95,30 +97,35 @@ export default {
 
 <style lang="scss" scoped>
 .taskItem{
-  height: 1.2rem;
-  width: 100%;
+  height: 1rem;
+  // width: 100%;
+  display: flex;
   &-img{
     height: 100%;
-    width: .925rem;
+    // width: .925rem;
     float: left;
     box-sizing: border-box;
-    padding: .125rem .2rem .125rem .15rem;
+    padding: .125rem .2rem .125rem .12rem;
     display: flex;
     justify-content: center;
     align-items: center;
     & img{
-      width: 100%;
+      max-width: 100%;
+      max-height: 100%;
       // height: 100%;
     }
   }
   &-info{
     height: 100%;
-    width: calc(100% - .925rem);
+    flex: 1;
     box-sizing: border-box;
     padding-right: .18rem;
     float: left;
     // padding-top: .125rem;
     // padding-bottom: .125rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     &-box{
       padding-top: .125rem;
       width: 100%;
@@ -139,10 +146,17 @@ export default {
       justify-content: center;
       float: right;
       padding: .03rem 0;
+      position: absolute;
+      right: 0;
+      top: -0.07rem;
     }
     &--des{
-      line-height: .2rem;
-      font-size: .13rem;
+      padding: .02rem 0;
+      font-size: .12rem;
+      position: relative;
+    }
+    &--label{
+      padding-right: .05rem;
     }
   }
 }

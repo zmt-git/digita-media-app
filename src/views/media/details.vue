@@ -21,10 +21,10 @@
       <div class="media">
         <div class="mediaInfo margin-bottom">
           <TitleBar :title="mediaInfo.mediaType  | filterName"></TitleBar>
-          <van-cell title="媒体编号" :value="mediaInfo.id" />
+          <!-- <van-cell title="媒体编号" :value="mediaInfo.id" /> -->
           <van-cell title="媒体格式" :value="mediaInfo.mediaType | filterType" />
           <van-cell title="媒体大小" :value="formatterSize(mediaInfo)" />
-          <van-cell title="播放时长" :value="mediaInfo.length | filterLength" />
+          <!-- <van-cell title="播放时长" :value="mediaInfo.length | filterLength" /> -->
           <!-- <van-cell title="播放时长" :value="mediaInfo.length | filterLength" :is-link='setLength' @click="changeTime(mediaInfo.length)" /> -->
         </div>
         <!-- 终端设备发布媒体列表 -->
@@ -116,7 +116,6 @@ export default {
         return '图片媒体'
       }
     },
-    // TODO
     filterType (val) { // 0：mp4，1：jpg；2：png；
       if (val === 0) {
         return 'MP4'
@@ -403,7 +402,7 @@ export default {
   margin-top: .07rem;
 }
 .mediaSrc{
-  max-height: 2.5rem;
+  max-height: 3.75rem;
   width: 100%;
   position: relative;
   overflow: hidden;
@@ -411,7 +410,7 @@ export default {
   text-align: center;
   &_img{
     // width: 100%;
-    height: 2.5rem;
+    height: 3.75rem;
     width: 3.75rem;
     // float: left;
   }

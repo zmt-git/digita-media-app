@@ -45,30 +45,34 @@ export default {
   },
 
   mounted () {
-    // eslint-disable-next-line no-undef
-    StatusBar.overlaysWebView(false)
+    try {
+      // eslint-disable-next-line no-undef
+      StatusBar.overlaysWebView(false)
 
-    const route = this.$route
-    // eslint-disable-next-line no-undef
-    if (route.path === '/mine' || route.path === '/login') {
+      const route = this.$route
+      // eslint-disable-next-line no-undef
+      if (route.path === '/mine' || route.path === '/login') {
       // StatusBar.styleBlackTranslucent()
       // eslint-disable-next-line no-undef
-      StatusBar.backgroundColorByHexString('#398AFA')
+        StatusBar.backgroundColorByHexString('#398AFA')
+        // eslint-disable-next-line no-undef
+        StatusBar.styleBlackOpaque()
+      } else {
       // eslint-disable-next-line no-undef
-      StatusBar.styleBlackOpaque()
-    } else {
+        StatusBar.backgroundColorByHexString('#EDEDED')
+        // eslint-disable-next-line no-undef
+        StatusBar.styleDefault()
+      }
+
+      this.ready()
+
       // eslint-disable-next-line no-undef
-      StatusBar.backgroundColorByHexString('#EDEDED')
-      // eslint-disable-next-line no-undef
-      StatusBar.styleDefault()
+      setTimeout(() => {
+        navigator.splashscreen.hide()
+      }, 2000)
+    } catch (e) {
+
     }
-
-    this.ready()
-
-    // eslint-disable-next-line no-undef
-    setTimeout(() => {
-      navigator.splashscreen.hide()
-    }, 2000)
   },
 
   beforeDestroy () {

@@ -26,7 +26,7 @@
           <span>{{releaseName}}</span>
         </template>
         <template v-else>
-          <van-button type="default" @click="$router.go(-1)">取消</van-button>
+          <van-button type="default" @click="goBack">取消</van-button>
           <van-button :type="uploadType" :disabled='empty || disabled' @click='confirm'>{{releaseName}}</van-button>
         </template>
       </div>
@@ -39,8 +39,11 @@ import common from '@/mixins/common'
 // 组件
 // api`
 import { getPlaylist, updateContent, setColor } from '@/api/device/playList'
+import { devIceDetails } from '@/api/device/details'
+
 import ScenesList from './components/ScenesList.vue'
 import { deviceTypeArr } from '@/common/common'
+import { mapGetters } from 'vuex'
 export default {
   name: 'playList',
 
@@ -49,6 +52,8 @@ export default {
   mixins: [common],
 
   computed: {
+    ...mapGetters(['playList']),
+
     empty () {
       return this.mediaPlayLists.length <= 0
     },
@@ -84,6 +89,7 @@ export default {
 
   data () {
     return {
+      timer: null,
       info: {},
       activeName: 0,
       mediaPlayLists: [],
@@ -93,6 +99,8 @@ export default {
   },
   async created () {
     this.info = JSON.parse(this.$route.query.info)
+    await this.getInfo()
+    this.updateReleaseName()
     if (this.$route.query.activeName) {
       this.activeName = this.$route.query.activeName
     } else {
@@ -102,14 +110,24 @@ export default {
     // 获取该终端的播放列表
     await this.getPlayList()
 
-    if (this.$route.query.isCheck) {
+    if (this.$route.query.from) {
+      this.$store.commit('setPlayList', this.mediaPlayLists)
+    } else {
+      this.mediaPlayLists = this.playList
+    }
+
+    if (this.$route.query.isCheck === 'true') {
       this.addMediaList()
+      this.$store.commit('setPlayList', this.mediaPlayLists)
     }
 
     eventBus.$on('devList', this.updateList)
 
+    eventBus.$on('onClickLeft', this.goBack)
+
     this.$once('hook:beforeDestroy', () => {
       eventBus.$off('devList', this.updateList)
+      eventBus.$off('onClickLeft', this.goBack)
     })
   },
   mounted () {
@@ -117,7 +135,22 @@ export default {
       this.onClickRight(icon)
     })
   },
+  beforeDestroy () {
+    this.timer && clearInterval(this.timer)
+  },
   methods: {
+    goBack () {
+      this.$router.push({ path: '/details', query: { id: this.info.id } })
+    },
+    getInfo () {
+      return devIceDetails(this.info.id)
+        .then(res => {
+          this.info = res.data
+        })
+        .catch(e => {
+          console.log(e)
+        })
+    },
     updateList (data) {
       const obj = data.find(item => item.id === this.id)
 
@@ -181,7 +214,6 @@ export default {
       const obj = targetList.find(item => item.mediaOrder === info.mediaOrder)
       obj.mediaTime = value
       this.mediaPlayLists[index].content = JSON.stringify(targetList)
-      console.log(targetList)
     },
 
     changeOrder (direction, target, index) {
@@ -202,14 +234,14 @@ export default {
       const targetList = JSON.parse(this.mediaPlayLists[index].content)
       const i = targetList.findIndex(item => item.mediaOrder === target.mediaOrder)
       if (i >= 0) {
+        targetList.splice(i, 1)
       }
-      console.log(targetList)
       this.mediaPlayLists[index].content = JSON.stringify(targetList)
     },
 
     // 确认播放列表修改
     async confirm () {
-      this.toast('调整列表中', 'loading', 0)
+      // this.toast('调整列表中', 'loading', 0)
       const ids = []
       const contents = []
       this.mediaPlayLists.forEach(item => {
@@ -223,12 +255,27 @@ export default {
       })
       await updateContent({ devid: this.info.id, ids: ids, contents: contents })
         .then(res => {
-          this.toast(res.msg, 'success')
+          // this.toast(res.msg, 'success')
+          this.updateReleaseName(0)
         })
         .catch(e => {
           console.log(e)
           this.toast('媒体发布任务失败', 'fail')
         })
+    },
+
+    // 提示按钮
+    async updateReleaseName (delay = 1000 * 10) {
+      this.timer = setTimeout(async () => {
+        await this.getInfo()
+        if (this.info.stateMedia === 0) {
+          clearTimeout(this.timer)
+          this.updateReleaseName()
+        } else {
+          clearTimeout(this.timer)
+          this.timer = null
+        }
+      }, delay)
     }
   }
 }

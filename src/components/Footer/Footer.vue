@@ -10,7 +10,7 @@
     <van-tabbar-item icon="todo-list-o" to="/task">
       <span>任务</span>
     </van-tabbar-item>
-    <van-tabbar-item icon="user-o" to="/mine" :dot='currentVersion !== latestVersion ? true : false'>
+    <van-tabbar-item icon="user-o" to="/mine" :dot='dot'>
       <span>我的</span>
     </van-tabbar-item>
   </van-tabbar>
@@ -19,10 +19,15 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { isUpdateApp } from '@/utils/app'
 export default {
   name: 'devFooter',
   computed: {
-    ...mapGetters(['currentVersion', 'latestVersion'])
+    ...mapGetters(['currentVersion', 'latestVersion']),
+
+    dot () {
+      return isUpdateApp(this.currentVersion, this.latestVersion)
+    }
   },
   data () {
     return {

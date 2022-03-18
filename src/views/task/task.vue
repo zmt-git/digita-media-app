@@ -2,15 +2,15 @@
 <template>
   <div class="task" ref="task">
     <div>
-      <Refresh-load
+      <refresh-load
           :options='refreshOption'
           @onLoad='loading'
           @onRefresh='onRefresh'
         >
           <template v-for="(item, index) in taskLists">
-            <Task-item :key="index" :taskInfo='item'></Task-item>
+            <task-item :key="index" :taskInfo='item'></task-item>
           </template>
-      </Refresh-load>
+      </refresh-load>
     </div>
   </div>
 </template>
@@ -152,5 +152,6 @@ export default {
 .task{
   height: 100%;
   background: #fff;
+  box-sizing: border-box;
 }
 </style>

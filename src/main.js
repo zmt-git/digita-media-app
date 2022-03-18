@@ -19,6 +19,7 @@ import './styles/reset.css'
 import 'babel-polyfill'
 import './assets/iconfont/iconfont.css'
 Vue.config.productionTip = false
+
 Vue.use(vueTouch)
 Vue.use(Vant)
 // // cordova设备准备完成初始化vue对象

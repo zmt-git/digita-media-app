@@ -186,6 +186,8 @@ $bg2: #1989f9;
   margin-bottom: .08rem;
   background: $bg1;
   box-sizing: border-box;
+  border: 1px solid transparent;
+  transition: all .2s;
   &_top{
     height: .88rem;
     width: 100%;

@@ -2,17 +2,20 @@
   <div class="device-list_item van-hairline--bottom" @click="viewDevice(itemInfo)">
     <div class="device-list_item--img" @click.stop="tapImg(itemInfo)">
       <img src="../../../assets/img/device.png" alt="">
-      <van-icon v-show="hasError" class="icon" name="clear" />
+      <!-- <van-icon v-show="hasError" class="icon" name="clear" /> -->
     </div>
     <div class="device-list_item--info">
-      <p class="device-list_item--location van-multi-ellipsis--l2">{{itemInfo.type}}<span >{{itemInfo.name}}</span></p>
-      <p class="device-list_item--location van-multi-ellipsis--l2">{{itemInfo.location}}</p>
+      <div class="device-list_item--flex">
+        <!-- <p style='line-height: .2rem;' class="device-list_item--location van-multi-ellipsis--l2">{{itemInfo.type}}</p> -->
+        <p class="device-list_item--location van-multi-ellipsis--l2">{{itemInfo.name}}</p>
+        <p class="device-list_item--location van-multi-ellipsis--l2">{{itemInfo.location}}</p>
       <!-- <p class="device-list_item--name van-ellipsis">{{itemInfo.name}}</p> -->
+      </div>
       <p class="device-list_item--status">
         <van-tag :type="itemInfo.stateOnline | tagType">{{itemInfo.stateOnline | statusOnline}}</van-tag>
         <template v-if="itemInfo.stateOnline === 1" >
           <van-tag :type="itemInfo.stateWork | tagType2">{{itemInfo.stateWork | statusWork}}</van-tag>
-          <van-tag v-show="itemInfo.alarm.includes('2001')" type="danger">高温</van-tag>
+          <van-tag v-show="itemInfo.alarm.includes('2001')" type="danger">报警</van-tag>
           <!-- <van-tag v-show="itemInfo.alarm.includes('2002')" type="danger">存储将满</van-tag> -->
         </template>
       </p>
@@ -105,20 +108,28 @@ $bg5: #f3f3f3;
     overflow: hidden;
     padding: .05rem 0;
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
     & p{
-      line-height: .2rem;
-      font-size: .1rem;
+      line-height: .24rem;
+      font-size: .13rem;
     }
   }
+  &--flex{
+    flex: 1;
+    margin-right: 0.05rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
   &--status{
-    width: 2.61rem;
+    // width: 0.4rem;
     white-space: nowrap;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
     & span{
     display: inline-block;
-    margin-right: .08rem;
+    margin: 0.025rem;
   }
   }
 }

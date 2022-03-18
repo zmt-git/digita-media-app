@@ -169,9 +169,9 @@ export default {
   },
   mounted () {
     if (this.show) {
-      this.$route.meta.rightIcon = ['orders-o', 'add-o']
+      this.$route.meta.rightIcon = ['add-o']
     } else {
-      this.$route.meta.rightIcon = ['apps-o', 'add-o']
+      this.$route.meta.rightIcon = ['add-o']
     }
     this.container = this.$refs.container
 

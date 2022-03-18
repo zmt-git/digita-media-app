@@ -13,7 +13,7 @@
 
     <!-- 功能 -->
     <div class="contenList van-hairline--top">
-      <Mine-items :mineItems='itemList'></Mine-items>
+      <mine-items :mineItems='itemList'></mine-items>
     </div>
     <!-- 功能 -->
 
@@ -29,6 +29,7 @@ import MineItems from './components/MineItem'
 import { Dialog } from 'vant'
 import { mapGetters } from 'vuex'
 import { removeToken } from '@/utils/auth'
+import { isUpdateApp } from '@/utils/app'
 // api
 
 export default {
@@ -41,7 +42,7 @@ export default {
   data () {
     return {
       itemList: [
-        { name: '使用手册', link: true, to: '/manual', icon: 'orders-o', tag: false },
+        // { name: '使用手册', link: true, to: '/manual', icon: 'orders-o', tag: false },
         { name: '意见建议', link: true, to: '/suggestions', icon: 'smile-o', tag: false },
         { name: '关于软件', link: true, to: '/software', icon: 'info-o', tag: false, type: 'danger', tagTitle: '新版本' },
         { name: '修改密码', link: true, to: '/resetPassword', icon: 'edit', tag: false }
@@ -78,14 +79,20 @@ export default {
       })
     },
     version () {
-      const index = this.itemList.findIndex((item) => {
-        return item.to === '/software'
-      })
-      if (this.currentVersion !== this.latestVersion) {
-        this.itemList[index].tag = true
-      } else {
-        this.itemList[index].tag = false
-      }
+      const that = this
+      try {
+        // eslint-disable-next-line
+        cordova.getAppVersion.getVersionNumber()
+          .then(async function (version) {
+            that.$store.commit('SET_CURRENT_VERSION', version)
+          })
+
+        const index = this.itemList.findIndex((item) => {
+          return item.to === '/software'
+        })
+        const res = isUpdateApp(this.currentVersion, this.latestVersion)
+        this.itemList[index].tag = res
+      } catch (e) {}
     }
   }
 }

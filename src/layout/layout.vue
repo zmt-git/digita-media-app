@@ -47,32 +47,47 @@ export default {
   },
   mounted () {
     const that = this
-    // eslint-disable-next-line
-    cordova.getAppVersion.getVersionNumber().then(async function (version) {
-      that.$store.commit('SET_CURRENT_VERSION', version)
-    })
+    try {
+      // eslint-disable-next-line
+      cordova.getAppVersion.getVersionNumber()
+        .then(async function (version) {
+          that.$store.commit('SET_CURRENT_VERSION', version)
+        })
+      if (this.$route.path === '/') {
+        // eslint-disable-next-line no-undef
+        StatusBar.backgroundColorByHexString('#EDEDED')
+        // eslint-disable-next-line
+        StatusBar.styleDefault()
+      }
+    } catch (e) {
+      // console.log(e)
+    }
   },
   watch: {
     $route: {
       handler: function (to, from) {
-        this.meta = to.meta
-        if (to.meta.animate === from.meta.animate) {
-          this.transitionName = 'van-fade'
-        } else {
-          this.transitionName = 'van-slide-left'
-        }
-        if (to.path === '/mine' || to.path === '/login') {
-        // eslint-disable-next-line no-undef
-        // StatusBar.styleBlackTranslucent()
-        // eslint-disable-next-line
-          StatusBar.backgroundColorByHexString('#398AFA')
+        try {
+          this.meta = to.meta
+          if (to.meta.animate === from.meta.animate) {
+            this.transitionName = 'van-fade'
+          } else {
+            this.transitionName = 'van-slide-left'
+          }
+          if (to.path === '/mine' || to.path === '/login') {
+          // eslint-disable-next-line no-undef
+          // StatusBar.styleBlackTranslucent()
           // eslint-disable-next-line
-          StatusBar.styleBlackOpaque()
-        } else {
-        // eslint-disable-next-line no-undef
-          StatusBar.backgroundColorByHexString('#EDEDED')
-          // eslint-disable-next-line
-          StatusBar.styleDefault()
+            StatusBar.backgroundColorByHexString('#398AFA')
+            // eslint-disable-next-line
+            StatusBar.styleBlackOpaque()
+          } else {
+          // eslint-disable-next-line no-undef
+            StatusBar.backgroundColorByHexString('#EDEDED')
+            // eslint-disable-next-line
+            StatusBar.styleDefault()
+          }
+        } catch (e) {
+          // console.log(e)
         }
       },
       immediate: true

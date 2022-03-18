@@ -77,3 +77,11 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button{-webkit-appea
 .van-dialog__footer .van-button{
   height: .50rem;
 }
+.van-field__success-message{
+  color: #07c160;
+  font-size: 12px;
+  text-align: left;
+}
+.success-color{
+  color: #07c160;
+}

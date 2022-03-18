@@ -4,6 +4,8 @@
     <van-form @submit="onSubmit">
       <van-field
         v-if="isAdd"
+        id="device-code-input"
+        class="device-code-form"
         v-model="dataForm.code"
         name="设备编号"
         label="设备编号"
@@ -11,7 +13,7 @@
         placeholder="请输入设备编号"
         :rules="[
           { required: true, message: '请输入设备编号' },
-          { validator: codeValidator, message: '设备未注册' }
+          { validator: codeValidator, message: '设备编号已注册！' }
         ]"
       />
       <van-field
@@ -42,7 +44,7 @@
       />
       <van-field
         v-if="isAdd"
-        v-model="dataForm.orient"
+        v-model="dataForm.stateOrient"
         name="安装方向"
         label="安装方向"
         required
@@ -50,7 +52,7 @@
         readonly
         right-icon="warning-o"
         @click-right-icon.stop='clickRightIcon'
-        @click="show('orient')"
+        @click="show('stateOrient')"
       />
       <van-field
         v-if="isAdd"
@@ -103,8 +105,9 @@ export default {
     return {
       title: '智能终端认证',
       showPicker: false,
+      msgStatus: 0, // 0隐藏，1成功 绿色
       currentType: 'type',
-      orient: orientArr,
+      stateOrient: orientArr,
       type: deviceTypeArr,
       power: powerArr,
       columns: [],
@@ -113,39 +116,43 @@ export default {
         code: '',
         name: '',
         type: '',
-        orient: '',
-        power: ''
+        stateOrient: null,
+        power: null
       },
       isAdd: true,
       toastInfo: '注册',
       info: {}
     }
   },
+
   mounted () {
     this.isAdd = this.$route.query.isAdd === 'true'
-    console.log(this.$route.query)
-    if (this.isAdd) {
-      this.dataForm.location = ''
-      this.dataForm.name = ''
-      this.dataForm.code = ''
-      this.dataForm.type = ''
-      this.dataForm.orient = ''
-      this.dataForm.power = ''
-      this.title = '请输入信息'
-      this.toastInfo = '认证'
-    } else {
-      this.info = this.$route.query.info
-      this.dataForm.location = this.info.location
-      this.dataForm.name = this.info.name
-      this.dataForm.code = this.info.code
-      this.dataForm.type = this.info.type
-      this.dataForm.orient = this.info.orient
-      this.dataForm.power = this.power.type
-      this.title = '请修改信息'
-      this.toastInfo = '修改'
-    }
+
+    this.setFormValue()
   },
   methods: {
+    setFormValue () {
+      if (this.isAdd) {
+        this.dataForm.location = ''
+        this.dataForm.name = ''
+        this.dataForm.code = ''
+        this.dataForm.type = ''
+        this.dataForm.stateOrient = null
+        this.dataForm.power = null
+        this.title = '请输入信息'
+        this.toastInfo = '认证'
+      } else {
+        this.info = this.$route.query.info
+        this.dataForm.location = this.info.location
+        this.dataForm.name = this.info.name
+        this.dataForm.code = this.info.code
+        this.dataForm.type = this.info.type
+        this.dataForm.stateOrient = this.info.stateOrient
+        this.dataForm.power = this.power.type
+        this.title = '请修改信息'
+        this.toastInfo = '修改'
+      }
+    },
     show (type) {
       this.currentType = type
       this.columns = this[type]
@@ -153,8 +160,8 @@ export default {
     },
 
     clickRightIcon () {
-      console.log(1)
       ImagePreview({
+        overlayStyle: { background: 'rgba(255,255,255,1)' },
         images: [
           require('../../assets/img/orient.png')
         ],
@@ -163,18 +170,30 @@ export default {
       })
     },
 
+    findVal (arr, text) {
+      const obj = arr.find(item => item.text === text)
+      return obj.val
+    },
+
     getParams () {
+      const copyData = JSON.parse(JSON.stringify(this.dataForm))
+      copyData.stateOrient = this.findVal(orientArr, this.dataForm.stateOrient)
+      copyData.power = this.findVal(powerArr, this.dataForm.power)
       if (this.isAdd) {
-        return this.dataForm
+        return copyData
       } else {
-        return Object.assign(this.info, this.dataForm)
+        return Object.assign(this.info, copyData)
       }
     },
 
     async onSubmit () {
-      this.toast(`智能终端${this.toastInfo}中`, 'loading', 0)
-      const params = this.getParams()
-      await this.deviceRegister(params)
+      try {
+        this.toast(`智能终端${this.toastInfo}中`, 'loading', 0)
+        const params = this.getParams()
+        await this.deviceRegister(params)
+      } catch (e) {
+        Toast.clear()
+      }
     },
 
     codeValidator (val) {
@@ -182,14 +201,20 @@ export default {
       return new Promise((resolve) => {
         deviceCheckCode({ deviceCode: val })
           .then(res => {
-            if (res.msg === 'true') {
+            if (res.state === 1) {
+              this.msgStatus = 1
               resolve(true)
             } else {
+              this.msgStatus = 0
               resolve(false)
             }
+            Toast.clear()
           })
-          .catch(e => console.log(e))
-        // Toast.clear()
+          .catch(e => {
+            console.log(e)
+            this.msgStatus = 0
+            Toast.clear()
+          })
       })
     },
 
@@ -223,6 +248,30 @@ export default {
           console.log(e)
           this.toast(`${this.toastInfo}失败`, 'fail')
         })
+    }
+  },
+
+  watch: {
+    'dataForm.code' (n, o) {
+      if (n === '' || n === null) {
+        this.msgStatus = 0
+      }
+    },
+    msgStatus () {
+      const ele = document.querySelector('.device-code-form').lastChild
+      const eleInput = document.querySelector('#device-code-input')
+      const tagInput = document.querySelector('.van-field__success-message')
+      if (this.msgStatus === 1 && !tagInput) {
+        const putEle = document.createElement('div')
+        putEle.classList.add('van-field__success-message')
+        putEle.innerHTML = '设备编号验证通过'
+        ele.appendChild(putEle)
+        eleInput.classList.add('success-color')
+      } else if (this.msgStatus === 0 && tagInput) {
+        const msgEle = document.querySelector('.van-field__success-message')
+        if (msgEle) ele.removeChild(msgEle)
+        eleInput.classList.remove('success-color')
+      }
     }
   }
 }
@@ -267,4 +316,5 @@ export default {
   height: .39rem;
   line-height: .39rem;
 }
+
 </style>

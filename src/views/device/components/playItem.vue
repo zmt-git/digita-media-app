@@ -69,6 +69,7 @@ import { videoFrame } from '@/oss/ossconfig'
 import { secondFormat } from '@/utils/format'
 import { Toast } from 'vant'
 import { mediaDetails } from '@/api/media/details'
+import { mapGetters } from 'vuex'
 export default {
   name: 'palyItem',
   props: {
@@ -84,7 +85,6 @@ export default {
       type: Number,
       default: 0
     },
-
     disabled: {
       type: Boolean,
       default: true
@@ -97,6 +97,9 @@ export default {
       type: String,
       default: ''
     }
+  },
+  computed: {
+    ...mapGetters(['isFirstEnter'])
   },
   data () {
     return {
@@ -138,7 +141,8 @@ export default {
     },
     add () {
       if (!this.isAdd) return
-      this.$router.replace({ path: '/playListAdd', query: { index: this.index, activeName: this.activeName, info: JSON.stringify(this.info) } })
+      const params = { path: '/playListAdd', query: { index: this.index, activeName: this.activeName, info: JSON.stringify(this.info) } }
+      this.$router.push(params)
     },
     // 播放媒体视频
     player (palyItem) {

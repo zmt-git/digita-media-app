@@ -55,7 +55,7 @@ export function getDevicesStatus () {
 // GET /device/device/register/check/{code} 终端注册码验证
 export function deviceCheckCode (params) {
   return request({
-    url: 'device/device/check/',
+    url: `device/device/check/${params.deviceCode}`,
     method: 'POST',
     params
   })

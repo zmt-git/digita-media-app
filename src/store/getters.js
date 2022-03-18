@@ -5,6 +5,7 @@ const getters = {
   latestVersion: state => state.system.latestVersion,
   currentVersion: state => state.system.currentVersion,
   defaultTag: state => state.system.defaultTag,
-  isImgview: state => state.system.isImgview
+  isImgview: state => state.system.isImgview,
+  playList: state => state.system.playList
 }
 export default getters

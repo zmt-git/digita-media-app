@@ -100,10 +100,13 @@ export default {
     }
   },
   created () {
-    // eslint-disable-next-line no-undef
-    StatusBar.backgroundColorByHexString('#398AFA')
-    // eslint-disable-next-line no-undef
-    StatusBar.styleBlackOpaque()
+    try {
+      // eslint-disable-next-line no-undef
+      StatusBar.backgroundColorByHexString('#398AFA')
+      // eslint-disable-next-line no-undef
+      StatusBar.styleBlackOpaque()
+    } catch (e) {
+    }
   },
   mounted () {
     setTimeout(() => {

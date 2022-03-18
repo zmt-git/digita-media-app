@@ -64,6 +64,7 @@ const routes = [
           hasFooter: false,
           hasHeader: true,
           leftArrow: true,
+          customLeftEvent: true,
           hiddenBack: false,
           leftIcon: 'arrow-left',
           rightIcon: ['edit'], // question-o
@@ -93,6 +94,7 @@ const routes = [
           hasFooter: false,
           hasHeader: true,
           leftArrow: true,
+          customLeftEvent: true,
           hiddenBack: false,
           leftIcon: 'arrow-left',
           rightIcon: [], // question-o
@@ -107,9 +109,10 @@ const routes = [
           title: '媒体列表',
           hasFooter: false,
           hasHeader: true,
-          leftArrow: false,
+          leftArrow: true,
           hiddenBack: false,
           leftIcon: 'arrow-left',
+          customLeftEvent: true,
           rightIcon: [], // question-o
           animate: 2
         }
@@ -150,7 +153,8 @@ const routes = [
           leftArrow: false,
           hiddenBack: true,
           leftIcon: '',
-          rightIcon: ['orders-o', 'add-o'], // question-o
+          // rightIcon: ['orders-o', 'add-o'], // question-o
+          rightIcon: ['add-o'], // question-o
           animate: 0
         }
       },

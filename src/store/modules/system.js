@@ -6,7 +6,8 @@ const system = {
     currentVersion: '',
     defaultTag: 0,
     isImgview: false,
-    isFullscreen: false
+    isFullscreen: false,
+    playList: []
   },
   mutations: {
     SET_MEDIA_LIST: (state, status) => {
@@ -26,6 +27,9 @@ const system = {
     },
     SET_FULLSCREEN: (state, isFullscreen) => {
       state.isFullscreen = isFullscreen
+    },
+    setPlayList (state, playList) {
+      state.playList = playList
     }
   },
   actions: {

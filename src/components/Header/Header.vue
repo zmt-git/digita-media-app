@@ -41,7 +41,7 @@ export default {
   methods: {
     onClickLeft (back = true) {
       if (back) {
-        if (!this.meta.hiddenBack) {
+        if (!this.meta.hiddenBack && !this.meta.customLeftEvent) {
           this.$router.go(-1)
         }
       }

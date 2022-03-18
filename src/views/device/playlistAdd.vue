@@ -1,7 +1,7 @@
 <template>
   <div class="playlist-add">
     <div class="playlist-add-list">
-      <Refresh-load
+      <refresh-load
         ref="refresh"
         :options='refreshOption'
         @onLoad='loading'
@@ -12,7 +12,7 @@
           isCheck
           :checkList.sync='checkList'
         ></media-list>
-      </Refresh-load>
+      </refresh-load>
     </div>
     <div class="btn">
       <van-button type="danger" @click="cancel">取消</van-button>
@@ -26,7 +26,7 @@ import common from '@/mixins/common'
 import RefreshLoad from '@/components/RefreshLoad/RefreshLoad'
 import MediaList from '../media/components/mediaList.vue'
 import { getMediaList } from '@/api/media/media'
-
+import eventBus from '@/utils/eventBus'
 export default {
   name: 'playlist-add',
 
@@ -51,16 +51,24 @@ export default {
     this.activeName = this.$route.query.activeName
   },
 
+  mounted () {
+    eventBus.$on('onClickLeft', this.cancel)
+
+    this.$once('hook:beforeDestroy', () => {
+      eventBus.$off('onClickLeft', this.cancel)
+    })
+  },
+
   methods: {
     cancel () {
-      this.$router.back()
+      this.$router.push({ path: '/playList', query: { isCheck: false, info: this.info } })
     },
     add (arr) {
       const list = []
       this.checkList.forEach(item => {
         list.push({ mediaId: item.id, mediaTime: item.length ? item.length : 1, mediaOrder: undefined })
       })
-      this.$router.replace({ path: '/playList', query: { isCheck: true, index: this.index, info: this.info, list: JSON.stringify(list), activeName: this.activeName } })
+      this.$router.push({ path: '/playList', query: { isCheck: true, index: this.index, info: this.info, list: JSON.stringify(list), activeName: this.activeName } })
     },
     getMediaLists () {
       return getMediaList(this.page)
@@ -109,9 +117,12 @@ export default {
   display: flex;
   flex-direction: column;
   overflow: hidden!important;
+  box-sizing: border-box;
   &-list{
     flex: 1;
+    padding: .05rem .1rem;
     overflow: auto;
+    overflow-x: hidden;
   }
 }
 .btn{

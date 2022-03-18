@@ -8,8 +8,8 @@
           size="24"
           :disabled='disabled'
           :value='lightColor'
-          :active-value='2'
-          :inactive-value='1'
+          :active-value='1'
+          :inactive-value='0'
           @change='onChange'
         />
       </template>
@@ -18,7 +18,7 @@
       <transition-group name="cell">
         <playItem
           v-for="item in mediaList"
-          :key="item.mediaOrder"
+          :key="item.mediaId"
           :index='index'
           :playInfo='item'
           :disabled='disabled'
@@ -109,7 +109,6 @@ export default {
         message: '在播放列表中删除该媒体吗？'
       })
         .then(() => {
-          console.log(info)
           this.$emit('deleteMedia', info, this.index)
         })
         .catch(() => {

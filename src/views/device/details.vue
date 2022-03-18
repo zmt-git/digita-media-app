@@ -12,9 +12,10 @@
           </template>
         </van-cell>
         <van-cell title="播放列表" is-link @click="toPlayList"/>
+        <van-cell title="切换场景" is-link @click="showPopup('scenes')" :value="orderNumberFormatter(orderNumber)" />
       </div>
       <!-- 运行状态 -->
-      <!-- <div class="infoItem-box">
+      <div class="infoItem-box">
         <van-cell>
           <template slot="title">
             <p class="title"><span class="title_bar"></span><span class="title_word">运行状态</span></p>
@@ -22,7 +23,7 @@
         </van-cell>
         <van-cell title="在线状态" :value="detailInfo.stateOnline | statusOnline" />
         <van-cell title="工作状态" :value="detailInfo.stateWork | statusWork" />
-        <van-cell :value="temperature">
+        <!-- <van-cell :value="temperature">
           <template slot="title">
             <span class="custom-title">核心温度</span>
             <template v-if="temp">
@@ -38,8 +39,8 @@
              <van-tag type="danger" style="margin-left: .1rem">存储将满</van-tag>
            </template>
          </template>
-       </van-cell>
-      </div> -->
+       </van-cell> -->
+      </div>
       <!-- 设备信息 -->
       <div class="infoItem-box">
         <van-cell>
@@ -47,6 +48,7 @@
             <p class="title"><span class="title_bar"></span><span class="title_word">设备信息</span></p>
           </template>
         </van-cell>
+        <van-cell title="设备型号" :value="detailInfo.type"/>
         <van-cell title="设备编号" :value="detailInfo.code"/>
         <van-cell title="安装方向" :value="orient"/>
         <van-cell title="供电方式" :value="power"/>
@@ -105,7 +107,6 @@
 
       <div  class="infoItem-box">
         <van-cell v-if="hasOrient" title="画面方向"  is-link @click="showPopup('stateOrient')" :value="stateOrientValue | stateOrientFilter" />
-        <van-cell title="切换场景" is-link @click="showPopup('scenes')" :value="orderNumberFormatter(orderNumber)" />
       </div>
 
       <!-- 系统设置 systemShow-->
@@ -312,10 +313,13 @@ export default {
       })
     this.formatParams()
 
+    eventBus.$on('onClickLeft', this.back)
+
     eventBus.$on('devList', this.updateList)
 
     this.$once('hook:beforeDestroy', () => {
       eventBus.$off('devList', this.updateList)
+      eventBus.$off('onClickLeft', this.back)
     })
   },
 
@@ -327,6 +331,9 @@ export default {
   },
 
   methods: {
+    back () {
+      this.$router.push('/')
+    },
     updateList (data) {
       const obj = data.find(item => item.id === this.id)
 
@@ -387,7 +394,7 @@ export default {
     },
     // 显示播放列表
     toPlayList (id) {
-      this.$router.push({ path: '/playList', query: { info: JSON.stringify(this.detailInfo) } })
+      this.$router.push({ path: '/playList', query: { info: JSON.stringify(this.detailInfo), from: 'deviceDetail' } })
     },
     // 设置休眠状态
     async setTimeControl () {
@@ -429,6 +436,11 @@ export default {
     // 设置光源控制
     async setLight () {
       this.toast('设置中', 'loading', 0)
+      if (this.lightBrightness) {
+        this.dataForm.lightBrightness = 100
+      } else {
+        this.dataForm.lightBrightness = 0
+      }
       await this.setLightRequest()
       this.getDeviceDetails(this.id)
     },
@@ -624,6 +636,8 @@ $color1: #000;
   background-size: 100% 100%;
   margin-bottom: .1rem;
   background: $bg0;
+  box-sizing: border-box;
+  padding-right: .13rem;
 }
 .infoitem{
   flex: 1;

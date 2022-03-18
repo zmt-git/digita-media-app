@@ -15,7 +15,7 @@
     <!-- 设备列表 -->
     <div class="device-list">
       <div>
-        <Refresh-load
+        <refresh-load
           ref="refresh"
           :options='refreshOption'
           @onLoad='loading'
@@ -23,14 +23,14 @@
         >
           <template v-for="(item, index) in deviceLists">
             <!-- 设备列表元素-->
-            <Device-item
+            <device-item
               :key='index'
               :itemInfo='item'
               @viewDevice='viewDevice'
-            ></Device-item>
+            ></device-item>
             <!-- 设备列表元素-->
           </template>
-        </Refresh-load>
+        </refresh-load>
       </div>
     </div>
   </div>
