@@ -51,7 +51,7 @@
         placeholder="请选择安装方向"
         readonly
         right-icon="warning-o"
-        @click-right-icon.stop='clickRightIcon'
+        @click-right-icon.stop="clickRightIcon"
         @click="show('stateOrient')"
       />
       <van-field
@@ -65,7 +65,12 @@
         @click="show('power')"
       />
       <div class="btn">
-        <van-button class="btn--button" type="info" native-type="submit">
+        <van-button
+          class="btn--button"
+          type="info"
+          native-type="submit"
+          @click="onSubmit"
+        >
           确认
         </van-button>
       </div>
@@ -162,23 +167,26 @@ export default {
     clickRightIcon () {
       ImagePreview({
         overlayStyle: { background: 'rgba(255,255,255,1)' },
-        images: [
-          require('../../assets/img/orient.png')
-        ],
+        images: [require('../../assets/img/orient.png')],
         closeable: true,
         showIndex: false
       })
     },
 
     findVal (arr, text) {
-      const obj = arr.find(item => item.text === text)
+      const obj = arr.find((item) => item.text === text)
       return obj.val
     },
 
     getParams () {
       const copyData = JSON.parse(JSON.stringify(this.dataForm))
-      copyData.stateOrient = this.findVal(orientArr, this.dataForm.stateOrient)
-      copyData.power = this.findVal(powerArr, this.dataForm.power)
+      if (this.isAdd) {
+        copyData.stateOrient = this.findVal(
+          orientArr,
+          this.dataForm.stateOrient
+        )
+        copyData.power = this.findVal(powerArr, this.dataForm.power)
+      }
       if (this.isAdd) {
         return copyData
       } else {
@@ -192,6 +200,7 @@ export default {
         const params = this.getParams()
         await this.deviceRegister(params)
       } catch (e) {
+        console.log(e)
         Toast.clear()
       }
     },
@@ -200,7 +209,7 @@ export default {
       Toast.loading('验证中...')
       return new Promise((resolve) => {
         deviceCheckCode({ deviceCode: val })
-          .then(res => {
+          .then((res) => {
             if (res.state === 1) {
               this.msgStatus = 1
               resolve(true)
@@ -210,7 +219,7 @@ export default {
             }
             Toast.clear()
           })
-          .catch(e => {
+          .catch((e) => {
             console.log(e)
             this.msgStatus = 0
             Toast.clear()
@@ -230,7 +239,7 @@ export default {
 
     deviceRegister (obj) {
       return save(obj)
-        .then(res => {
+        .then((res) => {
           if (res.state === 1) {
             this.toast(`智能终端${this.toastInfo}成功！`)
           } else if (res.state === 0) {
@@ -241,10 +250,10 @@ export default {
           if (this.isAdd) {
             this.$router.push('/')
           } else {
-            this.$router.go(-1)
+            this.$router.push({ path: '/details', query: { id: this.info.id } })
           }
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e)
           this.toast(`${this.toastInfo}失败`, 'fail')
         })
@@ -283,20 +292,20 @@ export default {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   background: white;
-  /deep/ .van-popup{
+  /deep/ .van-popup {
     z-index: 2000;
   }
 }
-.btn{
+.btn {
   width: 100%;
-  height: .39rem;
+  height: 0.39rem;
   position: fixed;
   bottom: 0;
   right: 0;
   & button {
     width: 50%;
-    height: .39rem;
-    line-height: .39rem;
+    height: 0.39rem;
+    line-height: 0.39rem;
     float: right;
     border-radius: 0;
     border-bottom: none;
@@ -304,7 +313,7 @@ export default {
     border-left: none;
   }
 }
-.cancel{
+.cancel {
   border-radius: 0;
   border-bottom: none;
   border-right: none;
@@ -313,8 +322,7 @@ export default {
   bottom: 0;
   left: 0;
   width: 50%;
-  height: .39rem;
-  line-height: .39rem;
+  height: 0.39rem;
+  line-height: 0.39rem;
 }
-
 </style>

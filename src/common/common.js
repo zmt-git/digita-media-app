@@ -9,14 +9,15 @@ const scenesTwo = {
     { type: 'rain-snow', title: '积雪', index: 3 },
     { type: 'freeze', title: '结冰', index: 4 }
   ],
-  roadScenes: [
-    { type: 'construction', title: '道路施工', index: 3 },
-    { type: 'trafficAccident', title: '交通事故', index: 4 }
-  ],
   customizeScenes: [
     { type: 'customize1', title: '自定义场景1', index: 5 },
     { type: 'customize2', title: '自定义场景2', index: 6 }
+  ],
+  roadScenes: [
+    { type: 'construction', title: '道路施工', index: 3 },
+    { type: 'trafficAccident', title: '交通事故', index: 4 }
   ]
+
 }
 const scenesThree = scenesTwo
 

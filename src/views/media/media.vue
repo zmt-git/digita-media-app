@@ -2,14 +2,18 @@
   <div class="media">
     <div class="my-media">
       <div class="my-media-img">
-        <img src="../../assets/img/store.png" alt="">
+        <img src="../../assets/img/store.png" alt="" />
       </div>
       <div class="my-media-store">
         <p class="my-media-store--name">云空间</p>
-        <div class="my-media-store--bar van-hairline--surround" ></div>
+        <div class="my-media-store--bar van-hairline--surround"></div>
         <p class="my-media-store--num">
-          <span class="fl">{{storageTotal-storageUsed | filterstorage}}/{{storageTotal | filterstorage}}</span>
-          <span class="fr">剩余{{storageUnusedPrecent}}</span>
+          <span class="fl"
+            >{{ (storageTotal - storageUsed) | filterstorage }}/{{
+              storageTotal | filterstorage
+            }}</span
+          >
+          <span class="fr">剩余{{ storageUnusedPrecent }}</span>
         </p>
       </div>
     </div>
@@ -18,28 +22,28 @@
       <div class="refresh-box">
         <Refresh-load
           ref="refresh"
-          :options='refreshOption'
-          @onLoad='loading'
-          @onRefresh='onRefresh'
-          >
+          :options="refreshOption"
+          @onLoad="loading"
+          @onRefresh="onRefresh"
+        >
           <transition name="van-fade">
             <div class="positionBox">
-              <van-grid :border="true" :column-num="3" gutter='3px' v-if="show">
+              <van-grid :border="true" :column-num="3" gutter="3px" v-if="show">
                 <!-- 上传媒体列表 横 -->
-                <template v-for='(item) in updataLists'>
-                  <van-grid-item
-                    class="material-img circle"
-                    :key='item.id'
-                  >
+                <template v-for="item in updataLists">
+                  <van-grid-item class="material-img circle" :key="item.id">
                     <van-circle
                       v-model="item.progress"
-                      :rate='100'
-                      :speed='100'
+                      :rate="100"
+                      :speed="100"
                       :text="item.progress | progress"
                     />
                     <template v-if="item.state !== 1 && item.progress === 100">
-                      <van-tag class="mediaTag" :type="item.state === -2 ? 'danger' : 'warning'">
-                        {{item.state === -2 ? '审核失败' : '审核中'}}
+                      <van-tag
+                        class="mediaTag"
+                        :type="item.state === -2 ? 'danger' : 'warning'"
+                      >
+                        {{ item.state === -2 ? '审核失败' : '审核中' }}
                       </van-tag>
                     </template>
                   </van-grid-item>
@@ -48,15 +52,19 @@
                 <van-grid-item
                   class="material-img"
                   :key="item.id"
-                  v-for="(item) in mediaLists"
-                  v-tap="(e)=>viewMedia(item)"
-                  >
+                  v-for="item in mediaLists"
+                  v-tap="(e) => viewMedia(item)"
+                >
                   <template v-if="item.mediaType === 0">
-                    <img class="player" src="../../assets/img/player.png" alt="">
-                    <img class="mediaImg" :src="item.address" alt="">
+                    <img
+                      class="player"
+                      src="../../assets/img/player.png"
+                      alt=""
+                    />
+                    <img class="mediaImg" :src="item.address" alt="" />
                   </template>
                   <template v-else>
-                     <van-image
+                    <van-image
                       fit="contain"
                       class="mediaImg"
                       :src="item.address"
@@ -64,30 +72,33 @@
                     <!-- <img class="mediaImg" :src="item.address" alt=""> -->
                   </template>
                   <template v-if="item.state !== 1">
-                    <van-tag class="mediaTag" :type="item.state === -2 ? 'danger' : 'warning'">
-                      {{item.state === 0 ? '审核失败' : '审核中'}}
+                    <van-tag
+                      class="mediaTag"
+                      :type="item.state === -2 ? 'danger' : 'warning'"
+                    >
+                      {{ item.state === 0 ? '审核失败' : '审核中' }}
                     </van-tag>
                   </template>
                 </van-grid-item>
               </van-grid>
             </div>
           </transition>
-          <transition name='van-fade'>
+          <transition name="van-fade">
             <div class="positionBox" v-if="!show">
               <!-- 上传媒体列表 竖 -->
               <!-- <template v-for="(item) in updataLists"> -->
-                <media-list
-                  :playInfoArr='updataLists'
-                  :isDeviceInfo='false'
-                  @viewMedia='viewMedia'
-                ></media-list>
+              <media-list
+                :playInfoArr="updataLists"
+                :isDeviceInfo="false"
+                @viewMedia="viewMedia"
+              ></media-list>
               <!-- </template> -->
               <!-- 媒体列表  竖-->
               <!-- <template v-for="(item) in mediaLists"> -->
-                <media-list
-                  :playInfoArr='mediaLists'
-                  @viewMedia='viewMedia'
-                ></media-list>
+              <media-list
+                :playInfoArr="mediaLists"
+                @viewMedia="viewMedia"
+              ></media-list>
               <!-- </template> -->
             </div>
           </transition>
@@ -112,7 +123,8 @@ import { uploadMedia, mediaSave } from '@/api/media/uploader'
 export default {
   mixins: [common],
   components: {
-    mediaList, RefreshLoad
+    mediaList,
+    RefreshLoad
   },
   name: 'media',
   computed: {
@@ -121,7 +133,12 @@ export default {
       if (isNaN((this.storageTotal - this.storageUsed) / this.storageTotal)) {
         return '0%'
       } else {
-        return (((this.storageTotal - this.storageUsed) / this.storageTotal) * 100).toFixed(2) + '%'
+        return (
+          (
+            ((this.storageTotal - this.storageUsed) / this.storageTotal) *
+            100
+          ).toFixed(2) + '%'
+        )
       }
     },
     storageUsedPrecent () {
@@ -149,14 +166,14 @@ export default {
   },
   filters: {
     filterstorage (val) {
-      if (typeof (val) !== 'number') {
+      if (typeof val !== 'number') {
         return 0 + 'G'
       } else {
         return (val / 1024).toFixed(2) + 'G'
       }
     },
     progress (val) {
-      if (typeof (val) !== 'number') {
+      if (typeof val !== 'number') {
         return 0 + '%'
       } else {
         return val.toFixed(2) + '%'
@@ -180,7 +197,10 @@ export default {
     })
 
     eventBus.$on('startUpload', (filelist) => {
-      filelist.forEach(file => {
+      if (!Array.isArray(filelist)) {
+        filelist = [filelist]
+      }
+      filelist.forEach((file) => {
         const info = this.createFileInfo(file.file)
         this.updataLists.push(info)
       })
@@ -193,11 +213,11 @@ export default {
   methods: {
     getUser () {
       getUserInfo()
-        .then(res => {
+        .then((res) => {
           this.storageUsed = res.user.storageUsed
           this.storageTotal = res.user.storageTotal
         })
-        .catch(e => console.log(e))
+        .catch((e) => console.log(e))
     },
     reset () {
       this.storageUsedPrecent = 0
@@ -206,12 +226,11 @@ export default {
     // 获取媒体列表
     getMediaLists () {
       return getMediaList(this.page)
-        .then(res => {
+        .then((res) => {
           this.mediaLists.push(...res.page.list)
-          console.log(this.mediaLists)
           this.totalCount = res.page.totalCount
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e)
           this.refreshOption.finished = true
         })
@@ -219,7 +238,10 @@ export default {
     // 点击头部icon
     onClickRight (icon) {
       if (icon === 'question-o') {
-        this.$router.push({ path: '/question', query: { type: this.$route.path } })
+        this.$router.push({
+          path: '/question',
+          query: { type: this.$route.path }
+        })
       } else if (icon === 'add-o') {
         // 照片视频素材上传
         // uploadMedia(this)
@@ -270,22 +292,21 @@ export default {
 
       const promiseInfo = []
 
-      this.updataLists.forEach(item => {
+      this.updataLists.forEach((item) => {
         promiseUpload.push(this.createUploadPromise(item.file, item))
       })
       // 上传媒体至视频服务器
       await Promise.allSettled(promiseUpload)
-        .then(res => {
-          res.forEach(item => {
+        .then((res) => {
+          res.forEach((item) => {
             const p = this.createInfoPromise(item.value, item.value.file)
             promiseInfo.push(p)
           })
         })
-        .catch(e => console.log(e))
+        .catch((e) => console.log(e))
 
       // 上传媒体信息
-      await Promise.allSettled(promiseInfo)
-        .catch(e => console.log(e))
+      await Promise.allSettled(promiseInfo).catch((e) => console.log(e))
 
       // 刷新列表
       this.updataLists = []
@@ -306,7 +327,12 @@ export default {
     createFileInfo (file) {
       const fileInfo = {}
       const type = file.type.split('/').pop()
-      const name = (this.user.mobile || 'unknown') + '/' + new Date().getTime() + '.' + type
+      const name =
+        (this.user.mobile || 'unknown') +
+        '/' +
+        new Date().getTime() +
+        '.' +
+        type
       fileInfo.id = this.getId()
       fileInfo.progress = 0
       fileInfo.name = name
@@ -326,14 +352,17 @@ export default {
 
       return this.uploadMediaRequest(formData, (progressEvent) => {
         if (progressEvent.lengthComputable) {
-          const currentProgress = (progressEvent.loaded / progressEvent.total * 100).toFixed(0)
+          const currentProgress = (
+            (progressEvent.loaded / progressEvent.total) *
+            100
+          ).toFixed(0)
           fileInfo.progress = parseInt(currentProgress)
         }
       })
-        .then(res => {
+        .then((res) => {
           return { ...res, file: fileInfo.file }
         })
-        .catch(e => console.log(e))
+        .catch((e) => console.log(e))
     },
 
     // 上传媒体信息
@@ -347,7 +376,12 @@ export default {
     getSaveParams (res, file) {
       const dataForm = {}
       const type = file.type.split('/').pop()
-      const name = (this.user.mobile || 'unknown') + '/' + new Date().getTime() + '.' + type
+      const name =
+        (this.user.mobile || 'unknown') +
+        '/' +
+        new Date().getTime() +
+        '.' +
+        type
       dataForm.name = name
       dataForm.size = file.size / 1024
       dataForm.mediaType = this.mediaType[type]
@@ -360,18 +394,17 @@ export default {
     // 媒体上传请求
     uploadMediaRequest (formData, file) {
       return uploadMedia(formData, file)
-        .then(res => {
+        .then((res) => {
           return { ...res, file }
         })
-        .catch(e => console.log(e))
+        .catch((e) => console.log(e))
     },
 
     // 媒体信息上传请求
     saveMediaRequest (data) {
-      return mediaSave(data)
-        .catch(e => {
-          console.log(e)
-        })
+      return mediaSave(data).catch((e) => {
+        console.log(e)
+      })
     }
   }
 }
@@ -379,92 +412,92 @@ export default {
 
 <style lang="scss" scoped>
 $bgc: #f6f6f6;
-.media{
+.media {
   height: 100%;
   background: $bgc;
   display: flex;
   flex-direction: column;
 }
-.my-media{
-  height: .89rem;
-  margin-bottom: .05rem;
+.my-media {
+  height: 0.89rem;
+  margin-bottom: 0.05rem;
   background: #ffffff;
-  &-img{
+  &-img {
     width: 1.08rem;
     height: 100%;
-    padding: .14rem;
+    padding: 0.14rem;
     box-sizing: border-box;
     float: left;
-    & img{
+    & img {
       width: 100%;
       height: 100%;
     }
   }
-  &-store{
+  &-store {
     height: 100%;
     width: calc(100% - 1.08rem);
     float: left;
     box-sizing: border-box;
-    padding-top: .14rem;
-    padding-right: .15rem;
-    &--name{
-      font-size: .15rem;
-      line-height: .15rem;
+    padding-top: 0.14rem;
+    padding-right: 0.15rem;
+    &--name {
+      font-size: 0.15rem;
+      line-height: 0.15rem;
     }
-    &--bar{
-      margin: .1rem 0;
+    &--bar {
+      margin: 0.1rem 0;
       border-color: #929292;
-      height: .06rem;
+      height: 0.06rem;
     }
-    &--num{
-      font-size: .13rem;
-      line-height: .13rem;
+    &--num {
+      font-size: 0.13rem;
+      line-height: 0.13rem;
     }
   }
 }
-.my-media-lists{
+.my-media-lists {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
-  & > div{
+  & > div {
     position: absolute;
     top: 0;
     left: 0;
   }
-  & .van-grid-item__content{
+  & .van-grid-item__content {
     padding: 0;
   }
 }
-.grid-box{
+.grid-box {
   position: absolute;
   top: 0;
   left: 0;
 }
-.material-img{
+.material-img {
   position: relative;
-  &_status{
+  &_status {
     position: absolute;
     bottom: 0;
     left: 0;
     height: 100%;
     width: 100%;
     box-sizing: border-box;
-    padding: .1rem;
-    & > div{
+    padding: 0.1rem;
+    & > div {
       height: 100%;
       width: 100%;
-      align-items: flex-start
+      align-items: flex-start;
     }
   }
 }
-.mediaImg{
+.mediaImg {
   height: 100%;
   width: 100%;
 }
-.player{
-  width: .28rem!important;
-  height: .28rem!important;
+.player {
+  width: 0.28rem !important;
+  height: 0.28rem !important;
   position: absolute;
   top: 0;
   bottom: 0;
@@ -472,34 +505,34 @@ $bgc: #f6f6f6;
   right: 0;
   margin: auto;
 }
-.mediaTag{
-  height: .2rem;
+.mediaTag {
+  height: 0.2rem;
   position: absolute;
   top: 0;
   bottom: 0;
   margin: auto;
 }
-.percentage{
+.percentage {
   height: 100%;
   width: 0;
-  transition: all .5s;
+  transition: all 0.5s;
   background: #1989f9;
 }
-.refresh-box{
+.refresh-box {
   width: 100%;
   position: relative;
 }
 </style>
 <style lang="scss">
 $bgc: #f6f6f6;
-.my-media-lists{
-  & .van-grid-item__content{
+.my-media-lists {
+  & .van-grid-item__content {
     padding: 0;
     height: 1.2rem;
     overflow: hidden;
   }
 }
-.circle .van-grid-item__content{
+.circle .van-grid-item__content {
   background: $bgc;
 }
 </style>
