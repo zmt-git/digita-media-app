@@ -26,9 +26,10 @@
               @changeOrder="changeOrder"
               @deleteMedia="deleteMedia"
               @changeTime="changeTime"
-              @changeColor="changeColor"
             >
             </scenes-list>
+              <!-- @changeColor="changeColor" -->
+
           </van-tab>
         </template>
       </van-tabs>
@@ -55,7 +56,7 @@ import eventBus from '@/utils/eventBus'
 import common from '@/mixins/common'
 // 组件
 // api`
-import { getPlaylist, updateContent, setColor } from '@/api/device/playList'
+import { getPlaylist, updateContentV2, setColor } from '@/api/device/playList'
 import { devIceDetails } from '@/api/device/details'
 
 import ScenesList from './components/ScenesList.vue'
@@ -93,7 +94,7 @@ export default {
 
     releaseName () {
       if (this.info.stateMedia === 0) {
-        return '正在上传播放列表，请稍侯！'
+        return '正在上传播放列表，请稍等！'
       } else if (this.info.stateMedia === 1) {
         return '发布'
       } else if (this.info.stateMedia === -1) {
@@ -269,6 +270,7 @@ export default {
     async confirm () {
       // this.toast('调整列表中', 'loading', 0)
       const ids = []
+      const colors = []
       const contents = []
       this.mediaPlayLists.forEach((item) => {
         const content = JSON.parse(item.content)
@@ -277,9 +279,10 @@ export default {
         })
         item.content = JSON.stringify(content)
         ids.push(item.id)
+        colors.push(item.color)
         contents.push(item.content)
       })
-      await updateContent({ devid: this.info.id, ids: ids, contents: contents })
+      await updateContentV2({ devid: this.info.id, ids: ids, colors: colors, contents: contents })
         .then((res) => {
           // this.toast(res.msg, 'success')
           this.updateReleaseName(0)

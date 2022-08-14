@@ -68,7 +68,7 @@ export default {
             this.appInfo = res
             this.showUpdate(res)
           } else {
-            this.toast('当前为最新版本', 'success')
+            this.toast('已是最新版本', 'success')
           }
         })
     },

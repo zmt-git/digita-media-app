@@ -7,7 +7,7 @@
           inactive-color="#ee0a24"
           size="24"
           :disabled='disabled'
-          :value='lightColor'
+          v-model='lightColor'
           :active-value='1'
           :inactive-value='0'
           @change='onChange'
@@ -85,11 +85,16 @@ export default {
         return []
       }
     },
-    lightColor () {
-      if (this.list.length > 0 && this.index !== undefined) {
-        return this.list[this.index] ? this.list[this.index].color : 0
-      } else {
-        return 0
+    lightColor: {
+      get () {
+        if (this.list.length > 0 && this.index !== undefined) {
+          return this.list[this.index] ? this.list[this.index].color : 0
+        } else {
+          return 0
+        }
+      },
+      set (val) {
+        this.list[this.index].color = val
       }
     }
   },

@@ -113,6 +113,17 @@ export function updateContent (params, paramsSerializer) {
   })
 }
 
+export function updateContentV2 (params, paramsSerializer) {
+  return requset({
+    url: '/device/playlist/update/all',
+    method: 'POST',
+    params,
+    paramsSerializer: function (params) {
+      return Qs.stringify(params, { indices: false })
+    }
+  })
+}
+
 // 设置颜色
 export function setColor (id, params) {
   return requset({
