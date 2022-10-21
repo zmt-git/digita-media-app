@@ -1,7 +1,14 @@
 <template>
   <div class="box" @click="beforeRead">
     <div class="boxbtn"></div>
-    <van-uploader ref="uploader" multiple :after-read='afterRead' v-model="fileList" accept='image/bmp, image/jpeg' capture='camera'>
+    <van-uploader
+      ref="uploader"
+      multiple
+      :after-read="afterRead"
+      v-model="fileList"
+      :accept="accept"
+      capture="camera"
+    >
       <van-button icon="add-o" class="add-o" type="primary"></van-button>
     </van-uploader>
   </div>
@@ -15,15 +22,16 @@ export default {
   name: 'upploader',
   mixins: [common],
   computed: {
-    ...mapGetters(['user'])
+    ...mapGetters(['user']),
   },
-  data () {
+  data() {
     return {
-      fileList: []
+      fileList: [],
+      accept: 'image/bmp, image/jpeg,image/gif',
     }
   },
   methods: {
-    beforeRead (file) {
+    beforeRead() {
       if (this.user.storageUsed === this.user.storageTotal) {
         this.toast('云空间已满，请删除不需要的媒体', 'text')
         return
@@ -31,11 +39,11 @@ export default {
       this.$refs.uploader.chooseFile()
     },
 
-    afterRead (files) {
+    afterRead(files) {
       let size = 0
 
       if (files instanceof Array) {
-        files.forEach(file => {
+        files.forEach((file) => {
           size += file.file.size
         })
       } else {
@@ -49,17 +57,17 @@ export default {
       }
 
       eventBus.$emit('startUpload', files)
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-.box{
+.box {
   position: relative;
   display: inline-block;
 }
-.boxbtn{
+.boxbtn {
   position: absolute;
   top: 0;
   left: 0;
@@ -67,16 +75,16 @@ export default {
   height: 100%;
   z-index: 2;
 }
-.add-o{
+.add-o {
   background: transparent;
   border-color: none;
   border: none;
   padding: 0;
-  padding-left: .1rem;
-  & i{
+  padding-left: 0.1rem;
+  & i {
     color: #000;
     font-weight: 600;
-    font-size: .21rem;
+    font-size: 0.21rem;
   }
 }
 </style>
