@@ -54,6 +54,7 @@ export default {
       Toast.clear()
       // 清空列表数据
       this.refreshOption.finished = false
+      this.refreshOption.refreshing = true
       // 重新加载数据
       this.page = { page: 0, limit: 10 }
       // 将 loading 设置为 true，表示处于加载状态

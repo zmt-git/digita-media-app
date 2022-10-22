@@ -39,10 +39,7 @@
                       :text="item.progress | progress"
                     />
                     <template v-if="item.state !== 1 && item.progress === 100">
-                      <van-tag
-                        class="mediaTag"
-                        :type="item.state === -2 ? 'danger' : 'warning'"
-                      >
+                      <van-tag class="mediaTag" :type="item.state === -2 ? 'danger' : 'warning'">
                         {{ item.state === -2 ? '审核失败' : '审核中' }}
                       </van-tag>
                     </template>
@@ -56,26 +53,15 @@
                   v-tap="(e) => viewMedia(item)"
                 >
                   <template v-if="item.mediaType === 0">
-                    <img
-                      class="player"
-                      src="../../assets/img/player.png"
-                      alt=""
-                    />
+                    <img class="player" src="../../assets/img/player.png" alt="" />
                     <img class="mediaImg" :src="item.address" alt="" />
                   </template>
                   <template v-else>
-                    <van-image
-                      fit="contain"
-                      class="mediaImg"
-                      :src="item.address"
-                    />
+                    <van-image fit="contain" class="mediaImg" :src="item.address" />
                     <!-- <img class="mediaImg" :src="item.address" alt=""> -->
                   </template>
                   <template v-if="item.state !== 1">
-                    <van-tag
-                      class="mediaTag"
-                      :type="item.state === -2 ? 'danger' : 'warning'"
-                    >
+                    <van-tag class="mediaTag" :type="item.state === -2 ? 'danger' : 'warning'">
                       {{ item.state === 0 ? '审核失败' : '审核中' }}
                     </van-tag>
                   </template>
@@ -95,10 +81,7 @@
               <!-- </template> -->
               <!-- 媒体列表  竖-->
               <!-- <template v-for="(item) in mediaLists"> -->
-              <media-list
-                :playInfoArr="mediaLists"
-                @viewMedia="viewMedia"
-              ></media-list>
+              <media-list :playInfoArr="mediaLists" @viewMedia="viewMedia"></media-list>
               <!-- </template> -->
             </div>
           </transition>
@@ -124,28 +107,23 @@ export default {
   mixins: [common],
   components: {
     mediaList,
-    RefreshLoad
+    RefreshLoad,
   },
   name: 'media',
   computed: {
     ...mapGetters(['show', 'user']),
-    storageUnusedPrecent () {
+    storageUnusedPrecent() {
       if (isNaN((this.storageTotal - this.storageUsed) / this.storageTotal)) {
         return '0%'
       } else {
-        return (
-          (
-            ((this.storageTotal - this.storageUsed) / this.storageTotal) *
-            100
-          ).toFixed(2) + '%'
-        )
+        return (((this.storageTotal - this.storageUsed) / this.storageTotal) * 100).toFixed(2) + '%'
       }
     },
-    storageUsedPrecent () {
+    storageUsedPrecent() {
       return ((this.storageUsed / this.storageTotal) * 100).toFixed(2) + '%'
-    }
+    },
   },
-  data () {
+  data() {
     return {
       id: 0,
       videoFrame: videoFrame,
@@ -160,31 +138,31 @@ export default {
       mediaType: {
         jpg: 1,
         jpeg: 1,
-        bmp: 2
-      }
+        bmp: 2,
+      },
     }
   },
   filters: {
-    filterstorage (val) {
+    filterstorage(val) {
       if (typeof val !== 'number') {
         return 0 + 'G'
       } else {
         return (val / 1024).toFixed(2) + 'G'
       }
     },
-    progress (val) {
+    progress(val) {
       if (typeof val !== 'number') {
         return 0 + '%'
       } else {
         return val.toFixed(2) + '%'
       }
-    }
+    },
   },
-  created () {
+  created() {
     // this.$store.dispatch('getUser')
     this.getUser()
   },
-  mounted () {
+  mounted() {
     if (this.show) {
       this.$route.meta.rightIcon = ['add-o']
     } else {
@@ -207,11 +185,11 @@ export default {
       this.upload()
     })
   },
-  beforeDestroy () {
+  beforeDestroy() {
     eventBus.$off('startUpload')
   },
   methods: {
-    getUser () {
+    getUser() {
       getUserInfo()
         .then((res) => {
           this.storageUsed = res.user.storageUsed
@@ -219,12 +197,12 @@ export default {
         })
         .catch((e) => console.log(e))
     },
-    reset () {
+    reset() {
       this.storageUsedPrecent = 0
       this.storageUnusedPrecent = 0
     },
     // 获取媒体列表
-    getMediaLists () {
+    getMediaLists() {
       return getMediaList(this.page)
         .then((res) => {
           this.mediaLists.push(...res.page.list)
@@ -236,11 +214,11 @@ export default {
         })
     },
     // 点击头部icon
-    onClickRight (icon) {
+    onClickRight(icon) {
       if (icon === 'question-o') {
         this.$router.push({
           path: '/question',
-          query: { type: this.$route.path }
+          query: { type: this.$route.path },
         })
       } else if (icon === 'add-o') {
         // 照片视频素材上传
@@ -256,11 +234,11 @@ export default {
       }
     },
     // 查看媒体详情
-    viewMedia (item) {
+    viewMedia(item) {
       this.$router.push({ path: '/mediaDetails', query: { id: item.id } })
     },
     // 加载数据
-    async loading () {
+    async loading() {
       // 判断是否为刷新状态，为刷新状态时 清空列表 刷新状态改为false
       if (this.refreshOption.refreshing) {
         this.mediaLists = []
@@ -279,7 +257,7 @@ export default {
       }
     },
     // 判断是否加载完所有设备
-    judge () {
+    judge() {
       if (this.mediaLists.length >= this.totalCount) {
         return true
       } else {
@@ -287,34 +265,34 @@ export default {
       }
     },
 
-    async upload () {
+    async upload() {
       const promiseUpload = []
 
       const promiseInfo = []
-
-      this.updataLists.forEach((item) => {
-        promiseUpload.push(this.createUploadPromise(item.file, item))
-      })
-      // 上传媒体至视频服务器
-      await Promise.allSettled(promiseUpload)
-        .then((res) => {
-          res.forEach((item) => {
-            const p = this.createInfoPromise(item.value, item.value.file)
-            promiseInfo.push(p)
-          })
+      try {
+        this.updataLists.forEach((item) => {
+          promiseUpload.push(this.createUploadPromise(item.file, item))
         })
-        .catch((e) => console.log(e))
+        // 上传媒体至视频服务器
+        const res = await Promise.allSettled(promiseUpload)
+        res.forEach((item) => {
+          const p = this.createInfoPromise(item.value, item.value.file)
+          promiseInfo.push(p)
+        })
 
-      // 上传媒体信息
-      await Promise.allSettled(promiseInfo).catch((e) => console.log(e))
+        // 上传媒体信息
+        await Promise.allSettled(promiseInfo).catch((e) => console.log(e))
 
-      // 刷新列表
-      this.updataLists = []
+        // 刷新列表
+        this.updataLists = []
 
-      this.onRefresh()
+        this.onRefresh()
+      } catch (e) {
+        console.log(e)
+      }
     },
 
-    getId () {
+    getId() {
       if (this.id > 99) {
         this.id = 1
       } else {
@@ -324,15 +302,10 @@ export default {
     },
 
     // 创建上传信息
-    createFileInfo (file) {
+    createFileInfo(file) {
       const fileInfo = {}
       const type = file.type.split('/').pop()
-      const name =
-        (this.user.mobile || 'unknown') +
-        '/' +
-        new Date().getTime() +
-        '.' +
-        type
+      const name = (this.user.mobile || 'unknown') + '/' + new Date().getTime() + '.' + type
       fileInfo.id = this.getId()
       fileInfo.progress = 0
       fileInfo.name = name
@@ -345,17 +318,14 @@ export default {
     },
 
     // 上传文件媒体服务器
-    async createUploadPromise (file, fileInfo) {
+    async createUploadPromise(file, fileInfo) {
       const formData = new FormData()
 
       formData.append('file', file)
 
       return this.uploadMediaRequest(formData, (progressEvent) => {
         if (progressEvent.lengthComputable) {
-          const currentProgress = (
-            (progressEvent.loaded / progressEvent.total) *
-            100
-          ).toFixed(0)
+          const currentProgress = ((progressEvent.loaded / progressEvent.total) * 100).toFixed(0)
           fileInfo.progress = parseInt(currentProgress)
         }
       })
@@ -366,22 +336,17 @@ export default {
     },
 
     // 上传媒体信息
-    createInfoPromise (res, file) {
+    createInfoPromise(res, file) {
       const dataForm = this.getSaveParams(res, file)
 
       return this.saveMediaRequest(dataForm)
     },
 
     // 获取上传媒体信息参数
-    getSaveParams (res, file) {
+    getSaveParams(res, file) {
       const dataForm = {}
       const type = file.type.split('/').pop()
-      const name =
-        (this.user.mobile || 'unknown') +
-        '/' +
-        new Date().getTime() +
-        '.' +
-        type
+      const name = (this.user.mobile || 'unknown') + '/' + new Date().getTime() + '.' + type
       dataForm.name = name
       dataForm.size = file.size / 1024
       dataForm.mediaType = this.mediaType[type]
@@ -392,7 +357,7 @@ export default {
     },
 
     // 媒体上传请求
-    uploadMediaRequest (formData, file) {
+    uploadMediaRequest(formData, file) {
       return uploadMedia(formData, file)
         .then((res) => {
           return { ...res, file }
@@ -401,12 +366,12 @@ export default {
     },
 
     // 媒体信息上传请求
-    saveMediaRequest (data) {
+    saveMediaRequest(data) {
       return mediaSave(data).catch((e) => {
         console.log(e)
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -4,7 +4,7 @@
       <!-- 媒体 视频 图片资源 -->
       <div class="mediaSrc">
         <template v-if="mediaInfo.mediaType === 0">
-          <Video-players :videoInfo='mediaInfo'></Video-players>
+          <Video-players :videoInfo="mediaInfo"></Video-players>
           <!-- <VideojsPlayer :videoInfo='mediaInfo'></VideojsPlayer> -->
         </template>
         <template v-else>
@@ -20,9 +20,9 @@
       <!-- 媒体信息 -->
       <div class="media">
         <div class="mediaInfo margin-bottom">
-          <TitleBar :title="mediaInfo.mediaType  | filterName"></TitleBar>
+          <TitleBar :title="mediaInfo.mediaType | filterName"></TitleBar>
           <!-- <van-cell title="媒体编号" :value="mediaInfo.id" /> -->
-          <van-cell title="媒体格式" :value="mediaInfo.mediaType | filterType" />
+          <van-cell title="媒体格式" :value="mediaInfo.name | filterType" />
           <van-cell title="媒体大小" :value="formatterSize(mediaInfo)" />
           <!-- <van-cell title="播放时长" :value="mediaInfo.length | filterLength" /> -->
           <!-- <van-cell title="播放时长" :value="mediaInfo.length | filterLength" :is-link='setLength' @click="changeTime(mediaInfo.length)" /> -->
@@ -45,11 +45,7 @@
       <!-- <van-button v-else :disabled="true" type="warning" @click="release">审核中</van-button> -->
     </div>
     <!-- 播放时长弹出层 -->
-     <van-popup
-      v-model="showPicker"
-      position="bottom"
-      :style="{ _height: '30%' }"
-      >
+    <van-popup v-model="showPicker" position="bottom" :style="{ _height: '30%' }">
       <van-picker
         v-model="currentTime"
         show-toolbar
@@ -58,15 +54,20 @@
         @cancel="cancel"
         @confirm="onConfirmTime"
       />
-      </van-popup>
+    </van-popup>
     <!-- 播放时长弹出层 -->
     <!-- 删除媒体终端复选框 -->
-    <van-dialog v-model="showPicker1" title="重要提示" show-cancel-button @confirm='deleteMediaById' @open='checked = false'>
+    <van-dialog
+      v-model="showPicker1"
+      title="重要提示"
+      show-cancel-button
+      @confirm="deleteMediaById"
+      @open="checked = false"
+    >
       <div class="deleteMedia">
         <!-- <van-checkbox v-model="checked" shape="square">同时从所有智能终端中删除媒体</van-checkbox> -->
 
         该媒体将从所有智能终端中清除！
-
       </div>
     </van-dialog>
     <!-- <van-image-preview v-model="previewShow" :images="images" :showIndex='false' :closeable='true' @close='closePreview'></van-image-preview> -->
@@ -90,57 +91,56 @@ export default {
   components: {
     TitleBar,
     VideoPlayers,
-    [ImagePreview.Component.name]: ImagePreview.Component
+    [ImagePreview.Component.name]: ImagePreview.Component,
   },
   computed: {
-    type () {
+    type() {
       if (this.mediaInfo.mediaType === 0) {
         return 'bg-1'
       } else {
         return 'bg-0'
       }
     },
-    setLength () {
+    setLength() {
       if (this.mediaInfo.mediaType === 0) {
         return false
       } else {
         return true
       }
-    }
+    },
   },
   filters: {
-    filterName (val) { // 0：mp4，1：jpg；2：png；
+    filterName(val) {
+      // 0：mp4，1：jpg；2：png；
       if (val === 0) {
         return '视频媒体'
       } else {
         return '图片媒体'
       }
     },
-    filterType (val) { // 0：mp4，1：jpg；2：png；
-      if (val === 0) {
-        return 'MP4'
-      } else if (val === 1) {
-        return 'JPG'
-      } else {
-        return 'PNG'
+    filterType(val) {
+      try {
+        return val.split('.').pop().toUpperCase()
+      } catch (e) {
+        return '--'
       }
     },
-    filterSize (val) {
-      if (typeof (val) === 'number') {
+    filterSize(val) {
+      if (typeof val === 'number') {
         return Math.ceil(val / 1024) + 'MB'
       } else {
         return '0MB'
       }
     },
-    filterLength (val) {
-      if (typeof (val) === 'number') {
+    filterLength(val) {
+      if (typeof val === 'number') {
         return secondFormat(val)
       } else {
         return '00:00'
       }
-    }
+    },
   },
-  data () {
+  data() {
     return {
       previewShow: false,
       images: [],
@@ -151,26 +151,27 @@ export default {
       showPicker: false, // 播放时间show
       releaseList: [],
       mediaInfo: {},
-      columns: [ // 时间选择器element
+      columns: [
+        // 时间选择器element
         // 第一列
         {
           values: this.timeArray(10, ' 时'),
-          defaultIndex: 1
+          defaultIndex: 1,
         },
         // 第二列
         {
           values: this.timeArray(60, ' 分'),
-          defaultIndex: 1
+          defaultIndex: 1,
         },
         // 第三列
         {
           values: this.timeArray(60, ' 秒'),
-          defaultIndex: 1
-        }
-      ]
+          defaultIndex: 1,
+        },
+      ],
     }
   },
-  created () {
+  created() {
     // 获取路由参数id
     this.id = this.$route.query.id
     // 1.获取媒体详情
@@ -178,37 +179,37 @@ export default {
     // 2.获取媒体发布终端列表
     // this.getPublishList(this.id)
   },
-  mounted () {
+  mounted() {
     eventBus.$on('close', () => {
       this.closePreview()
     })
   },
-  beforeDestroy () {
+  beforeDestroy() {
     eventBus.$off('close')
   },
   methods: {
     // 获取发布终端列表
-    getPublishList (id) {
+    getPublishList(id) {
       return publishList({ mediaid: id })
-        .then(res => {
+        .then((res) => {
           this.releaseList = res.list
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e)
         })
     },
     // 获取媒体详细
-    getMediaDetails (id) {
+    getMediaDetails(id) {
       return mediaDetails(id)
-        .then(res => {
+        .then((res) => {
           this.mediaInfo = res.data
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e)
         })
     },
     // 获取oss地址
-    getSrc (name) {
+    getSrc(name) {
       if (name) {
         return downloadFile(name)
       } else {
@@ -216,17 +217,17 @@ export default {
       }
     },
     // 删除媒体
-    deleteM () {
+    deleteM() {
       // 弹出终端列表
       this.showPicker1 = true
     },
     // 删除媒体确认
-    deleteMediaById () {
+    deleteMediaById() {
       this.toast('删除中', 'loading', 0)
       let isDeletMedia
-      this.checked ? isDeletMedia = 1 : isDeletMedia = 0
+      this.checked ? (isDeletMedia = 1) : (isDeletMedia = 0)
       deleteMedia({ id: this.mediaInfo.id, isDeletMedia: isDeletMedia })
-        .then(res => {
+        .then((res) => {
           if (res.state === 1) {
             this.$router.go(-1)
             Toast.clear()
@@ -234,41 +235,43 @@ export default {
             this.toast('删除失败', 'fail')
           }
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e)
         })
     },
     // 撤回媒体
-    retract (device) {
+    retract(device) {
       Dialog.confirm({
         title: '重要提示',
-        message: `在【${device.name}】中撤回该媒体吗？`
-      }).then(async () => {
-        // on confirm
-        this.toast('撤回中', 'loading', 0)
-        await recall({ deviceId: device.id, isDeletMedia: 1, mediaId: this.id })
-          .then(res => {
-            if (res.state !== 1) {
-              this.toast('撤回失败', 'fail')
-            } else {
-              Toast.clear()
-            }
-          })
-          .catch(e => {
-            console.log(e)
-          })
-        this.getPublishList(this.id)
-        // 获取已发布设备列表
-      }).catch(() => {
-        // on cancel
+        message: `在【${device.name}】中撤回该媒体吗？`,
       })
+        .then(async () => {
+          // on confirm
+          this.toast('撤回中', 'loading', 0)
+          await recall({ deviceId: device.id, isDeletMedia: 1, mediaId: this.id })
+            .then((res) => {
+              if (res.state !== 1) {
+                this.toast('撤回失败', 'fail')
+              } else {
+                Toast.clear()
+              }
+            })
+            .catch((e) => {
+              console.log(e)
+            })
+          this.getPublishList(this.id)
+          // 获取已发布设备列表
+        })
+        .catch(() => {
+          // on cancel
+        })
     },
     // 发布媒体
-    release () {
+    release() {
       this.$router.push({ path: '/release', query: { id: this.id } })
     },
     // 根据媒体类型弹出播放时长选择器
-    changeTime (time) {
+    changeTime(time) {
       if (this.type === 'bg-0') {
         this.showPicker = true
         // ["03 时", "02 分", "01 秒"]
@@ -278,7 +281,7 @@ export default {
         this.currentTime[1] = times[1] + ' 分'
         this.currentTime[2] = times[2] + ' 秒'
         for (let i = 0; i < this.columns.length; i++) {
-          const index = this.columns[i].values.findIndex(el => el === this.currentTime[i])
+          const index = this.columns[i].values.findIndex((el) => el === this.currentTime[i])
           if (index >= 0) {
             this.columns[i].defaultIndex = index
           } else {
@@ -288,32 +291,32 @@ export default {
       }
     },
     // 确认媒体播放时间
-    async onConfirmTime (value) {
+    async onConfirmTime(value) {
       console.log(this.currentTime)
       this.showPicker = false
       const length = this.beforesubmitLength(value)
       this.toast('设置中', 'loading', 0)
       await setLength({ id: this.id, length: length })
-        .then(res => {
+        .then(() => {
           this.toast('设置成功', 'success')
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e)
           Toast.clear()
         })
       this.getMediaDetails(this.id)
     },
-    beforesubmitLength (value) {
+    beforesubmitLength(value) {
       const val = value.join(' ').split(' ')
       const time = val[0] + ':' + val[2] + ':' + val[4]
       const length = formatTosecond(time)
       this.mediaInfo.length = length
       return length
     },
-    cancel () {
+    cancel() {
       this.showPicker = false
       for (let i = 0; i < this.columns.length; i++) {
-        const index = this.columns[i].values.findIndex(el => el === this.currentTime[i])
+        const index = this.columns[i].values.findIndex((el) => el === this.currentTime[i])
         if (index >= 0) {
           this.columns[i].defaultIndex = index
         } else {
@@ -322,7 +325,7 @@ export default {
       }
     },
     // 选择器的对应element时间转换
-    timeArray (maxTime, type) {
+    timeArray(maxTime, type) {
       const arr = []
       for (let i = 0; i < maxTime; i++) {
         if (i < 10) {
@@ -334,63 +337,63 @@ export default {
       return arr
     },
     // 删除终端对应的媒体资源
-    toggle (index) {
+    toggle(index) {
       this.$refs.checkboxes[index].toggle()
     },
     // 图片预览
-    showBigImg (addressOld) {
+    showBigImg(addressOld) {
       ImagePreview({
         images: [addressOld],
         showIndex: false,
         closeable: true,
-        closeOnPopstate: true
+        closeOnPopstate: true,
       })
     },
-    closePreview () {
+    closePreview() {
       // this.$store.commit('SET_IS_IMG_VIEW', false)
 
       this.previewShow = false
     },
 
-    formatterSize (item) {
+    formatterSize(item) {
       if (item.mediaType === 0) {
-        if (typeof (item.size) === 'number') {
+        if (typeof item.size === 'number') {
           return (item.size / 1024).toFixed(2) + 'MB'
         } else {
           return '0MB'
         }
       } else {
-        if (typeof (item.size) === 'number') {
+        if (typeof item.size === 'number') {
           return item.size + 'KB'
         } else {
           return '0KB'
         }
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-.details{
+.details {
   height: 100%;
   background: #f6f6f6;
   display: flex;
   flex-direction: column;
-  overflow: hidden!important;
+  overflow: hidden !important;
 }
-.content{
+.content {
   flex: 1;
   overflow-x: hidden;
   overflow-y: auto;
 }
-.btn{
-  height: .39rem;
+.btn {
+  height: 0.39rem;
   width: 100%;
-  & button{
-    height: .39rem;
-    line-height: .39rem;
-    font-size: .17rem;
+  & button {
+    height: 0.39rem;
+    line-height: 0.39rem;
+    font-size: 0.17rem;
     width: 100%;
     border-radius: 0;
     border-bottom: none;
@@ -398,25 +401,25 @@ export default {
     border-left: none;
   }
 }
-.media{
-  margin-top: .07rem;
+.media {
+  margin-top: 0.07rem;
 }
-.mediaSrc{
+.mediaSrc {
   max-height: 3.75rem;
   width: 100%;
   position: relative;
   overflow: hidden;
-  background: rgba($color: #fff, $alpha: .8);
+  background: rgba($color: #fff, $alpha: 0.8);
   text-align: center;
-  &_img{
+  &_img {
     // width: 100%;
     height: 3.75rem;
     width: 3.75rem;
     // float: left;
   }
-  &_player{
-    width: .65rem;
-    height: .65rem;
+  &_player {
+    width: 0.65rem;
+    height: 0.65rem;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -425,22 +428,22 @@ export default {
     margin: auto;
   }
 }
-.mediaInfo .van-cell__value{
+.mediaInfo .van-cell__value {
   color: #000;
 }
-.mediaInfo .van-cell{
-  padding-left: .2rem;
+.mediaInfo .van-cell {
+  padding-left: 0.2rem;
 }
-.margin-bottom{
-  margin-bottom: .07rem
+.margin-bottom {
+  margin-bottom: 0.07rem;
 }
-.deleteMedia{
+.deleteMedia {
   text-align: center;
-  padding: .2rem;
+  padding: 0.2rem;
 }
-.retract{
-  height: .24rem;
-  padding: 0 .15rem;
+.retract {
+  height: 0.24rem;
+  padding: 0 0.15rem;
 }
 </style>
 <style lang="scss">
