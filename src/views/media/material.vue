@@ -1,27 +1,25 @@
 <template>
-  <div class="material">
-    
-  </div>
+  <div class="material"></div>
 </template>
 
 <script>
 export default {
-  name: 'material',
-  data () {
+  name: "material-page",
+  data() {
     return {
-      fileList: []
-    }
+      fileList: [],
+    };
   },
   methods: {
-    afterRead () {}
-  }
-}
+    afterRead() {},
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-.material{
+.material {
   height: 100%;
-  padding: .2rem;
+  padding: 0.2rem;
   box-sizing: border-box;
 }
 </style>

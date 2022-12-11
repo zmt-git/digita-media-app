@@ -1,18 +1,28 @@
 <template>
   <ul>
-    <li class="paltitem"
-    :class="[isCheckMedia(item) ? 'isCheck' : '']"
-    :key="item.id"
-    v-for="item in playInfoArr"
-    @click="check(item)">
+    <li
+      class="paltitem"
+      :class="[isCheckMedia(item) ? 'isCheck' : '']"
+      :key="item.id"
+      v-for="item in playInfoArr"
+      @click="check(item)"
+    >
       <van-icon v-if="isCheck" class="isCheck_icon" name="success" />
       <div class="paltitem_top van-hairline--bottom" @click="viewMedia(item)">
         <div class="paltitem_top_img">
           <!-- 判断是否为video -->
           <div class="isDeviceInfo van-hairline--surround" v-if="isDeviceInfo">
             <template v-if="item.mediaType === 0">
-              <img class="paltitem_top_img--media" :src="item.address + videoFrame" alt="">
-              <img class="paltitem_top_img--player" src="../../../assets/img/player.png" alt="">
+              <img
+                class="paltitem_top_img--media"
+                :src="item.address + videoFrame"
+                alt=""
+              />
+              <img
+                class="paltitem_top_img--player"
+                src="../../../assets/img/player.png"
+                alt=""
+              />
             </template>
             <template v-else>
               <van-image
@@ -27,8 +37,8 @@
           <div class="circle" v-else>
             <van-circle
               v-model="item.progress"
-              :speed='100'
-              :rate='100'
+              :speed="100"
+              :rate="100"
               :text="item.progress | progress"
             />
           </div>
@@ -36,25 +46,36 @@
         <div class="paltitem_top_info">
           <div class="paltitem_top_info_des">
             <template v-if="item.state !== 1">
-              <van-tag class="mediaTag" :type="item.state === -2 ? 'danger' : 'warning'">
-                  {{item.state === -2 ? '审核失败' : '审核中'}}
+              <van-tag
+                class="mediaTag"
+                :type="item.state === -2 ? 'danger' : 'warning'"
+              >
+                {{ item.state === -2 ? "审核失败" : "审核中" }}
               </van-tag>
             </template>
             <template v-if="isDeviceInfo">
               <p class="paltitem_top_info_des--type van-ellipsis">
-                {{item.name | filterName}}
-                <span class="ml">{{item.name | filterType}}</span>
+                {{ item.name | filterName }}
+                <span class="ml">{{ item.name | filterType }}</span>
               </p>
-              <p class="paltitem_top_info_des--info van-ellipsis">媒体大小<span class="ml">{{formatterSize(item)}}</span></p>
-              <p class="paltitem_top_info_des--info van-ellipsis">播放时长<span class="ml">{{item.length | filterLength}}</span></p>
+              <p class="paltitem_top_info_des--info van-ellipsis">
+                媒体大小<span class="ml">{{ formatterSize(item) }}</span>
+              </p>
+              <p class="paltitem_top_info_des--info van-ellipsis">
+                播放时长<span class="ml">{{ item.length | filterLength }}</span>
+              </p>
             </template>
             <template v-else>
               <p class="paltitem_top_info_des--type van-ellipsis">
-                {{item.name | filterName}}
-                <span class="ml">{{item.name | filterType}}</span>
+                {{ item.name | filterName }}
+                <span class="ml">{{ item.name | filterType }}</span>
               </p>
-              <p class="paltitem_top_info_des--info van-ellipsis">媒体大小<span class="ml">{{formatterSize(item.file)}}</span></p>
-              <p class="paltitem_top_info_des--info van-ellipsis">播放时长<span class="ml">{{item.length | filterLength}}</span></p>
+              <p class="paltitem_top_info_des--info van-ellipsis">
+                媒体大小<span class="ml">{{ formatterSize(item.file) }}</span>
+              </p>
+              <p class="paltitem_top_info_des--info van-ellipsis">
+                播放时长<span class="ml">{{ item.length | filterLength }}</span>
+              </p>
             </template>
           </div>
         </div>
@@ -64,137 +85,139 @@
 </template>
 
 <script>
-import { downloadFile, videoFrame } from '@/oss/ossconfig'
-import { secondFormat } from '@/utils/format'
+import { downloadFile, videoFrame } from "@/oss/ossconfig";
+import { secondFormat } from "@/utils/format";
 // import VideoPlayer from '@/components/VideoPlayer/VideoPalyer'
 export default {
-  name: 'palyItem',
+  name: "palyItem",
   props: {
     playInfoArr: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     isDeviceInfo: {
       type: Boolean,
-      default: true
+      default: true,
     },
     isCheck: {
       type: Boolean,
-      default: false
+      default: false,
     },
     checkList: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
-  data () {
+  data() {
     return {
       currentRate: 30,
-      videoInfo: '',
+      videoInfo: "",
       videoFrame: videoFrame,
-      checkArr: []
-    }
+      checkArr: [],
+    };
   },
   filters: {
-    filterType (val) { // 0：mp4，1：jpg；2：png；
-      return val.split('.').pop().toUpperCase()
+    filterType(val) {
+      // 0：mp4，1：jpg；2：png；
+      return val.split(".").pop().toUpperCase();
     },
-    filterName (val) { // 0：mp4，1：jpg；2：png；
+    filterName(val) {
+      // 0：mp4，1：jpg；2：png；
       if (val === 0) {
-        return '视频媒体'
+        return "视频媒体";
       } else {
-        return '图片媒体'
+        return "图片媒体";
       }
     },
-    filterSize (val) {
-      if (typeof (val) === 'number') {
-        return (val / 1024).toFixed(2) + 'MB'
+    filterSize(val) {
+      if (typeof val === "number") {
+        return (val / 1024).toFixed(2) + "MB";
       } else {
-        return '0MB'
+        return "0MB";
       }
     },
-    filterLength (val) {
-      if (typeof (val) === 'number') {
-        return secondFormat(val)
+    filterLength(val) {
+      if (typeof val === "number") {
+        return secondFormat(val);
       } else {
-        return '00:00'
+        return "00:00";
       }
     },
-    progress (val) {
-      if (typeof (val) !== 'number') {
-        return 0 + '%'
+    progress(val) {
+      if (typeof val !== "number") {
+        return 0 + "%";
       } else {
-        return val + '%'
+        return val + "%";
       }
-    }
+    },
   },
   methods: {
     // 获取oss地址
-    getSrc (name) {
+    getSrc(name) {
       if (name) {
-        return downloadFile(name)
+        return downloadFile(name);
       } else {
-        return ''
+        return "";
       }
     },
-    isCheckMedia (info) {
-      const index = this.checkArr.findIndex(item => item.id === info.id)
-      return index >= 0
+    isCheckMedia(info) {
+      const index = this.checkArr.findIndex((item) => item.id === info.id);
+      return index >= 0;
     },
-    check (info) {
-      if (!this.isCheck) return
-      const index = this.checkArr.findIndex(item => item.id === info.id)
+    check(info) {
+      if (!this.isCheck) return;
+      const index = this.checkArr.findIndex((item) => item.id === info.id);
       if (index >= 0) {
-        this.checkArr.splice(index, 1)
+        this.checkArr.splice(index, 1);
       } else {
-        this.checkArr.push(info)
+        this.checkArr.push(info);
       }
-      this.$emit('update:checkList', this.checkArr)
+      this.$emit("update:checkList", this.checkArr);
     },
     // 播放媒体视频
-    viewMedia (palyItem) {
-      if (this.isCheck) return
-      this.$emit('viewMedia', palyItem)
+    viewMedia(palyItem) {
+      if (this.isCheck) return;
+      this.$emit("viewMedia", palyItem);
     },
 
-    formatterSize (item) {
+    formatterSize(item) {
       if (item.mediaType === 0) {
-        if (typeof (item.size) === 'number') {
-          return (item.size / 1024).toFixed(2) + 'MB'
+        if (typeof item.size === "number") {
+          return (item.size / 1024).toFixed(2) + "MB";
         } else {
-          return '0MB'
+          return "0MB";
         }
       } else {
-        if (typeof (item.size) === 'number') {
-          return item.size + 'KB'
+        if (typeof item.size === "number") {
+          return item.size + "KB";
         } else {
-          return '0KB'
+          return "0KB";
         }
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 $bg1: #fff;
 $bg2: #1989f9;
 
-.paltitem{
+.paltitem {
   width: 100%;
-  height: .88rem;
-  margin-bottom: .08rem;
+  height: 0.88rem;
+  margin-bottom: 0.08rem;
   background: $bg1;
   box-sizing: border-box;
   border: 1px solid transparent;
-  transition: all .2s;
-  &_top{
-    height: .88rem;
+  transition: all 0.2s;
+  &_top {
+    height: 0.88rem;
     width: 100%;
-    &_img{
+    &_img {
       width: 1.05rem;
-      height: .88rem;
-      padding: .08rem .15rem;
+      height: 0.88rem;
+      padding: 0.08rem 0.15rem;
       box-sizing: border-box;
       position: relative;
       float: left;
@@ -203,15 +226,15 @@ $bg2: #1989f9;
       align-items: center;
       overflow: hidden;
       // background: $bgc;
-      &--media{
+      &--media {
         max-width: 100%;
         max-height: 100%;
         // height: 100%;
         overflow: hidden;
       }
-      &--player{
-        width: .28rem;
-        height: .28rem;
+      &--player {
+        width: 0.28rem;
+        height: 0.28rem;
         position: absolute;
         top: 0;
         bottom: 0;
@@ -220,30 +243,30 @@ $bg2: #1989f9;
         margin: auto;
       }
     }
-    &_info{
+    &_info {
       width: calc(100% - 1.05rem);
-      height: .88rem;
+      height: 0.88rem;
       float: left;
-      &_des{
+      &_des {
         height: 100%;
         width: 2.7rem;
         float: left;
         color: #000;
         position: relative;
-        &--type{
-          font-size: .15rem;
-          line-height: .375rem;
+        &--type {
+          font-size: 0.15rem;
+          line-height: 0.375rem;
         }
-        &--info{
-          font-size: .13rem;
-          line-height: .235rem;
+        &--info {
+          font-size: 0.13rem;
+          line-height: 0.235rem;
         }
       }
-      &_btn{
+      &_btn {
         height: 100%;
         width: calc(100% - 2.32rem);
         float: left;
-        padding: .125rem 0;
+        padding: 0.125rem 0;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
@@ -252,35 +275,35 @@ $bg2: #1989f9;
       }
     }
   }
-  &_bottom{
-    height: .325rem;
+  &_bottom {
+    height: 0.325rem;
     width: 100%;
     text-align: right;
     box-sizing: border-box;
-    padding: .07rem .14rem;
-    & button{
-      height: .26rem;
-      line-height: .26rem;
+    padding: 0.07rem 0.14rem;
+    & button {
+      height: 0.26rem;
+      line-height: 0.26rem;
     }
   }
 }
-.isCheck{
+.isCheck {
   border: 1px solid $bg2;
   position: relative;
-  animation: all ease .3s;
-  &::after{
+  animation: all ease 0.3s;
+  &::after {
     display: block;
-    content: '';
+    content: "";
     width: 0px;
     height: 0px;
-    border: .1rem solid transparent;
+    border: 0.1rem solid transparent;
     border-right-color: $bg2;
     border-top-color: $bg2;
     position: absolute;
     top: 0;
     right: 0;
   }
-  &_icon{
+  &_icon {
     color: #fff;
     font-size: 12px;
     position: absolute;
@@ -289,27 +312,27 @@ $bg2: #1989f9;
     z-index: 1;
   }
 }
-.ml{
-  margin-left: .1rem;
+.ml {
+  margin-left: 0.1rem;
 }
-.circle{
+.circle {
   width: 100%;
   background: #f6f6f6;
   height: 100%;
   box-sizing: border-box;
-  padding: .05rem;
+  padding: 0.05rem;
   overflow: hidden;
-  & .van-circle{
-    width: 100%!important;
-    height: 100%!important;
+  & .van-circle {
+    width: 100% !important;
+    height: 100% !important;
   }
 }
-.mediaTag{
+.mediaTag {
   position: absolute;
-  top: .09rem;
-  right: .09rem;
+  top: 0.09rem;
+  right: 0.09rem;
 }
-.isDeviceInfo{
+.isDeviceInfo {
   width: 100%;
   height: 100%;
   display: flex;

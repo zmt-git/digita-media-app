@@ -1,5 +1,10 @@
 <template>
-  <van-pull-refresh ref="content" class="refresh" v-model="options.refreshing" @refresh="onRefresh">
+  <van-pull-refresh
+    ref="content"
+    class="refresh"
+    v-model="options.refreshing"
+    @refresh="onRefresh"
+  >
     <van-list
       v-model="options.loading"
       :finished="options.finished"
@@ -12,9 +17,8 @@
 </template>
 
 <script>
-
 export default {
-  name: 'RefreshLoad',
+  name: "RefreshLoad",
 
   props: {
     options: {
@@ -23,25 +27,25 @@ export default {
         return {
           loading: false,
           finished: false,
-          refreshing: false
-        }
+          refreshing: false,
+        };
       },
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
-    onLoad () {
-      this.$emit('onLoad')
+    onLoad() {
+      this.$emit("onLoad");
     },
-    onRefresh () {
-      this.$emit('onRefresh')
-    }
-  }
-}
+    onRefresh() {
+      this.$emit("onRefresh");
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-.refresh{
+.refresh {
   width: 100%;
   height: 100%;
 }

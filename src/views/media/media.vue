@@ -39,8 +39,11 @@
                       :text="item.progress | progress"
                     />
                     <template v-if="item.state !== 1 && item.progress === 100">
-                      <van-tag class="mediaTag" :type="item.state === -2 ? 'danger' : 'warning'">
-                        {{ item.state === -2 ? '审核失败' : '审核中' }}
+                      <van-tag
+                        class="mediaTag"
+                        :type="item.state === -2 ? 'danger' : 'warning'"
+                      >
+                        {{ item.state === -2 ? "审核失败" : "审核中" }}
                       </van-tag>
                     </template>
                   </van-grid-item>
@@ -53,16 +56,27 @@
                   v-tap="(e) => viewMedia(item)"
                 >
                   <template v-if="item.mediaType === 0">
-                    <img class="player" src="../../assets/img/player.png" alt="" />
+                    <img
+                      class="player"
+                      src="../../assets/img/player.png"
+                      alt=""
+                    />
                     <img class="mediaImg" :src="item.address" alt="" />
                   </template>
                   <template v-else>
-                    <van-image fit="contain" class="mediaImg" :src="item.address" />
+                    <van-image
+                      fit="contain"
+                      class="mediaImg"
+                      :src="item.address"
+                    />
                     <!-- <img class="mediaImg" :src="item.address" alt=""> -->
                   </template>
                   <template v-if="item.state !== 1">
-                    <van-tag class="mediaTag" :type="item.state === -2 ? 'danger' : 'warning'">
-                      {{ item.state === 0 ? '审核失败' : '审核中' }}
+                    <van-tag
+                      class="mediaTag"
+                      :type="item.state === -2 ? 'danger' : 'warning'"
+                    >
+                      {{ item.state === 0 ? "审核失败" : "审核中" }}
                     </van-tag>
                   </template>
                 </van-grid-item>
@@ -81,7 +95,10 @@
               <!-- </template> -->
               <!-- 媒体列表  竖-->
               <!-- <template v-for="(item) in mediaLists"> -->
-              <media-list :playInfoArr="mediaLists" @viewMedia="viewMedia"></media-list>
+              <media-list
+                :playInfoArr="mediaLists"
+                @viewMedia="viewMedia"
+              ></media-list>
               <!-- </template> -->
             </div>
           </transition>
@@ -92,35 +109,40 @@
 </template>
 
 <script>
-import eventBus from '@/utils/eventBus'
-import common from '@/mixins/common'
-import { mapGetters } from 'vuex'
-import { videoFrame } from '@/oss/ossconfig'
+import eventBus from "@/utils/eventBus";
+import common from "@/mixins/common";
+import { mapGetters } from "vuex";
+import { videoFrame } from "@/oss/ossconfig";
 // 组件
-import mediaList from './components/mediaList'
-import RefreshLoad from '@/components/RefreshLoad/RefreshLoad'
+import mediaList from "./components/mediaList";
+import RefreshLoad from "@/components/RefreshLoad/RefreshLoad";
 
-import { getMediaList } from '@/api/media/media'
-import { getUserInfo } from '@/api/system/system'
-import { uploadMedia, mediaSave } from '@/api/media/uploader'
+import { getMediaList } from "@/api/media/media";
+import { getUserInfo } from "@/api/system/system";
+import { uploadMedia, mediaSave } from "@/api/media/uploader";
 export default {
   mixins: [common],
   components: {
     mediaList,
     RefreshLoad,
   },
-  name: 'media',
+  name: "media-page",
   computed: {
-    ...mapGetters(['show', 'user']),
+    ...mapGetters(["show", "user"]),
     storageUnusedPrecent() {
       if (isNaN((this.storageTotal - this.storageUsed) / this.storageTotal)) {
-        return '0%'
+        return "0%";
       } else {
-        return (((this.storageTotal - this.storageUsed) / this.storageTotal) * 100).toFixed(2) + '%'
+        return (
+          (
+            ((this.storageTotal - this.storageUsed) / this.storageTotal) *
+            100
+          ).toFixed(2) + "%"
+        );
       }
     },
     storageUsedPrecent() {
-      return ((this.storageUsed / this.storageTotal) * 100).toFixed(2) + '%'
+      return ((this.storageUsed / this.storageTotal) * 100).toFixed(2) + "%";
     },
   },
   data() {
@@ -140,239 +162,252 @@ export default {
         jpeg: 1,
         bmp: 2,
       },
-    }
+    };
   },
   filters: {
     filterstorage(val) {
-      if (typeof val !== 'number') {
-        return 0 + 'G'
+      if (typeof val !== "number") {
+        return 0 + "G";
       } else {
-        return (val / 1024).toFixed(2) + 'G'
+        return (val / 1024).toFixed(2) + "G";
       }
     },
     progress(val) {
-      if (typeof val !== 'number') {
-        return 0 + '%'
+      if (typeof val !== "number") {
+        return 0 + "%";
       } else {
-        return val.toFixed(2) + '%'
+        return val.toFixed(2) + "%";
       }
     },
   },
   created() {
     // this.$store.dispatch('getUser')
-    this.getUser()
+    this.getUser();
   },
   mounted() {
     if (this.show) {
-      this.$route.meta.rightIcon = ['add-o']
+      this.$route.meta.rightIcon = ["add-o"];
     } else {
-      this.$route.meta.rightIcon = ['add-o']
+      this.$route.meta.rightIcon = ["add-o"];
     }
-    this.container = this.$refs.container
+    this.container = this.$refs.container;
 
-    eventBus.$on('onClickRight', (icon) => {
-      this.onClickRight(icon)
-    })
+    eventBus.$on("onClickRight", (icon) => {
+      this.onClickRight(icon);
+    });
 
-    eventBus.$on('startUpload', (filelist) => {
+    eventBus.$on("startUpload", (filelist) => {
       if (!Array.isArray(filelist)) {
-        filelist = [filelist]
+        filelist = [filelist];
       }
       filelist.forEach((file) => {
-        const info = this.createFileInfo(file.file)
-        this.updataLists.push(info)
-      })
-      this.upload()
-    })
+        const info = this.createFileInfo(file.file);
+        this.updataLists.push(info);
+      });
+      this.upload();
+    });
   },
   beforeDestroy() {
-    eventBus.$off('startUpload')
+    eventBus.$off("startUpload");
   },
   methods: {
     getUser() {
       getUserInfo()
         .then((res) => {
-          this.storageUsed = res.user.storageUsed
-          this.storageTotal = res.user.storageTotal
+          this.storageUsed = res.user.storageUsed;
+          this.storageTotal = res.user.storageTotal;
         })
-        .catch((e) => console.log(e))
+        .catch((e) => console.log(e));
     },
     reset() {
-      this.storageUsedPrecent = 0
-      this.storageUnusedPrecent = 0
+      this.storageUsedPrecent = 0;
+      this.storageUnusedPrecent = 0;
     },
     // 获取媒体列表
     getMediaLists() {
       return getMediaList(this.page)
         .then((res) => {
-          this.mediaLists.push(...res.page.list)
-          this.totalCount = res.page.totalCount
+          this.mediaLists.push(...res.page.list);
+          this.totalCount = res.page.totalCount;
         })
         .catch((e) => {
-          console.log(e)
-          this.refreshOption.finished = true
-        })
+          console.log(e);
+          this.refreshOption.finished = true;
+        });
     },
     // 点击头部icon
     onClickRight(icon) {
-      if (icon === 'question-o') {
+      if (icon === "question-o") {
         this.$router.push({
-          path: '/question',
+          path: "/question",
           query: { type: this.$route.path },
-        })
-      } else if (icon === 'add-o') {
+        });
+      } else if (icon === "add-o") {
         // 照片视频素材上传
         // uploadMedia(this)
       } else {
-        if (icon === 'orders-o') {
-          this.$route.meta.rightIcon = ['apps-o', 'add-o']
-          this.$store.commit('SET_MEDIA_LIST', false)
+        if (icon === "orders-o") {
+          this.$route.meta.rightIcon = ["apps-o", "add-o"];
+          this.$store.commit("SET_MEDIA_LIST", false);
         } else {
-          this.$route.meta.rightIcon = ['orders-o', 'add-o']
-          this.$store.commit('SET_MEDIA_LIST', true)
+          this.$route.meta.rightIcon = ["orders-o", "add-o"];
+          this.$store.commit("SET_MEDIA_LIST", true);
         }
       }
     },
     // 查看媒体详情
     viewMedia(item) {
-      this.$router.push({ path: '/mediaDetails', query: { id: item.id } })
+      this.$router.push({ path: "/mediaDetails", query: { id: item.id } });
     },
     // 加载数据
     async loading() {
       // 判断是否为刷新状态，为刷新状态时 清空列表 刷新状态改为false
       if (this.refreshOption.refreshing) {
-        this.mediaLists = []
-        this.page = { page: 0, limit: 10 }
-        this.refreshOption.refreshing = false
+        this.mediaLists = [];
+        this.page = { page: 0, limit: 10 };
+        this.refreshOption.refreshing = false;
       }
-      this.page.page += 1
+      this.page.page += 1;
       // 发送请求获取数据
-      await this.getMediaLists()
+      await this.getMediaLists();
       // 加载状态改为false
-      this.refreshOption.loading = false
+      this.refreshOption.loading = false;
       // 获取的数据末尾判断
-      const result = this.judge()
+      const result = this.judge();
       if (result) {
-        this.refreshOption.finished = true
+        this.refreshOption.finished = true;
       }
     },
     // 判断是否加载完所有设备
     judge() {
       if (this.mediaLists.length >= this.totalCount) {
-        return true
+        return true;
       } else {
-        return false
+        return false;
       }
     },
 
     async upload() {
-      const promiseUpload = []
+      const promiseUpload = [];
 
-      const promiseInfo = []
+      const promiseInfo = [];
       try {
         this.updataLists.forEach((item) => {
-          promiseUpload.push(this.createUploadPromise(item.file, item))
-        })
+          promiseUpload.push(this.createUploadPromise(item.file, item));
+        });
         // 上传媒体至视频服务器
-        const res = await Promise.allSettled(promiseUpload)
+        const res = await Promise.allSettled(promiseUpload);
         res.forEach((item) => {
-          const p = this.createInfoPromise(item.value, item.value.file)
-          promiseInfo.push(p)
-        })
+          const p = this.createInfoPromise(item.value, item.value.file);
+          promiseInfo.push(p);
+        });
 
         // 上传媒体信息
-        await Promise.allSettled(promiseInfo).catch((e) => console.log(e))
+        await Promise.allSettled(promiseInfo).catch((e) => console.log(e));
 
         // 刷新列表
-        this.updataLists = []
+        this.updataLists = [];
 
-        this.onRefresh()
+        this.onRefresh();
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
     },
 
     getId() {
       if (this.id > 99) {
-        this.id = 1
+        this.id = 1;
       } else {
-        this.id++
+        this.id++;
       }
-      return this.id
+      return this.id;
     },
 
     // 创建上传信息
     createFileInfo(file) {
-      const fileInfo = {}
-      const type = file.type.split('/').pop()
-      const name = (this.user.mobile || 'unknown') + '/' + new Date().getTime() + '.' + type
-      fileInfo.id = this.getId()
-      fileInfo.progress = 0
-      fileInfo.name = name
-      fileInfo.size = file.size / 1024
-      fileInfo.mediaType = this.mediaType[type]
-      fileInfo.length = 10
-      fileInfo.state = -1
-      fileInfo.file = file
-      return fileInfo
+      const fileInfo = {};
+      const type = file.type.split("/").pop();
+      const name =
+        (this.user.mobile || "unknown") +
+        "/" +
+        new Date().getTime() +
+        "." +
+        type;
+      fileInfo.id = this.getId();
+      fileInfo.progress = 0;
+      fileInfo.name = name;
+      fileInfo.size = file.size / 1024;
+      fileInfo.mediaType = this.mediaType[type];
+      fileInfo.length = 10;
+      fileInfo.state = -1;
+      fileInfo.file = file;
+      return fileInfo;
     },
 
     // 上传文件媒体服务器
     async createUploadPromise(file, fileInfo) {
-      const formData = new FormData()
+      const formData = new FormData();
 
-      formData.append('file', file)
+      formData.append("file", file);
 
       return this.uploadMediaRequest(formData, (progressEvent) => {
         if (progressEvent.lengthComputable) {
-          const currentProgress = ((progressEvent.loaded / progressEvent.total) * 100).toFixed(0)
-          fileInfo.progress = parseInt(currentProgress)
+          const currentProgress = (
+            (progressEvent.loaded / progressEvent.total) *
+            100
+          ).toFixed(0);
+          fileInfo.progress = parseInt(currentProgress);
         }
       })
         .then((res) => {
-          return { ...res, file: fileInfo.file }
+          return { ...res, file: fileInfo.file };
         })
-        .catch((e) => console.log(e))
+        .catch((e) => console.log(e));
     },
 
     // 上传媒体信息
     createInfoPromise(res, file) {
-      const dataForm = this.getSaveParams(res, file)
+      const dataForm = this.getSaveParams(res, file);
 
-      return this.saveMediaRequest(dataForm)
+      return this.saveMediaRequest(dataForm);
     },
 
     // 获取上传媒体信息参数
     getSaveParams(res, file) {
-      const dataForm = {}
-      const type = file.type.split('/').pop()
-      const name = (this.user.mobile || 'unknown') + '/' + new Date().getTime() + '.' + type
-      dataForm.name = name
-      dataForm.size = file.size / 1024
-      dataForm.mediaType = this.mediaType[type]
-      dataForm.address = res.url
-      dataForm.length = 10
+      const dataForm = {};
+      const type = file.type.split("/").pop();
+      const name =
+        (this.user.mobile || "unknown") +
+        "/" +
+        new Date().getTime() +
+        "." +
+        type;
+      dataForm.name = name;
+      dataForm.size = file.size / 1024;
+      dataForm.mediaType = this.mediaType[type];
+      dataForm.address = res.url;
+      dataForm.length = 10;
 
-      return dataForm
+      return dataForm;
     },
 
     // 媒体上传请求
     uploadMediaRequest(formData, file) {
       return uploadMedia(formData, file)
         .then((res) => {
-          return { ...res, file }
+          return { ...res, file };
         })
-        .catch((e) => console.log(e))
+        .catch((e) => console.log(e));
     },
 
     // 媒体信息上传请求
     saveMediaRequest(data) {
       return mediaSave(data).catch((e) => {
-        console.log(e)
-      })
+        console.log(e);
+      });
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

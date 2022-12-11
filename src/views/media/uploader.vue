@@ -15,51 +15,51 @@
 </template>
 
 <script>
-import eventBus from '@/utils/eventBus'
-import common from '@/mixins/common'
-import { mapGetters } from 'vuex'
+import eventBus from "@/utils/eventBus";
+import common from "@/mixins/common";
+import { mapGetters } from "vuex";
 export default {
-  name: 'upploader',
+  name: "up-loader",
   mixins: [common],
   computed: {
-    ...mapGetters(['user']),
+    ...mapGetters(["user"]),
   },
   data() {
     return {
       fileList: [],
-      accept: 'image/bmp, image/jpeg,image/gif',
-    }
+      accept: "image/bmp, image/jpeg,image/gif",
+    };
   },
   methods: {
     beforeRead() {
       if (this.user.storageUsed === this.user.storageTotal) {
-        this.toast('云空间已满，请删除不需要的媒体', 'text')
-        return
+        this.toast("云空间已满，请删除不需要的媒体", "text");
+        return;
       }
-      this.$refs.uploader.chooseFile()
+      this.$refs.uploader.chooseFile();
     },
 
     afterRead(files) {
-      let size = 0
+      let size = 0;
 
       if (files instanceof Array) {
         files.forEach((file) => {
-          size += file.file.size
-        })
+          size += file.file.size;
+        });
       } else {
-        size = files.file.size
+        size = files.file.size;
       }
 
-      size = size / 1024 / 1024
+      size = size / 1024 / 1024;
       if (this.user.storageTotal < this.user.storageUsed + size) {
-        this.toast('云空间不足，请删除不需要的媒体', 'text')
-        return
+        this.toast("云空间不足，请删除不需要的媒体", "text");
+        return;
       }
 
-      eventBus.$emit('startUpload', files)
+      eventBus.$emit("startUpload", files);
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -84,7 +84,7 @@ export default {
   & i {
     color: #000;
     font-weight: 600;
-    font-size: 0.21rem;
+    font-size: 0.2rem;
   }
 }
 </style>

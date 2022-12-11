@@ -1,19 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0, user-scalable=0;">
-    <meta content="yes" name="apple-mobile-web-app-capable">
-    <meta content="black" name="apple-mobile-web-app-status-bar-style">
-    <meta name="telephone=no" content="format-detection">
-    <meta name="msapplication-tap-highlight" content="no">
-    <meta HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
-    <script src="./serve.js"></script>
-    <title>数字媒体管家</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
   <body>
+    <noscript>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
     <div id="app"></div>
+    <!-- built files will be auto injected -->
   </body>
-  <!-- 引入cordova.js -->
-  <script type="text/javascript" src="cordova.js"></script>
 </html>

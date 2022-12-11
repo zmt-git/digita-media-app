@@ -1,27 +1,41 @@
 <template>
   <div class="deviceInfo">
     <div class="info-status-box">
-      <device-item :itemInfo='detailInfo' @tapImg='tapImg'></device-item>
+      <device-item :itemInfo="detailInfo" @tapImg="tapImg"></device-item>
     </div>
     <div class="infoitem">
       <!-- 媒体 -->
       <div class="infoItem-box">
         <van-cell>
           <template slot="title">
-            <p class="title"><span class="title_bar"></span><span class="title_word">媒体</span></p>
+            <p class="title">
+              <span class="title_bar"></span
+              ><span class="title_word">媒体</span>
+            </p>
           </template>
         </van-cell>
-        <van-cell title="播放列表" is-link @click="toPlayList"/>
-        <van-cell title="切换场景" is-link @click="showPopup('scenes')" :value="orderNumberFormatter(orderNumber)" />
+        <van-cell title="播放列表" is-link @click="toPlayList" />
+        <van-cell
+          title="切换场景"
+          is-link
+          @click="showPopup('scenes')"
+          :value="orderNumberFormatter(orderNumber)"
+        />
       </div>
       <!-- 运行状态 -->
       <div class="infoItem-box">
         <van-cell>
           <template slot="title">
-            <p class="title"><span class="title_bar"></span><span class="title_word">运行状态</span></p>
+            <p class="title">
+              <span class="title_bar"></span
+              ><span class="title_word">运行状态</span>
+            </p>
           </template>
         </van-cell>
-        <van-cell title="在线状态" :value="detailInfo.stateOnline | statusOnline" />
+        <van-cell
+          title="在线状态"
+          :value="detailInfo.stateOnline | statusOnline"
+        />
         <van-cell title="工作状态" :value="detailInfo.stateWork | statusWork" />
         <!-- <van-cell :value="temperature">
           <template slot="title">
@@ -45,68 +59,111 @@
       <div class="infoItem-box">
         <van-cell>
           <template slot="title">
-            <p class="title"><span class="title_bar"></span><span class="title_word">设备信息</span></p>
+            <p class="title">
+              <span class="title_bar"></span
+              ><span class="title_word">设备信息</span>
+            </p>
           </template>
         </van-cell>
-        <van-cell title="设备型号" :value="detailInfo.type"/>
-        <van-cell title="设备编号" :value="detailInfo.code"/>
-        <van-cell title="安装方向" :value="orient"/>
-        <van-cell title="供电方式" :value="power"/>
+        <van-cell title="设备型号" :value="detailInfo.type" />
+        <van-cell title="设备编号" :value="detailInfo.code" />
+        <van-cell title="安装方向" :value="orient" />
+        <van-cell title="供电方式" :value="power" />
       </div>
 
       <!-- 参数设置 -->
       <div class="infoItem-box">
         <van-cell>
           <template slot="title">
-            <p class="title"><span class="title_bar"></span><span class="title_word">参数设置</span></p>
+            <p class="title">
+              <span class="title_bar"></span
+              ><span class="title_word">参数设置</span>
+            </p>
           </template>
         </van-cell>
-<!--        <van-cell center title="启用休眠">-->
-<!--          <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.timeControl" @change='setTimeControl' slot="right-icon" size="24" />-->
-<!--        </van-cell>-->
+        <!--        <van-cell center title="启用休眠">-->
+        <!--          <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.timeControl" @change='setTimeControl' slot="right-icon" size="24" />-->
+        <!--        </van-cell>-->
         <van-cell center title="光源控制">
           <div class="cell-slot" slot="right-icon">
-            <span class="cell-slot-left" :class="dataForm.lightControl !== 1 ? 'active' : ''">自动</span>
+            <span
+              class="cell-slot-left"
+              :class="dataForm.lightControl !== 1 ? 'active' : ''"
+              >自动</span
+            >
             <van-switch
-              :disabled='disabled'
-              :active-value='1'
-              :inactive-value='0'
+              :disabled="disabled"
+              :active-value="1"
+              :inactive-value="0"
               v-model="dataForm.lightControl"
-              @change='setLight'
+              @change="setLight"
               active-color="#07c160"
               inactive-color="#1989fa"
               slot="right-icon"
-              size="24" />
-            <span class="cell-slot-right" :class="dataForm.lightControl === 1 ? 'active' : ''">手动</span>
+              size="24"
+            />
+            <span
+              class="cell-slot-right"
+              :class="dataForm.lightControl === 1 ? 'active' : ''"
+              >手动</span
+            >
           </div>
         </van-cell>
         <van-cell center title="光源开关">
           <div class="cell-slot" slot="right-icon">
-            <span class="cell-slot-left" :class="!lightBrightness ? 'active' : ''">OFF</span>
+            <span
+              class="cell-slot-left"
+              :class="!lightBrightness ? 'active' : ''"
+              >OFF</span
+            >
             <van-switch
-              :disabled='!timeDisabled || disabled'
-              :active-value='true'
-              :inactive-value='false'
+              :disabled="!timeDisabled || disabled"
+              :active-value="true"
+              :inactive-value="false"
               v-model="lightBrightness"
               active-color="#07c160"
               inactive-color="#ee0a24"
-              @change='setLight'  size="24" />
-            <span class="cell-slot-right" :class="lightBrightness ? 'active' : ''">ON</span>
+              @change="setLight"
+              size="24"
+            />
+            <span
+              class="cell-slot-right"
+              :class="lightBrightness ? 'active' : ''"
+              >ON</span
+            >
           </div>
         </van-cell>
-        <van-cell title="休眠时间" :class="timeDisabled ? 'bg-1' : 'bg-0'" is-link @click="showPopup('timeClose')" :value="dataForm.timeClose" />
-        <van-cell title="唤醒时间" :class="timeDisabled? 'bg-1' : 'bg-0'" is-link @click="showPopup('timeOpen')" :value="dataForm.timeOpen" />
+        <van-cell
+          title="休眠时间"
+          :class="timeDisabled ? 'bg-1' : 'bg-0'"
+          is-link
+          @click="showPopup('timeClose')"
+          :value="dataForm.timeClose"
+        />
+        <van-cell
+          title="唤醒时间"
+          :class="timeDisabled ? 'bg-1' : 'bg-0'"
+          is-link
+          @click="showPopup('timeOpen')"
+          :value="dataForm.timeOpen"
+        />
         <!-- <van-cell title="光源控制" is-link @click="showPopup('lightControl')" :value="dataForm.lightControl | statusControl" /> -->
         <!-- <van-cell title="光源亮度" is-link @click="showPopup('lightBrightness')" :value="dataForm.lightBrightness + '%'" /> -->
-<!--        <van-cell title="媒体音量" class="volume" :border='false'>-->
-<!--          <div class="volume-box">-->
-<!--            <van-slider v-model="dataForm.stateVolume" :min="0" :max="15" bar-height="0.04rem" @change='setVolume'/>-->
-<!--          </div>-->
-<!--        </van-cell>-->
+        <!--        <van-cell title="媒体音量" class="volume" :border='false'>-->
+        <!--          <div class="volume-box">-->
+        <!--            <van-slider v-model="dataForm.stateVolume" :min="0" :max="15" bar-height="0.04rem" @change='setVolume'/>-->
+        <!--          </div>-->
+        <!--        </van-cell>-->
       </div>
 
-      <div  class="infoItem-box">
-        <van-cell v-if="hasOrient" title="画面方向"  is-link @click="showPopup('stateOrient')" :value="stateOrientValue | stateOrientFilter" />
+      <div class="infoItem-box">
+        <van-cell
+          v-if="hasOrient"
+          title="画面方向"
+          is-link
+          @click="showPopup('stateOrient')"
+          :value="stateOrientValue | stateOrientFilter"
+        />
       </div>
 
       <!-- 系统设置 systemShow-->
@@ -136,7 +193,7 @@
       v-model="showPicker"
       position="bottom"
       :style="{ _height: '30%' }"
-      >
+    >
       <van-datetime-picker
         v-model="currentTime"
         type="time"
@@ -149,82 +206,104 @@
       <van-picker
         show-toolbar
         v-show="!timeShow"
-        :default-index='defaultIndex'
+        :default-index="defaultIndex"
         :title="popupTitle"
         :columns="columns"
         @cancel="showPicker = false"
         @confirm="onConfirm"
       />
-      </van-popup>
+    </van-popup>
   </div>
 </template>
 
 <script>
 // 组件
-import eventBus from '@/utils/eventBus'
-import DeviceItem from './components/DeviceItem'
-import common from '@/mixins/common'
+import eventBus from "@/utils/eventBus";
+import DeviceItem from "./components/DeviceItem";
+import common from "@/mixins/common";
 // api
-import { devIceDetails, setTime, light, direction, orderNumber, volume, bootAnimation, infoAnimation, rebootAll, rebootApp, uploadLog, reset } from '@/api/device/details'
-import { Toast, Dialog } from 'vant'
+import {
+  devIceDetails,
+  setTime,
+  light,
+  direction,
+  orderNumber,
+  volume,
+  bootAnimation,
+  infoAnimation,
+  rebootAll,
+  rebootApp,
+  uploadLog,
+  reset,
+} from "@/api/device/details";
+import { Toast, Dialog } from "vant";
 
-import { lightControl, stateOrient, scenesOptions, orientArr, powerArr } from '@/common/common'
+import {
+  lightControl,
+  stateOrient,
+  scenesOptions,
+  orientArr,
+  powerArr,
+} from "@/common/common";
 export default {
-  name: 'deviceDetails',
+  name: "deviceDetails",
   mixins: [common],
   components: {
-    DeviceItem
+    DeviceItem,
   },
   computed: {
-    orient () {
-      const obj = orientArr.find(item => item.val === this.detailInfo.stateOrient)
-      return obj ? obj.text : ''
+    orient() {
+      const obj = orientArr.find(
+        (item) => item.val === this.detailInfo.stateOrient
+      );
+      return obj ? obj.text : "";
     },
-    power () {
-      const obj = powerArr.find(item => item.val === this.detailInfo.power)
-      return obj ? obj.text : ''
+    power() {
+      const obj = powerArr.find((item) => item.val === this.detailInfo.power);
+      return obj ? obj.text : "";
     },
-    timeDisabled () {
-      return this.dataForm.lightControl === 1
+    timeDisabled() {
+      return this.dataForm.lightControl === 1;
     },
-    temp () {
+    temp() {
       if (this.detailInfo.alarm) {
-        return this.detailInfo.alarm.includes('2001')
+        return this.detailInfo.alarm.includes("2001");
       } else {
-        return false
+        return false;
       }
     },
-    temperature () {
-      if (this.detailInfo.stateWork !== 1 || this.detailInfo.stateWork !== 0) return ''
-      if (typeof (this.detailInfo.temperature) === 'number') {
-        return this.detailInfo.temperature + '℃'
+    temperature() {
+      if (this.detailInfo.stateWork !== 1 || this.detailInfo.stateWork !== 0)
+        return "";
+      if (typeof this.detailInfo.temperature === "number") {
+        return this.detailInfo.temperature + "℃";
       } else {
-        return '0℃'
+        return "0℃";
       }
     },
-    storageStatus () {
+    storageStatus() {
       if (this.detailInfo.alarm) {
-        return this.detailInfo.alarm.includes('2002')
+        return this.detailInfo.alarm.includes("2002");
       } else {
-        return false
+        return false;
       }
     },
-    scenes () {
+    scenes() {
       if (this.detailInfo.type) {
-        const type = this.detailInfo.type
-        return scenesOptions[type]
+        const type = this.detailInfo.type;
+        return scenesOptions[type];
       }
-      return scenesOptions['ELF-A']
+      return scenesOptions["ELF-A"];
     },
-    disabled () {
-      return this.detailInfo.stateOnline !== 1
+    disabled() {
+      return this.detailInfo.stateOnline !== 1;
     },
-    hasOrient () {
-      return this.detailInfo.type === 'ELF-A'
-    }
+    hasOrient() {
+      return this.detailInfo.type === "ELF-A";
+    },
   },
-  data () {
-    const that = this
+  data() {
+    const that = this;
     return {
       count: 0,
       systemShow: false,
@@ -239,32 +318,32 @@ export default {
       stateOrientObj: {},
       timeDefault: [0, 0],
       showPicker: false,
-      currentTime: '12:00:00',
+      currentTime: "12:00:00",
       timeShow: true,
-      type: '',
+      type: "",
       columns: [],
       lightControl: lightControl,
       stateOrient: stateOrient,
-      popupTitle: '',
+      popupTitle: "",
       titleObj: {
-        timeClose: '休眠时间',
-        timeOpen: '唤醒时间',
-        lightControl: '光源控制',
-        lightBrightness: '光源亮度',
-        stateOrient: '画面方向',
-        scenes: '切换场景'
+        timeClose: "休眠时间",
+        timeOpen: "唤醒时间",
+        lightControl: "光源控制",
+        lightBrightness: "光源亮度",
+        stateOrient: "画面方向",
+        scenes: "切换场景",
       },
       dataForm: {
-        timeClose: '00:00',
-        timeOpen: '00:00',
+        timeClose: "00:00",
+        timeOpen: "00:00",
         lightControl: 0,
-        lightBrightness: 1
+        lightBrightness: 1,
       },
       stateOrientValue: 0,
       orderNumber: 0,
       dataForm1: {
-        bootAnimation: '',
-        infoAnimation: ''
+        bootAnimation: "",
+        infoAnimation: "",
       },
       controlFunction: {
         timeClose: that.setTimeClose,
@@ -272,351 +351,377 @@ export default {
         lightControl: that.setLight,
         lightBrightness: that.setLight,
         stateOrient: that.setstateOrient,
-        scenes: that.setScenes
-      }
-    }
+        scenes: that.setScenes,
+      },
+    };
   },
   filters: {
     // 在线状态
-    statusOnline (val) {
-      return val === 1 ? '在线' : '离线'
+    statusOnline(val) {
+      return val === 1 ? "在线" : "离线";
     },
     // 工作状态
-    statusWork (val) {
-      return val === 1
-        ? '工作'
-        : val === 0
-          ? '休眠'
-          : ''
+    statusWork(val) {
+      return val === 1 ? "工作" : val === 0 ? "休眠" : "";
     },
     // 画面方向
-    stateOrientFilter (val) {
-      const obj = stateOrient.find(item => item.val === val)
-      return obj ? obj.text : ''
+    stateOrientFilter(val) {
+      const obj = stateOrient.find((item) => item.val === val);
+      return obj ? obj.text : "";
     },
     // 光源控制
-    statusControl (val) { // 1：命令控制；0：自动控制；
-      return val === 1 ? '手动控制' : '自动控制'
-    }
+    statusControl(val) {
+      // 1：命令控制；0：自动控制；
+      return val === 1 ? "手动控制" : "自动控制";
+    },
   },
 
-  async created () {
-    this.id = this.$route.query.id
+  async created() {
+    this.id = this.$route.query.id;
     // 获取终端详情
     await devIceDetails(this.id)
-      .then(res => {
-        this.detailInfo = res.data
-        this.lightBrightness = this.detailInfo.lightBrightness > 0
+      .then((res) => {
+        this.detailInfo = res.data;
+        this.lightBrightness = this.detailInfo.lightBrightness > 0;
       })
-      .catch(e => {
-        console.log(e)
-      })
-    this.formatParams()
+      .catch((e) => {
+        console.log(e);
+      });
+    this.formatParams();
 
-    eventBus.$on('onClickLeft', this.back)
+    eventBus.$on("onClickLeft", this.back);
 
-    eventBus.$on('devList', this.updateList)
+    eventBus.$on("devList", this.updateList);
 
-    this.$once('hook:beforeDestroy', () => {
-      eventBus.$off('devList', this.updateList)
-      eventBus.$off('onClickLeft', this.back)
-    })
+    this.$once("hook:beforeDestroy", () => {
+      eventBus.$off("devList", this.updateList);
+      eventBus.$off("onClickLeft", this.back);
+    });
   },
 
-  mounted () {
+  mounted() {
     // 头部图标点击事件监听
-    eventBus.$on('onClickRight', (icon) => {
-      this.onClickRight(icon)
-    })
+    eventBus.$on("onClickRight", (icon) => {
+      this.onClickRight(icon);
+    });
   },
 
   methods: {
-    back () {
-      this.$router.push('/')
+    back() {
+      this.$router.push("/");
     },
-    updateList (data) {
-      const obj = data.find(item => item.id === this.id)
+    updateList(data) {
+      const obj = data.find((item) => item.id === this.id);
 
       if (obj) {
-        this.detailInfo = Object.assign(this.detailInfo, obj)
+        this.detailInfo = Object.assign(this.detailInfo, obj);
       }
     },
 
-    tapImg () {
-      this.count++
+    tapImg() {
+      this.count++;
       if (this.count >= 5) {
-        this.systemShow = true
+        this.systemShow = true;
       }
     },
 
-    orderNumberFormatter () {
-      const obj = this.scenes.find(item => item.value === this.detailInfo.playListNumber)
-      return obj ? obj.text : ''
+    orderNumberFormatter() {
+      const obj = this.scenes.find(
+        (item) => item.value === this.detailInfo.playListNumber
+      );
+      return obj ? obj.text : "";
     },
 
-    formatParams () {
+    formatParams() {
       for (const key in this.dataForm) {
         if (this.detailInfo[key] === undefined) {
-          if (key === 'lightBrightness') {
-            this.dataForm[key] = 0
+          if (key === "lightBrightness") {
+            this.dataForm[key] = 0;
           } else {
-            this.dataForm[key] = ''
+            this.dataForm[key] = "";
           }
-          continue
+          continue;
         }
-        this.dataForm[key] = this.detailInfo[key]
+        this.dataForm[key] = this.detailInfo[key];
       }
     },
     // 获取终端设备详情
-    getDeviceDetails (id) {
+    getDeviceDetails(id) {
       setTimeout(async () => {
         await devIceDetails(id)
-          .then(res => {
+          .then((res) => {
             if (res.data.stateOnline === 0) {
               Dialog.alert({
-                title: '提示',
-                message: '智能终端已离线'
+                title: "提示",
+                message: "智能终端已离线",
               }).then(() => {
                 // on close
-                this.$router.go(-1)
-              })
-              return
+                this.$router.go(-1);
+              });
+              return;
             }
-            this.detailInfo = res.data
-            this.stateOrientValue = res.data.stateOrient
-            this.ordernumber = res.data.playListNumber
+            this.detailInfo = res.data;
+            this.stateOrientValue = res.data.stateOrient;
+            this.ordernumber = res.data.playListNumber;
           })
-          .catch(e => {
-            console.log(e)
-          })
-        this.formatParams()
-      }, 1500)
+          .catch((e) => {
+            console.log(e);
+          });
+        this.formatParams();
+      }, 1500);
     },
     // 显示播放列表
-    toPlayList (id) {
-      this.$router.push({ path: '/playList', query: { info: JSON.stringify(this.detailInfo), from: 'deviceDetail' } })
+    toPlayList() {
+      this.$router.push({
+        path: "/playList",
+        query: { info: JSON.stringify(this.detailInfo), from: "deviceDetail" },
+      });
     },
     // 设置休眠状态
-    async setTimeControl () {
-      this.toast('设置中', 'loading', 0)
+    async setTimeControl() {
+      this.toast("设置中", "loading", 0);
       await setTime(this.id, this.dataForm)
-        .then(res => {
-          this.prompt(res.state)
+        .then((res) => {
+          this.prompt(res.state);
         })
-        .catch(e => {
-          console.log(e)
-          Toast.clear()
-        })
-      this.getDeviceDetails(this.id)
+        .catch((e) => {
+          console.log(e);
+          Toast.clear();
+        });
+      this.getDeviceDetails(this.id);
     },
     // 设置工作时间
-    async setTimeOpen () {
-      this.toast('设置中', 'loading', 0)
-      await this.setLightRequest()
-      this.getDeviceDetails(this.id)
+    async setTimeOpen() {
+      this.toast("设置中", "loading", 0);
+      await this.setLightRequest();
+      this.getDeviceDetails(this.id);
     },
     // 设置休息时间
-    async setTimeClose () {
-      this.toast('设置中', 'loading', 0)
-      await this.setLightRequest()
-      this.getDeviceDetails(this.id)
+    async setTimeClose() {
+      this.toast("设置中", "loading", 0);
+      await this.setLightRequest();
+      this.getDeviceDetails(this.id);
     },
 
-    setLightRequest () {
-      return light(this.id, { devid: this.detailInfo.id, deviceCode: this.detailInfo.code, ...this.dataForm })
-        .then(res => {
-          this.prompt(res.state)
+    setLightRequest() {
+      return light(this.id, {
+        devid: this.detailInfo.id,
+        deviceCode: this.detailInfo.code,
+        ...this.dataForm,
+      })
+        .then((res) => {
+          this.prompt(res.state);
         })
-        .catch(e => {
-          console.log(e)
-          Toast.clear()
-        })
+        .catch((e) => {
+          console.log(e);
+          Toast.clear();
+        });
     },
     // 光源参数
     // 设置光源控制
-    async setLight () {
-      this.toast('设置中', 'loading', 0)
+    async setLight() {
+      this.toast("设置中", "loading", 0);
       if (this.lightBrightness) {
-        this.dataForm.lightBrightness = 100
+        this.dataForm.lightBrightness = 100;
       } else {
-        this.dataForm.lightBrightness = 0
+        this.dataForm.lightBrightness = 0;
       }
-      await this.setLightRequest()
-      this.getDeviceDetails(this.id)
+      await this.setLightRequest();
+      this.getDeviceDetails(this.id);
     },
     // 设置播放方向
-    async setstateOrient () {
-      this.toast('设置中', 'loading', 0)
-      await direction(this.id, { deviceCode: this.detailInfo.code, devid: this.detailInfo.id, stateOrient: this.stateOrientValue })
-        .then(res => {
-          this.prompt(res.state)
+    async setstateOrient() {
+      this.toast("设置中", "loading", 0);
+      await direction(this.id, {
+        deviceCode: this.detailInfo.code,
+        devid: this.detailInfo.id,
+        stateOrient: this.stateOrientValue,
+      })
+        .then((res) => {
+          this.prompt(res.state);
         })
-        .catch(e => {
-          console.log(e)
-          Toast.clear()
-        })
-      this.getDeviceDetails(this.id)
+        .catch((e) => {
+          console.log(e);
+          Toast.clear();
+        });
+      this.getDeviceDetails(this.id);
     },
 
-    async setScenes () {
-      this.toast('设置中', 'loading', 0)
-      await orderNumber(this.id, { deviceCode: this.detailInfo.code, devid: this.detailInfo.id, playListNumber: this.orderNumber })
-        .then(res => {
-          this.prompt(res.state)
+    async setScenes() {
+      this.toast("设置中", "loading", 0);
+      await orderNumber(this.id, {
+        deviceCode: this.detailInfo.code,
+        devid: this.detailInfo.id,
+        playListNumber: this.orderNumber,
+      })
+        .then((res) => {
+          this.prompt(res.state);
         })
-        .catch(e => {
-          console.log(e)
-          Toast.clear()
-        })
-      this.getDeviceDetails(this.id)
+        .catch((e) => {
+          console.log(e);
+          Toast.clear();
+        });
+      this.getDeviceDetails(this.id);
     },
     // 设置声音
-    async setVolume () {
-      this.toast('设置中', 'loading', 0)
+    async setVolume() {
+      this.toast("设置中", "loading", 0);
       await volume(this.id, this.dataForm)
-        .then(res => {
-          this.prompt(res.state)
+        .then((res) => {
+          this.prompt(res.state);
         })
-        .catch(e => {
-          console.log(e)
-          Toast.clear()
-        })
-      this.getDeviceDetails(this.id)
+        .catch((e) => {
+          console.log(e);
+          Toast.clear();
+        });
+      this.getDeviceDetails(this.id);
     },
 
     // 设置开机动画
-    async setBootAnimation () {
-      this.toast('设置中', 'loading', 0)
+    async setBootAnimation() {
+      this.toast("设置中", "loading", 0);
       await bootAnimation(this.id, this.dataForm)
-        .then(res => {
-          this.prompt(res.state)
+        .then((res) => {
+          this.prompt(res.state);
         })
-        .catch(e => {
-          console.log(e)
-          Toast.clear()
-        })
-      this.getDeviceDetails(this.id)
+        .catch((e) => {
+          console.log(e);
+          Toast.clear();
+        });
+      this.getDeviceDetails(this.id);
     },
 
     // 设置信息提示
-    async setInfoAnimation () {
-      this.toast('设置中', 'loading', 0)
+    async setInfoAnimation() {
+      this.toast("设置中", "loading", 0);
       await infoAnimation(this.id, this.dataForm)
-        .then(res => {
-          this.prompt(res.state)
+        .then((res) => {
+          this.prompt(res.state);
         })
-        .catch(e => {
-          console.log(e)
-          Toast.clear()
-        })
-      this.getDeviceDetails(this.id)
+        .catch((e) => {
+          console.log(e);
+          Toast.clear();
+        });
+      this.getDeviceDetails(this.id);
     },
 
     // 系统设置
-    async setSystem (fn) {
-      console.log(fn)
-      this.toast('设置中', 'loading', 0)
+    async setSystem(fn) {
+      console.log(fn);
+      this.toast("设置中", "loading", 0);
       await this[fn](this.id)
-        .then(res => {
-          this.prompt(res.state)
-          this.getDeviceDetails(this.id)
+        .then((res) => {
+          this.prompt(res.state);
+          this.getDeviceDetails(this.id);
           // if (res.state === 1) {
           //   if ( fn !== 'uploadLog') {
           //     this.$router.go(-1)
           //   }
           // }
         })
-        .catch(e => {
-          console.log(e)
-          Toast.clear()
-        })
+        .catch((e) => {
+          console.log(e);
+          Toast.clear();
+        });
     },
     // 头部right-icon点击
-    onClickRight (icon) {
-      if (icon === 'question-o') {
-        this.$router.push({ path: '/question', query: { type: this.$route.path } })
-      } else if (icon === 'edit') {
-        this.$router.push({ path: '/deviceAddorEdit', query: { isAdd: false, info: this.detailInfo } })
+    onClickRight(icon) {
+      if (icon === "question-o") {
+        this.$router.push({
+          path: "/question",
+          query: { type: this.$route.path },
+        });
+      } else if (icon === "edit") {
+        this.$router.push({
+          path: "/deviceAddorEdit",
+          query: { isAdd: false, info: this.detailInfo },
+        });
       }
     },
     // 时间转换过滤器
-    formatter (type, val) {
-      if (type === 'hour') {
-        return `${val} 时`
-      } else if (type === 'minute') {
-        return `${val} 分`
+    formatter(type, val) {
+      if (type === "hour") {
+        return `${val} 时`;
+      } else if (type === "minute") {
+        return `${val} 分`;
       }
-      return val
+      return val;
     },
     // 弹出层弹出
-    showPopup (type) {
+    showPopup(type) {
       if (this.disabled) {
-        Toast('设备离线, 无法进行该操作')
-        return
+        Toast("设备离线, 无法进行该操作");
+        return;
       }
-      this.type = type
-      this.popupTitle = this.titleObj[type]
-      if (type === 'timeOpen' || type === 'timeClose') {
+      this.type = type;
+      this.popupTitle = this.titleObj[type];
+      if (type === "timeOpen" || type === "timeClose") {
         // 判断是否为禁用模式
-        if (this.timeDisabled) return
-        this.showPicker = true
-        this.timeShow = true
-        type === 'timeOpen' ? this.currentTime = this.detailInfo.timeOpen : this.currentTime = this.detailInfo.timeClose
+        if (this.timeDisabled) return;
+        this.showPicker = true;
+        this.timeShow = true;
+        type === "timeOpen"
+          ? (this.currentTime = this.detailInfo.timeOpen)
+          : (this.currentTime = this.detailInfo.timeClose);
       } else {
-        this.showPicker = true
-        this.timeShow = false
-        this.columns = this[type]
-        if (type === 'stateOrient') {
-          this.defaultIndex = stateOrient.findIndex(item => item.val === this.detailInfo.stateOrient)
-        } else if (type === 'scenes') {
-          this.defaultIndex = this.scenes.findIndex(item => item.value === this.detailInfo.playListNumber)
+        this.showPicker = true;
+        this.timeShow = false;
+        this.columns = this[type];
+        if (type === "stateOrient") {
+          this.defaultIndex = stateOrient.findIndex(
+            (item) => item.val === this.detailInfo.stateOrient
+          );
+        } else if (type === "scenes") {
+          this.defaultIndex = this.scenes.findIndex(
+            (item) => item.value === this.detailInfo.playListNumber
+          );
         }
       }
     },
     // 选择器确定回调函数
-    onConfirm (obj) {
-      if (this.type === 'stateOrient') {
-        this.stateOrientValue = obj.val
-      } else if (this.type === 'scenes') {
-        this.orderNumber = obj.value
+    onConfirm(obj) {
+      if (this.type === "stateOrient") {
+        this.stateOrientValue = obj.val;
+      } else if (this.type === "scenes") {
+        this.orderNumber = obj.value;
       } else {
-        this.dataForm[this.type] = obj.val
+        this.dataForm[this.type] = obj.val;
       }
-      console.log(this.dataForm)
-      this.showPicker = false
+      console.log(this.dataForm);
+      this.showPicker = false;
       // 调取函数 页面实时更新
-      this.controlFunction[this.type]()
+      this.controlFunction[this.type]();
     },
     // 时间选择器确定
-    onConfirmTime (val) {
-      this.dataForm[this.type] = val
+    onConfirmTime(val) {
+      this.dataForm[this.type] = val;
       // 数据转化fliters
-      this.showPicker = false
+      this.showPicker = false;
       // 调取函数 页面实时更新
-      this.controlFunction[this.type]()
+      this.controlFunction[this.type]();
     },
     // g--mb转化
-    filtersStorage (val) {
-      if (typeof (val) === 'number' && !isNaN(val)) {
-        return (val / 1024).toFixed(2)
+    filtersStorage(val) {
+      if (typeof val === "number" && !isNaN(val)) {
+        return (val / 1024).toFixed(2);
       } else {
-        return 0
+        return 0;
       }
     },
-    prompt (state) { // 1成功，-1失败，-3 执行超时
+    prompt(state) {
+      // 1成功，-1失败，-3 执行超时
       if (state === 1) {
-        this.toast('设置成功', 'success')
+        this.toast("设置成功", "success");
       } else if (state === -3) {
-        this.toast('执行超时', 'fail')
+        this.toast("执行超时", "fail");
       } else if (state === -1) {
-        this.toast('执行失败', 'fail')
+        this.toast("执行失败", "fail");
       } else {
-        this.toast('操作失败，请重试！', 'fail')
+        this.toast("操作失败，请重试！", "fail");
       }
-    }
-  }
-
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -624,50 +729,51 @@ $bg0: #fff;
 $bg1: #1989fa;
 $bg2: #f6f6f6;
 $color1: #000;
-.deviceInfo{
+.deviceInfo {
   display: flex;
   height: 100%;
   width: 100%;
   flex-direction: column;
   background: $bg2;
 }
-.info-status-box{
+.info-status-box {
   // background-image: url('../../assets/img/deviceBG.png');
   background-size: 100% 100%;
-  margin-bottom: .1rem;
+  margin-bottom: 0.1rem;
   background: $bg0;
   box-sizing: border-box;
-  padding-right: .13rem;
+  padding-right: 0.13rem;
 }
-.infoitem{
+.infoitem {
   flex: 1;
   overflow-x: hidden;
   overflow-y: auto;
   background: $bg2;
 }
-.infoItem-box{
+.infoItem-box {
   width: 100%;
-  margin-bottom: .1rem;
-  & .van-cell__value,.van-cell__title{
-    color:$color1;
+  margin-bottom: 0.1rem;
+  & .van-cell__value,
+  .van-cell__title {
+    color: $color1;
   }
-  & .van-cell{
-    padding: .1rem .2rem;
+  & .van-cell {
+    padding: 0.1rem 0.2rem;
   }
 }
-.title{
+.title {
   display: flex;
   align-items: center;
-  &_bar{
+  &_bar {
     display: inline-block;
     vertical-align: middle;
-    width: .045rem;
-    height: .18rem;
+    width: 0.045rem;
+    height: 0.18rem;
     background: $bg1;
   }
-  &_word{
-    font-size: .16rem;
-    padding-left: .09rem;
+  &_word {
+    font-size: 0.16rem;
+    padding-left: 0.09rem;
   }
 }
 .bg-0 {
@@ -676,48 +782,48 @@ $color1: #000;
 .bg-1 {
   background: $bg2;
 }
-.volume-box{
- height: .2rem;
+.volume-box {
+  height: 0.2rem;
   display: -webkit-box;
   width: 2.4rem;
   display: -ms-flexbox;
   display: flex;
   background: #fff;
-  padding-right: .1rem;
+  padding-right: 0.1rem;
   position: relative;
-  top: .1rem;
+  top: 0.1rem;
 }
-.system-btns{
+.system-btns {
   width: 100%;
   height: 1.35rem;
   box-sizing: border-box;
-  padding: .19rem .18rem .03rem .18rem;
+  padding: 0.19rem 0.18rem 0.03rem 0.18rem;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   &-item {
-    height: .38rem;
+    height: 0.38rem;
     width: 1.56rem;
-    margin-bottom: .17rem;
+    margin-bottom: 0.17rem;
   }
 }
-.volume .van-cell__value{
+.volume .van-cell__value {
   overflow: visible;
 }
-.cell-slot{
+.cell-slot {
   display: flex;
   align-items: center;
-  &-left{
+  &-left {
     text-align: right;
-    width: .3rem;
-    margin-right: .05rem;
+    width: 0.3rem;
+    margin-right: 0.05rem;
   }
-  &-right{
-    width: .3rem;
-    margin-left: .05rem;
+  &-right {
+    width: 0.3rem;
+    margin-left: 0.05rem;
   }
 }
-.active{
+.active {
   color: #1989fa;
 }
 </style>

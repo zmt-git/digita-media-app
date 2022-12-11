@@ -1,9 +1,14 @@
 <template>
   <div class="form">
-    <van-icon v-if="showBack" name="arrow-left" class="back" @click="back"></van-icon>
+    <van-icon
+      v-if="showBack"
+      name="arrow-left"
+      class="back"
+      @click="back"
+    ></van-icon>
     <p class="form_title">
       <span class="form_title--bar"></span>
-      <span>{{title}}</span>
+      <span>{{ title }}</span>
     </p>
     <van-form class="form-content" ref="form">
       <template v-for="(item, index) in formList">
@@ -11,34 +16,35 @@
           center
           clearable
           clickable
-          :readonly='item.readonly !== undefined ? item.readonly : false'
+          :readonly="item.readonly !== undefined ? item.readonly : false"
           v-model="dataForm[item.model]"
-          :type='item.type ? item.type : "text"'
+          :type="item.type ? item.type : 'text'"
           :label="item.label ? item.label : ''"
-          :key='index'
+          :key="index"
           :name="item.model"
           :left-icon="item.icon ? item.icon : ''"
           :placeholder="item.placeholder ? item.placeholder : '请输入内容'"
           :rules="item.rules ? item.rules : []"
           @blur="itemBlur(item.model)"
           @touchstart.native.stop="itemTouchstart(item.model)"
-          >
-            <template v-if="item.hasBtn">
-              <van-button
-                class="verBtn"
-                type="info"
-                slot="button"
-                size="small"
-                :disabled="item.btnOptions.disabled"
-                @click.stop="item.btnOptions.callBack">
-                {{item.btnOptions.name}}
-              </van-button>
-            </template>
+        >
+          <template v-if="item.hasBtn">
+            <van-button
+              class="verBtn"
+              type="info"
+              slot="button"
+              size="small"
+              :disabled="item.btnOptions.disabled"
+              @click.stop="item.btnOptions.callBack"
+            >
+              {{ item.btnOptions.name }}
+            </van-button>
+          </template>
         </van-field>
       </template>
       <div class="btn">
         <van-button block type="info" @click="onSubmit">
-          {{btnName}}
+          {{ btnName }}
         </van-button>
       </div>
     </van-form>
@@ -48,120 +54,120 @@
 </template>
 
 <script>
-import slogan from './slogan'
+import slogan from "./slogan";
 export default {
-  name: 'form-code',
+  name: "form-code",
   components: {
-    slogan
+    slogan,
   },
   props: {
     title: {
       type: String,
-      default: '测试'
+      default: "测试",
     },
     btnName: {
       type: String,
-      default: '提交'
+      default: "提交",
     },
     formList: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     dataForm: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     showBack: {
       type: Boolean,
-      default: true
+      default: true,
     },
     backFn: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   methods: {
-    onSubmit () {
-      this.$emit('onSubmit')
+    onSubmit() {
+      this.$emit("onSubmit");
     },
-    back () {
+    back() {
       if (this.backFn) {
-        this.$emit('back')
-        return
+        this.$emit("back");
+        return;
       }
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
-    itemBlur (model) {
-      this.$emit('blur', model)
+    itemBlur(model) {
+      this.$emit("blur", model);
     },
-    itemTouchstart (model) {
-      document.activeElement.blur()
-      this.$emit('touchstart', model)
-    }
-  }
-}
+    itemTouchstart(model) {
+      document.activeElement.blur();
+      this.$emit("touchstart", model);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 $color1: #398bfa;
-.form{
+.form {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  padding:.2rem .45rem 0;
+  padding: 0.2rem 0.45rem 0;
   display: flex;
   flex-direction: column;
-  &_title{
-    height: .88rem;
+  &_title {
+    height: 0.88rem;
     width: 100%;
     box-sizing: border-box;
     line-height: 0.88rem;
-    font-size: .32rem;
+    font-size: 0.32rem;
     font-weight: 600;
-    &--bar{
-      width: .1rem;
-      height: .36rem;
-      margin-right: .18rem;
+    &--bar {
+      width: 0.1rem;
+      height: 0.36rem;
+      margin-right: 0.18rem;
       background: $color1;
     }
-    & span{
+    & span {
       display: inline-block;
       vertical-align: middle;
     }
   }
-  &-content{
+  &-content {
     width: 100%;
-    & .van-cell{
-      padding: .12rem 0;
+    & .van-cell {
+      padding: 0.12rem 0;
     }
   }
 }
-.btn{
+.btn {
   width: 100%;
-  border-radius: .08rem;
+  border-radius: 0.08rem;
   overflow: hidden;
-  margin-top: .52rem;
-  & button{
-  height: .38rem;
-  line-height: .38rem;
+  margin-top: 0.52rem;
+  & button {
+    height: 0.38rem;
+    line-height: 0.38rem;
   }
 }
-.verBtn{
-  height: .235rem;
-  line-height: .235rem;
+.verBtn {
+  height: 0.235rem;
+  line-height: 0.235rem;
 }
-.back{
-  font-size: .2rem;
+.back {
+  font-size: 0.2rem;
   position: fixed;
-  top: .285rem;
-  left: .055rem;
+  top: 0.285rem;
+  left: 0.055rem;
   z-index: 1;
 }
-.slogan{
+.slogan {
   flex: 1;
   box-sizing: border-box;
   align-items: flex-end;
-  padding-bottom: .39rem;
+  padding-bottom: 0.39rem;
   display: flex;
   justify-content: center;
 }

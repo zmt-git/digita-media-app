@@ -1,10 +1,10 @@
-import { getToken } from './auth'
-import { mediaSaveUrl } from '../api/media/uploader'
+import { getToken } from "./auth";
+import { mediaSaveUrl } from "../api/media/uploader";
 /* eslint-disable */
 // 上传插件对象
 let fileTransfer = {}
 // 上传服务器地址
-let uri = window.URLS.VUE_APP_BASE_URL + mediaSaveUrl
+let uri = process.env.VUE_APP_BASE_URL + mediaSaveUrl
 /**
  * @description上传媒体方法
  * @param {*} _this vue对象this

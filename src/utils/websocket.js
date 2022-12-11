@@ -1,136 +1,138 @@
-import { getToken } from '@/utils/auth'
-import eventBus from '@/utils/eventBus'
-import store from '@/store/index'
+import { getToken } from "@/utils/auth";
+import eventBus from "@/utils/eventBus";
+import store from "@/store/index";
 
-const heartTime = 30 * 1000
+const heartTime = 30 * 1000;
 
-const reconnectTime = 3 * 1000
+const reconnectTime = 3 * 1000;
 
-const reconnectMaxNum = 10
+const reconnectMaxNum = 10;
 
-let websocketInstance = {}
+let websocketInstance = {};
 
-let options = {}
+let options = {};
 
-let reconnectNum = 0
+let reconnectNum = 0;
 
-let reconnectTimer = null
+let reconnectTimer = null;
 
-let heartTimer = null
+let heartTimer = null;
 
-function getUrl (optionsObj) {
-  let url = ''
+function getUrl(optionsObj) {
+  let url = "";
   if (optionsObj && optionsObj.url) {
-    url = optionsObj.url
+    url = optionsObj.url;
   } else {
-    url = window.URLS.VUE_APP_BASE_WS
-    options.url = window.URLS.VUE_APP_BASE_WS
+    url = window.URLS.VUE_APP_BASE_WS;
+    options.url = window.URLS.VUE_APP_BASE_WS;
   }
-  return `${url + getToken()}?token=${getToken()}&userId=${store.getters.user.userId}`
+  return `${url + getToken()}?token=${getToken()}&userId=${
+    store.getters.user.userId
+  }`;
 }
 
-export function reconnect () {
+export function reconnect() {
   if (reconnectNum > reconnectMaxNum) {
-    console.log('websocket重连失败')
-    reconnectTimer && clearTimeout(reconnectTimer)
-    return
+    console.log("websocket重连失败");
+    reconnectTimer && clearTimeout(reconnectTimer);
+    return;
   }
-  initWebSocket(options)
+  initWebSocket(options);
 
-  reconnectNum++
+  reconnectNum++;
 
-  console.log('重连:' + reconnectNum + '次')
+  console.log("重连:" + reconnectNum + "次");
 }
 
-function keepAliveHeart () {
+function keepAliveHeart() {
   heartTimer = setTimeout(() => {
-    console.log('发送心跳')
-    send(JSON.stringify({ data: { code: 'heart' } }))
-    heartTimer && clearTimeout(heartTimer)
-    keepAliveHeart()
-  }, heartTime)
+    console.log("发送心跳");
+    send(JSON.stringify({ data: { code: "heart" } }));
+    heartTimer && clearTimeout(heartTimer);
+    keepAliveHeart();
+  }, heartTime);
 }
 
-export function onOpen () {
-  console.log('WebSocket onOpen')
-  reconnectTimer && clearTimeout(reconnectTimer)
-  keepAliveHeart()
+export function onOpen() {
+  console.log("WebSocket onOpen");
+  reconnectTimer && clearTimeout(reconnectTimer);
+  keepAliveHeart();
 }
 
-export function onMessage (agentData) {
-  console.log(agentData.data)
+export function onMessage(agentData) {
+  console.log(agentData.data);
   try {
-    const jsonData = agentData.data
+    const jsonData = agentData.data;
 
-    const content = JSON.parse(jsonData)
+    const content = JSON.parse(jsonData);
 
-    const code = content.code
+    const code = content.code;
 
-    if (code === 'devStatus') {
-      eventBus.$emit('devStatus', content.data)
+    if (code === "devStatus") {
+      eventBus.$emit("devStatus", content.data);
     }
 
-    if (code === 'devList') {
-      eventBus.$emit('devList', content.data)
+    if (code === "devList") {
+      eventBus.$emit("devList", content.data);
     }
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
 }
 
-export function onClose () {
-  console.log('WebSocket closed')
-  heartTimer && clearTimeout(heartTimer)
+export function onClose() {
+  console.log("WebSocket closed");
+  heartTimer && clearTimeout(heartTimer);
 }
 
-export function onError (e) {
-  console.log(e)
-  reconnectTimer && clearTimeout(reconnectTimer)
+export function onError(e) {
+  console.log(e);
+  reconnectTimer && clearTimeout(reconnectTimer);
   reconnectTimer = setTimeout(() => {
-    reconnect()
-  }, reconnectTime)
+    reconnect();
+  }, reconnectTime);
 }
 
-export async function initWebSocket (optionsObj) {
-  if (typeof WebSocket === 'undefined') {
-    alert('您的浏览器不支持WebSocket')
-    return
+export async function initWebSocket(optionsObj) {
+  if (typeof WebSocket === "undefined") {
+    alert("您的浏览器不支持WebSocket");
+    return;
   }
 
   if (Object.keys(store.getters.user).length <= 0) {
-    await store.dispatch('getUser')
+    await store.dispatch("getUser");
   }
-  console.log('init websocket')
+  console.log("init websocket");
 
-  options = optionsObj || {}
+  options = optionsObj || {};
 
-  const url = getUrl(options)
+  const url = getUrl(options);
 
-  websocketInstance = new WebSocket(url)
+  websocketInstance = new WebSocket(url);
 
-  websocketInstance.onopen = onOpen
+  websocketInstance.onopen = onOpen;
 
-  websocketInstance.onmessage = onMessage
+  websocketInstance.onmessage = onMessage;
 
-  websocketInstance.onclose = onClose
+  websocketInstance.onclose = onClose;
 
-  websocketInstance.onerror = onError
+  websocketInstance.onerror = onError;
 }
 
-export function send (msg) {
-  websocketInstance.send(msg)
+export function send(msg) {
+  websocketInstance.send(msg);
 }
 
-export function close () {
+export function close() {
   try {
-    websocketInstance.close()
+    websocketInstance.close();
   } catch (e) {
     // console.log(e)
   }
 }
 
 // 销毁websocket连接
-export function websocketDestroy () {
-  eventBus.$off('updateDeviceStatus')
-  websocketInstance = {}
+export function websocketDestroy() {
+  eventBus.$off("updateDeviceStatus");
+  websocketInstance = {};
 }

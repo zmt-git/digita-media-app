@@ -6,11 +6,11 @@
           active-color="#13ce66"
           inactive-color="#ee0a24"
           size="24"
-          :disabled='disabled'
-          v-model='lightColor'
-          :active-value='1'
-          :inactive-value='0'
-          @change='onChange'
+          :disabled="disabled"
+          v-model="lightColor"
+          :active-value="1"
+          :inactive-value="0"
+          @change="onChange"
         />
       </template>
     </van-cell>
@@ -19,125 +19,126 @@
         <playItem
           v-for="item in mediaList"
           :key="item.mediaId"
-          :index='index'
-          :playInfo='item'
-          :disabled='disabled'
-          @changeOrder='changeOrder'
-          @changeTime='changeTime'
-          @deleteMedia='deleteMedia'
-          :info='info'
-          :activeName='activeName'
-          ></playItem>
+          :index="index"
+          :playInfo="item"
+          :disabled="disabled"
+          @changeOrder="changeOrder"
+          @changeTime="changeTime"
+          @deleteMedia="deleteMedia"
+          :info="info"
+          :activeName="activeName"
+        ></playItem>
       </transition-group>
-          <playItem
-            key="add"
-            isAdd
-            :activeName='activeName'
-            :index='index'
-            :playInfo='{}'
-            :info='info'
-            >
-            </playItem>
+      <playItem
+        key="add"
+        isAdd
+        :activeName="activeName"
+        :index="index"
+        :playInfo="{}"
+        :info="info"
+      >
+      </playItem>
     </div>
   </div>
 </template>
 
 <script>
-import playItem from './playItem'
-import { Dialog } from 'vant'
+import playItem from "./playItem";
+import { Dialog } from "vant";
 export default {
-  name: 'scenes-list',
+  name: "scenes-list",
 
   props: {
     list: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     index: {
       type: Number,
-      default: 1
+      default: 1,
     },
     disabled: {
       type: Boolean,
-      default: true
+      default: true,
     },
     info: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     activeName: {
       type: String,
-      default: ''
+      default: "",
     },
     hasSwitch: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   components: { playItem },
 
   computed: {
-    mediaList () {
+    mediaList() {
       try {
-        return JSON.parse(this.list[this.index].content)
+        return JSON.parse(this.list[this.index].content);
       } catch (e) {
-        return []
+        return [];
       }
     },
     lightColor: {
-      get () {
+      get() {
         if (this.list.length > 0 && this.index !== undefined) {
-          return this.list[this.index] ? this.list[this.index].color : 0
+          return this.list[this.index] ? this.list[this.index].color : 0;
         } else {
-          return 0
+          return 0;
         }
       },
-      set (val) {
-        this.list[this.index].color = val
-      }
-    }
+      set(val) {
+        // eslint-disable-next-line vue/no-mutating-props
+        this.list[this.index].color = val;
+      },
+    },
   },
 
   methods: {
-    changeOrder (direction, target) {
-      this.$emit('changeOrder', direction, target, this.index)
+    changeOrder(direction, target) {
+      this.$emit("changeOrder", direction, target, this.index);
     },
 
-    changeTime (value, info, detail) {
-      this.$emit('changeTime', value, info, this.index)
+    changeTime(value, info) {
+      this.$emit("changeTime", value, info, this.index);
     },
 
-    deleteMedia (info) {
+    deleteMedia(info) {
       Dialog.confirm({
-        title: '提示',
-        message: '在播放列表中删除该媒体吗？'
+        title: "提示",
+        message: "在播放列表中删除该媒体吗？",
       })
         .then(() => {
-          this.$emit('deleteMedia', info, this.index)
+          this.$emit("deleteMedia", info, this.index);
         })
         .catch(() => {
           // on cancel
-        })
+        });
     },
-    onChange (val) {
-      this.$emit('changeColor', this.list, this.index, val)
-    }
-  }
-}
+    onChange(val) {
+      this.$emit("changeColor", this.list, this.index, val);
+    },
+  },
+};
 </script>
 
 <style scoped>
 .cell-move {
   transition: transform 1s;
 }
-.releaseName{
+.releaseName {
   color: #000;
 }
-.primary{
+.primary {
   background: #1989fa;
 }
-.danger{
+.danger {
   background: #ee0a24;
 }
 </style>
