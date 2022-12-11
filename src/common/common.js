@@ -69,6 +69,13 @@ export const lightControl = Object.freeze([
   { val: 1, text: "手动" },
 ]);
 
+export const orientProjection = Object.freeze([
+  { val: 1, text: "正向" },
+  { val: 2, text: "右转" },
+  { val: 3, text: "反向" },
+  { val: 4, text: "左转" },
+]);
+
 export const stateOrient = Object.freeze([
   { val: 0, text: "横屏向右" },
   { val: 1, text: "竖屏向上" },

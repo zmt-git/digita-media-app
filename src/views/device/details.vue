@@ -67,7 +67,7 @@
         </van-cell>
         <van-cell title="设备型号" :value="detailInfo.type" />
         <van-cell title="设备编号" :value="detailInfo.code" />
-        <van-cell title="安装方向" :value="orient" />
+        <!-- <van-cell title="安装方向" :value="orient" /> -->
         <van-cell title="供电方式" :value="power" />
       </div>
 
@@ -81,6 +81,13 @@
             </p>
           </template>
         </van-cell>
+        <van-cell
+          title="投影方向"
+          :disabled="disabled"
+          is-link
+          @click="showPopup('stateOrient')"
+          :value="stateOrientValue | stateOrientFilter"
+        />
         <!--        <van-cell center title="启用休眠">-->
         <!--          <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.timeControl" @change='setTimeControl' slot="right-icon" size="24" />-->
         <!--        </van-cell>-->
@@ -244,6 +251,7 @@ import {
   scenesOptions,
   orientArr,
   powerArr,
+  orientProjection,
 } from "@/common/common";
 export default {
   name: "deviceDetails",
@@ -301,6 +309,20 @@ export default {
     hasOrient() {
       return this.detailInfo.type === "ELF-A";
     },
+    getType() {
+      return this.detailInfo.type
+        ? this.detailInfo.type.split("-").shift()
+        : "";
+    },
+    orientOptions() {
+      if (this.getType === "TB") return this.getTBorient;
+      return orientProjection;
+    },
+    getTBorient() {
+      return orientProjection.filter(
+        (item) => item.val === 1 || item.val === 3
+      );
+    },
   },
   data() {
     const that = this;
@@ -313,7 +335,7 @@ export default {
       reset: reset,
       id: null,
       lightBrightness: false,
-      defaultIndex: [0],
+      defaultIndex: 0,
       detailInfo: {},
       stateOrientObj: {},
       timeDefault: [0, 0],
@@ -330,7 +352,7 @@ export default {
         timeOpen: "唤醒时间",
         lightControl: "光源控制",
         lightBrightness: "光源亮度",
-        stateOrient: "画面方向",
+        stateOrient: "投影方向",
         scenes: "切换场景",
       },
       dataForm: {
@@ -366,7 +388,7 @@ export default {
     },
     // 画面方向
     stateOrientFilter(val) {
-      const obj = stateOrient.find((item) => item.val === val);
+      const obj = orientProjection.find((item) => item.val === val);
       return obj ? obj.text : "";
     },
     // 光源控制
@@ -650,7 +672,7 @@ export default {
     // 弹出层弹出
     showPopup(type) {
       if (this.disabled) {
-        Toast("设备离线, 无法进行该操作");
+        Toast.fail("设备离线");
         return;
       }
       this.type = type;
@@ -667,8 +689,10 @@ export default {
         this.showPicker = true;
         this.timeShow = false;
         this.columns = this[type];
+
         if (type === "stateOrient") {
-          this.defaultIndex = stateOrient.findIndex(
+          this.columns = this.orientOptions;
+          this.defaultIndex = this.orientOptions.findIndex(
             (item) => item.val === this.detailInfo.stateOrient
           );
         } else if (type === "scenes") {
@@ -687,7 +711,6 @@ export default {
       } else {
         this.dataForm[this.type] = obj.val;
       }
-      console.log(this.dataForm);
       this.showPicker = false;
       // 调取函数 页面实时更新
       this.controlFunction[this.type]();

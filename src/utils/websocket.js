@@ -23,8 +23,8 @@ function getUrl(optionsObj) {
   if (optionsObj && optionsObj.url) {
     url = optionsObj.url;
   } else {
-    url = window.URLS.VUE_APP_BASE_WS;
-    options.url = window.URLS.VUE_APP_BASE_WS;
+    url = process.env.VUE_APP_BASE_WS;
+    options.url = process.env.VUE_APP_BASE_WS;
   }
   return `${url + getToken()}?token=${getToken()}&userId=${
     store.getters.user.userId

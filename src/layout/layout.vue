@@ -120,7 +120,7 @@ export default {
 }
 .contain {
   width: 100%;
-  flex: 1;
+  height: calc(100% - 0.46rem);
   overflow: hidden;
   position: relative;
   & > div {

@@ -6450,7 +6450,7 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-vant@^2.12.22:
+vant@^2.12.53:
   version "2.12.53"
   resolved "https://registry.npmmirror.com/vant/-/vant-2.12.53.tgz#d8cc479a044c415b2e3d216a41ee3b7857730770"
   integrity sha512-f/wSWMCm/fd8bvm2QfPkpPqYUn8gwmBGw3DxAUPSTd/5prc1cRn23HEak8LDMJ5FmfW9mp7G5vdGlnEYCtww8Q==

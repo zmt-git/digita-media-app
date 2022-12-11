@@ -1,6 +1,5 @@
 // eslint-disable-next-line no-unused-vars
 import { Toast, Dialog } from "vant";
-import eventBus from "@/utils/eventBus";
 export default {
   data() {
     return {
@@ -15,12 +14,7 @@ export default {
       },
     };
   },
-  mounted() {
-    this.$once("hook:beforeDestroy", () => {
-      eventBus.$off("onClickRight");
-      eventBus.$off("onClickLeft");
-    });
-  },
+
   methods: {
     // 提示函数
     toast(msg, type = "text", duration = 1500, forbidClick = true) {

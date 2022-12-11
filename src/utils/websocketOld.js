@@ -12,7 +12,7 @@ export async function initWebSocket(moudel = "devStatus") {
     await store.dispatch("getUser");
   }
   websock[moudel] = new WebSocket(
-    window.URLS.VUE_APP_BASE_WS +
+    process.env.VUE_APP_BASE_WS +
       `${getToken()}?token=${getToken()}&userId=${store.getters.user.userId}`
   );
   websock[moudel].onopen = websocketonopen;

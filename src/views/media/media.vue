@@ -6,7 +6,12 @@
       </div>
       <div class="my-media-store">
         <p class="my-media-store--name">云空间</p>
-        <div class="my-media-store--bar van-hairline--surround"></div>
+        <div class="my-media-store--bar van-hairline--surround">
+          <div
+            class="my-media-store--inner"
+            :style="{ width: storageUsedPrecent }"
+          ></div>
+        </div>
         <p class="my-media-store--num">
           <span class="fl"
             >{{ (storageTotal - storageUsed) | filterstorage }}/{{
@@ -113,6 +118,7 @@ import eventBus from "@/utils/eventBus";
 import common from "@/mixins/common";
 import { mapGetters } from "vuex";
 import { videoFrame } from "@/oss/ossconfig";
+import { getImageInfo } from "@/utils";
 // 组件
 import mediaList from "./components/mediaList";
 import RefreshLoad from "@/components/RefreshLoad/RefreshLoad";
@@ -120,6 +126,7 @@ import RefreshLoad from "@/components/RefreshLoad/RefreshLoad";
 import { getMediaList } from "@/api/media/media";
 import { getUserInfo } from "@/api/system/system";
 import { uploadMedia, mediaSave } from "@/api/media/uploader";
+
 export default {
   mixins: [common],
   components: {
@@ -297,10 +304,11 @@ export default {
         });
         // 上传媒体至视频服务器
         const res = await Promise.allSettled(promiseUpload);
-        res.forEach((item) => {
-          const p = this.createInfoPromise(item.value, item.value.file);
+
+        for (let i = 0; i < res.length; i++) {
+          const p = this.createInfoPromise(res[i].value, res[i].value.file);
           promiseInfo.push(p);
-        });
+        }
 
         // 上传媒体信息
         await Promise.allSettled(promiseInfo).catch((e) => console.log(e));
@@ -366,14 +374,14 @@ export default {
     },
 
     // 上传媒体信息
-    createInfoPromise(res, file) {
-      const dataForm = this.getSaveParams(res, file);
+    async createInfoPromise(res, file) {
+      const dataForm = await this.getSaveParams(res, file);
 
       return this.saveMediaRequest(dataForm);
     },
 
     // 获取上传媒体信息参数
-    getSaveParams(res, file) {
+    async getSaveParams(res, file) {
       const dataForm = {};
       const type = file.type.split("/").pop();
       const name =
@@ -382,6 +390,10 @@ export default {
         new Date().getTime() +
         "." +
         type;
+      const obj = await getImageInfo(file);
+
+      dataForm.width = obj.width;
+      dataForm.height = obj.height;
       dataForm.name = name;
       dataForm.size = file.size / 1024;
       dataForm.mediaType = this.mediaType[type];
@@ -448,6 +460,11 @@ $bgc: #f6f6f6;
       margin: 0.1rem 0;
       border-color: #929292;
       height: 0.06rem;
+    }
+    &--inner {
+      width: 0;
+      height: 0.06rem;
+      background: #1989f9;
     }
     &--num {
       font-size: 0.13rem;

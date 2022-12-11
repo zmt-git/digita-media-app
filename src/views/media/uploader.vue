@@ -27,7 +27,7 @@ export default {
   data() {
     return {
       fileList: [],
-      accept: "image/bmp, image/jpeg,image/gif",
+      accept: "image/bmp,image/jpeg,image/png",
     };
   },
   methods: {

@@ -1,7 +1,6 @@
 <template>
   <div class="code">
-    <TitleBar :title="title"></TitleBar>
-    <van-form @submit="onSubmit">
+    <van-form @submit="onSubmit" :show-error-message="false">
       <van-field
         v-if="isAdd"
         id="device-code-input"
@@ -11,7 +10,6 @@
         label="设备编号"
         required
         placeholder="请输入设备编号"
-        :show-error-message="false"
         :rules="[
           { required: true, message: '请输入设备编号' },
           { validator: codeValidator, message: '设备编号已注册！' },
@@ -25,8 +23,8 @@
         required
         placeholder="请选择设备类型"
         readonly
-        :show-error-message="false"
         @click="show('type')"
+        :rules="[{ required: true, message: '请选择设备类型' }]"
       />
       <van-field
         v-model="dataForm.location"
@@ -34,7 +32,6 @@
         label="安装位置"
         required
         placeholder="请输入安装位置"
-        :show-error-message="false"
         :rules="[{ required: true, message: '请输入安装位置' }]"
       />
       <van-field
@@ -43,7 +40,6 @@
         label="设备名称"
         required
         placeholder="请输入设备名称"
-        :show-error-message="false"
         :rules="[{ required: true, message: '请填写设备名称' }]"
       />
       <!-- <van-field
@@ -68,6 +64,7 @@
         :show-error-message="false"
         readonly
         @click="show('power')"
+        :rules="[{ required: true, message: '请选择供电方式' }]"
       />
       <div class="btn">
         <van-button
@@ -85,7 +82,7 @@
     </van-button>
     <van-popup v-model="showPicker" position="bottom">
       <van-picker
-        title="标题"
+        :title="titlePop"
         show-toolbar
         :columns="columns"
         @confirm="onConfirm"
@@ -99,7 +96,6 @@
 import { Toast, ImagePreview } from "vant";
 import common from "@/mixins/common";
 // components
-import TitleBar from "@/components/TitleBar/TitleBar";
 // api
 import { save, deviceCheckCode } from "@/api/device/device";
 
@@ -108,12 +104,15 @@ export default {
   name: "forgetWord",
   mixins: [common],
   components: {
-    TitleBar,
     [ImagePreview.Component.name]: ImagePreview.Component,
+  },
+  computed: {
+    titlePop() {
+      return this.currentType === "power" ? "供电方式" : "设备类型";
+    },
   },
   data() {
     return {
-      title: "智能终端认证",
       showPicker: false,
       msgStatus: 0, // 0隐藏，1成功 绿色
       currentType: "type",
@@ -137,7 +136,11 @@ export default {
 
   mounted() {
     this.isAdd = this.$route.query.isAdd === "true";
-
+    if (this.isAdd) {
+      this.$route.meta.title = "智能终端添加";
+    } else {
+      this.$route.meta.title = "智能终端修改";
+    }
     this.setFormValue();
   },
   methods: {
