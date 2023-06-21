@@ -26,9 +26,9 @@
               @changeOrder="changeOrder"
               @deleteMedia="deleteMedia"
               @changeTime="changeTime"
+              @changeColor="changeColor"
             >
             </scenes-list>
-            <!-- @changeColor="changeColor" -->
           </van-tab>
         </template>
       </van-tabs>

@@ -60,7 +60,7 @@ export default {
         StatusBar.styleDefault();
       }
     } catch (e) {
-      // console.log(e)
+      console.log(e);
     }
   },
   watch: {
@@ -87,7 +87,7 @@ export default {
             StatusBar.styleDefault();
           }
         } catch (e) {
-          // console.log(e)
+          console.log(e);
         }
       },
       immediate: true,

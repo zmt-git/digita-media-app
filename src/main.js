@@ -23,15 +23,15 @@ Vue.config.productionTip = false;
 
 Vue.use(vueTouch);
 Vue.use(Vant);
-// // cordova设备准备完成初始化vue对象
-// document.addEventListener('deviceready', onDeviceReady, false)
-// // 初始化vue对象
-// function onDeviceReady () {
+// cordova设备准备完成初始化vue对象
+// document.addEventListener("deviceready", onDeviceReady, false);
+// 初始化vue对象
+// function onDeviceReady() {
 //   new Vue({
 //     router,
 //     store,
-//     render: h => h(App)
-//   }).$mount('#app')
+//     render: (h) => h(App),
+//   }).$mount("#app");
 // }
 new Vue({
   router,

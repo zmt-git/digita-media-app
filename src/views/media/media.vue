@@ -14,7 +14,7 @@
         </div>
         <p class="my-media-store--num">
           <span class="fl"
-            >{{ (storageTotal - storageUsed) | filterstorage }}/{{
+            >{{ storageUsed | filterstorage }}/{{
               storageTotal | filterstorage
             }}</span
           >

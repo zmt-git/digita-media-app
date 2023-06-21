@@ -125,7 +125,7 @@ export default {
         code: "",
         name: "",
         type: "",
-        stateOrient: 1,
+        // stateOrient: 1,
         power: null,
       },
       isAdd: true,
@@ -150,7 +150,7 @@ export default {
         this.dataForm.name = "";
         this.dataForm.code = "";
         this.dataForm.type = "";
-        this.dataForm.stateOrient = null;
+        // this.dataForm.stateOrient = null;
         this.dataForm.power = null;
         this.title = "请输入信息";
         this.toastInfo = "认证";
@@ -160,7 +160,7 @@ export default {
         this.dataForm.name = this.info.name;
         this.dataForm.code = this.info.code;
         this.dataForm.type = this.info.type;
-        this.dataForm.stateOrient = this.info.stateOrient;
+        // this.dataForm.stateOrient = this.info.stateOrient;
         this.dataForm.power = this.power.type;
         this.title = "请修改信息";
         this.toastInfo = "修改";
@@ -189,10 +189,10 @@ export default {
     getParams() {
       const copyData = JSON.parse(JSON.stringify(this.dataForm));
       if (this.isAdd) {
-        copyData.stateOrient = this.findVal(
-          orientArr,
-          this.dataForm.stateOrient
-        );
+        // copyData.stateOrient = this.findVal(
+        //   orientArr,
+        //   this.dataForm.stateOrient
+        // );
         copyData.power = this.findVal(powerArr, this.dataForm.power);
       }
       if (this.isAdd) {

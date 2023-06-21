@@ -7,6 +7,9 @@ function resolve(dir) {
 module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false,
+  outputDir: "../digita-media-cordova/www",
+  publicPath: "./",
+  assetsDir: "static",
   configureWebpack: {
     resolve: {
       alias: {

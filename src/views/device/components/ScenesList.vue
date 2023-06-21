@@ -2,7 +2,7 @@
   <div class="scenes-list van-hairline--top">
     <van-cell title="灯光颜色" v-if="hasSwitch">
       <template #right-icon>
-        <van-switch
+        <!-- <van-switch
           active-color="#13ce66"
           inactive-color="#ee0a24"
           size="24"
@@ -10,6 +10,11 @@
           v-model="lightColor"
           :active-value="1"
           :inactive-value="0"
+          @change="onChange"
+        /> -->
+        <color-radio
+          :value="lightColor"
+          :disabled="disabled"
           @change="onChange"
         />
       </template>
@@ -45,6 +50,7 @@
 <script>
 import playItem from "./playItem";
 import { Dialog } from "vant";
+import ColorRadio from "./ColorRadio.vue";
 export default {
   name: "scenes-list",
 
@@ -75,7 +81,7 @@ export default {
     },
   },
 
-  components: { playItem },
+  components: { playItem, ColorRadio },
 
   computed: {
     mediaList() {

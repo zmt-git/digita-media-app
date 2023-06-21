@@ -405,6 +405,8 @@ export default {
       .then((res) => {
         this.detailInfo = res.data;
         this.lightBrightness = this.detailInfo.lightBrightness > 0;
+        this.stateOrientValue = res.data.stateOrient;
+        this.ordernumber = res.data.playListNumber;
       })
       .catch((e) => {
         console.log(e);
