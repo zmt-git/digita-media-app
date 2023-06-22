@@ -19,7 +19,6 @@ import "babel-polyfill";
 import "./styles/reset.css";
 import "./assets/iconfont/iconfont.css";
 import "./utils/permissions.js";
-import "animate.css";
 Vue.config.productionTip = false;
 
 Vue.use(vueTouch);
