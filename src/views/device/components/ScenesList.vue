@@ -12,11 +12,16 @@
           :inactive-value="0"
           @change="onChange"
         /> -->
-        <color-radio
-          :value="lightColor"
+        <van-radio-group
           :disabled="disabled"
+          v-model="lightColor"
+          class="radio"
           @change="onChange"
-        />
+        >
+          <van-radio :name="0" class="radio-item red"></van-radio>
+          <van-radio :name="1" class="radio-item green"></van-radio>
+          <van-radio :name="9" class="radio-item yellow"></van-radio>
+        </van-radio-group>
       </template>
     </van-cell>
     <div class="scenes-list-content">
@@ -50,7 +55,6 @@
 <script>
 import playItem from "./playItem";
 import { Dialog } from "vant";
-import ColorRadio from "./ColorRadio.vue";
 export default {
   name: "scenes-list",
 
@@ -81,7 +85,7 @@ export default {
     },
   },
 
-  components: { playItem, ColorRadio },
+  components: { playItem },
 
   computed: {
     mediaList() {
@@ -134,7 +138,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .cell-move {
   transition: transform 1s;
 }
@@ -146,5 +150,71 @@ export default {
 }
 .danger {
   background: #ee0a24;
+}
+.radio {
+  display: flex;
+  &-item {
+    padding-left: 0.2rem;
+  }
+  ::v-deep {
+    & .van-radio__icon .van-icon {
+      border: transparent;
+    }
+    & .van-icon::before {
+      display: none;
+    }
+    & .van-radio__icon--disabled .van-icon {
+      background-color: transparent;
+    }
+  }
+}
+.red {
+  ::v-deep {
+    & .van-radio__icon .van-icon {
+      border: 2px solid #ee0a24;
+    }
+    & .van-radio__icon--checked .van-icon {
+      background: #ee0a25;
+    }
+    & .van-radio__icon--disabled.van-radio__icon--checked .van-icon {
+      background: #ee0a2580;
+    }
+    & .van-radio__icon--disabled .van-icon {
+      border-color: #ee0a2580;
+    }
+  }
+}
+.green {
+  ::v-deep {
+    & .van-radio__icon .van-icon {
+      border: 2px solid #13ce66;
+    }
+    & .van-radio__icon--checked .van-icon {
+      background: #13ce66;
+    }
+    & .van-radio__icon--disabled.van-radio__icon--checked .van-icon {
+      background: #13ce6680;
+    }
+    & .van-radio__icon--disabled .van-icon {
+      border-color: #13ce6680;
+    }
+  }
+}
+
+.yellow {
+  ::v-deep {
+    & .van-radio__icon .van-icon {
+      border: 2px solid #eee416;
+    }
+    & .van-radio__icon--checked .van-icon {
+      background: #eee416;
+    }
+    & .van-radio__icon--disabled.van-radio__icon--checked .van-icon {
+      background: #eee41680;
+    }
+    & .van-radio__icon--disabled .van-icon {
+      border-color: #eee41680;
+    }
+  }
 }
 </style>

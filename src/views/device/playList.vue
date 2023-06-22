@@ -221,8 +221,13 @@ export default {
       const id = list[index].id;
       try {
         await setColor(id, { playlistid: id, color: val });
+        this.updateReleaseName(1000, () => {
+          this.getPlayList();
+          this.toastClear();
+        });
       } catch (e) {
         console.log(e);
+        this.toast("媒体发布任务失败", "fail");
       }
 
       this.getPlayList();
@@ -230,7 +235,6 @@ export default {
     },
 
     changeTime(value, info, index) {
-      console.log(value, info, index);
       const targetList = JSON.parse(this.mediaPlayLists[index].content);
       const obj = targetList.find(
         (item) => item.mediaOrder === info.mediaOrder
@@ -289,7 +293,7 @@ export default {
           colors: colors,
           contents: contents,
         });
-        this.updateReleaseName(0);
+        this.updateReleaseName(1000);
       } catch (e) {
         console.log(e);
         this.toast("媒体发布任务失败", "fail");
@@ -297,15 +301,16 @@ export default {
     },
 
     // 提示按钮
-    async updateReleaseName(delay = 1000 * 10) {
+    async updateReleaseName(delay = 1000 * 10, success = () => {}) {
       this.timer = setTimeout(async () => {
         await this.getInfo();
         if (this.info.stateMedia === 0) {
           clearTimeout(this.timer);
-          this.updateReleaseName();
+          this.updateReleaseName(delay, success);
         } else {
           clearTimeout(this.timer);
           this.timer = null;
+          success();
         }
       }, delay);
     },

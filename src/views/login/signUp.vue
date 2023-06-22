@@ -3,7 +3,7 @@
     <van-icon name="arrow-left" class="back" @click="back('sign')"></van-icon>
     <div class="form-box">
       <!-- 注册第一步获取验证码 -->
-      <transition name="van-slide-left">
+      <transition name="animate__slideInLeft">
         <Code-form
           v-if="signUpShow"
           :formList="formList"
@@ -364,9 +364,9 @@ export default {
   },
   created() {
     // eslint-disable-next-line
-    StatusBar.styleDefault()
+    StatusBar.styleDefault();
     // eslint-disable-next-line
-    StatusBar.backgroundColorByHexString("#FFFFFF")
+    StatusBar.backgroundColorByHexString("#FFFFFF");
   },
   mounted() {
     setTimeout(() => {

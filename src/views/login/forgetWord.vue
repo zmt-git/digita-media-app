@@ -1,6 +1,6 @@
 <template>
   <div class="forgetWord">
-    <transition name="van-slide-left">
+    <transition name="animate__slideInLeft">
       <!-- 重置密码验证码表单 -->
       <Code-form
         v-if="!showNext"
