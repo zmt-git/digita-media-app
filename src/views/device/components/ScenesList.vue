@@ -16,11 +16,22 @@
           :disabled="disabled"
           v-model="lightColor"
           class="radio"
-          @change="onChange"
         >
-          <van-radio :name="0" class="radio-item red"></van-radio>
-          <van-radio :name="1" class="radio-item green"></van-radio>
-          <van-radio :name="9" class="radio-item yellow"></van-radio>
+          <van-radio
+            :name="0"
+            @click="onClick(0)"
+            class="radio-item red"
+          ></van-radio>
+          <van-radio
+            :name="1"
+            @click="onClick(1)"
+            class="radio-item green"
+          ></van-radio>
+          <van-radio
+            :name="9"
+            @click="onClick(9)"
+            class="radio-item yellow"
+          ></van-radio>
         </van-radio-group>
       </template>
     </van-cell>
@@ -98,9 +109,9 @@ export default {
     lightColor: {
       get() {
         if (this.list.length > 0 && this.index !== undefined) {
-          return this.list[this.index] ? this.list[this.index].color : 0;
+          return this.list[this.index] ? this.list[this.index].color : null;
         } else {
-          return 0;
+          return null;
         }
       },
       set(val) {
@@ -131,7 +142,8 @@ export default {
           // on cancel
         });
     },
-    onChange(val) {
+    onClick(val) {
+      console.log("🚀 ~ file: ScenesList.vue:135 ~ onClick ~ val:", val);
       this.$emit("changeColor", this.list, this.index, val);
     },
   },

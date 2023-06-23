@@ -228,10 +228,9 @@ export default {
       } catch (e) {
         console.log(e);
         this.toast("媒体发布任务失败", "fail");
+        this.getPlayList();
+        this.toastClear();
       }
-
-      this.getPlayList();
-      this.toastClear();
     },
 
     changeTime(value, info, index) {
