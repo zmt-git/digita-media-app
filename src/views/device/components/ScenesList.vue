@@ -143,7 +143,7 @@ export default {
         });
     },
     onClick(val) {
-      console.log("🚀 ~ file: ScenesList.vue:135 ~ onClick ~ val:", val);
+      if (this.disabled) return;
       this.$emit("changeColor", this.list, this.index, val);
     },
   },

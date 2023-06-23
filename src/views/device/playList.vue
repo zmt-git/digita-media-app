@@ -217,19 +217,18 @@ export default {
     },
 
     async changeColor(list, index, val) {
-      this.toast("调整灯光颜色中", "loading", 0);
+      // this.toast("调整灯光颜色中", "loading", 0);
       const id = list[index].id;
       try {
         await setColor(id, { playlistid: id, color: val });
+        await this.getInfo();
         this.updateReleaseName(1000, () => {
           this.getPlayList();
-          this.toastClear();
         });
       } catch (e) {
         console.log(e);
         this.toast("媒体发布任务失败", "fail");
         this.getPlayList();
-        this.toastClear();
       }
     },
 
