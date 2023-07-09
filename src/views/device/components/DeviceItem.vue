@@ -19,11 +19,11 @@
         <!-- <p class="device-list_item--name van-ellipsis">{{itemInfo.name}}</p> -->
       </div>
       <p class="device-list_item--status">
-        <van-tag :type="itemInfo.stateOnline | tagType">{{
+        <van-tag :color="itemInfo.stateOnline | tagType">{{
           itemInfo.stateOnline | statusOnline
         }}</van-tag>
         <template v-if="itemInfo.stateOnline === 1">
-          <van-tag :type="itemInfo.stateWork | tagType2">{{
+          <van-tag :color="itemInfo.stateWork | tagType2">{{
             itemInfo.stateWork | statusWork
           }}</van-tag>
           <van-tag v-show="itemInfo.alarm.includes('2001')" type="danger"
@@ -47,9 +47,9 @@ export default {
   filters: {
     tagType(val) {
       if (val === 1) {
-        return "primary";
+        return "#1989fa";
       } else {
-        return "default";
+        return "#969799";
       }
     },
     statusOnline(val) {
@@ -61,9 +61,9 @@ export default {
     },
     tagType2(val) {
       if (val === 1) {
-        return "success";
+        return "#07c160";
       } else {
-        return "default";
+        return "#e6a23c";
       }
     },
     statusWork(val) {
