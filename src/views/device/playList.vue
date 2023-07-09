@@ -180,9 +180,12 @@ export default {
         const list = JSON.parse(this.$route.query.list);
         const index = this.$route.query.index;
         const targetList = JSON.parse(this.mediaPlayLists[index].content);
-        const length = targetList.length;
+        const length =
+          targetList.length === 0
+            ? -1
+            : targetList[targetList.length - 1].mediaOrder;
         list.forEach((item, i) => {
-          item.mediaOrder = length + i;
+          item.mediaOrder = length + i + 1;
         });
         targetList.push(...list);
         this.mediaPlayLists[index].content = JSON.stringify(targetList);

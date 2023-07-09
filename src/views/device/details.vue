@@ -37,15 +37,16 @@
           :value="detailInfo.stateOnline | statusOnline"
         />
         <van-cell title="工作状态" :value="detailInfo.stateWork | statusWork" />
-        <!-- <van-cell :value="temperature">
+        <van-cell :value="temperature">
           <template slot="title">
             <span class="custom-title">核心温度</span>
+
             <template v-if="temp">
-              <van-tag type="danger" style="margin-left: .1rem">高温</van-tag>
+              <van-tag type="danger" style="margin-left: 0.1rem">高温</van-tag>
             </template>
           </template>
         </van-cell>
-       <van-cell :value="filtersStorage(detailInfo.storageTotal - detailInfo.storageUsable) + 'G/' + filtersStorage(detailInfo.storageTotal)+ 'G'">
+        <!-- <van-cell :value="filtersStorage(detailInfo.storageTotal - detailInfo.storageUsable) + 'G/' + filtersStorage(detailInfo.storageTotal)+ 'G'">
          &lt;!&ndash; 使用 title 插槽来自定义标题 &ndash;&gt;
          <template slot="title">
            <span class="custom-title">内存使用</span>
@@ -281,7 +282,7 @@ export default {
       }
     },
     temperature() {
-      if (this.detailInfo.stateWork !== 1 || this.detailInfo.stateWork !== 0)
+      if (this.detailInfo.stateWork == 1 || this.detailInfo.stateWork !== 0)
         return "";
       if (typeof this.detailInfo.temperature === "number") {
         return this.detailInfo.temperature + "℃";

@@ -9,7 +9,7 @@
         <div class="my-media-store--bar van-hairline--surround">
           <div
             class="my-media-store--inner"
-            :style="{ width: storageUsedPrecent }"
+            :style="{ width: storageUsedPercent }"
           ></div>
         </div>
         <p class="my-media-store--num">
@@ -18,7 +18,7 @@
               storageTotal | filterstorage
             }}</span
           >
-          <span class="fr">剩余{{ storageUnusedPrecent }}</span>
+          <span class="fr">剩余{{ storageUnusedPercent }}</span>
         </p>
       </div>
     </div>
@@ -35,7 +35,7 @@
             <div class="positionBox">
               <van-grid :border="true" :column-num="3" gutter="3px" v-if="show">
                 <!-- 上传媒体列表 横 -->
-                <template v-for="item in updataLists">
+                <template v-for="item in updateLists">
                   <van-grid-item class="material-img circle" :key="item.id">
                     <van-circle
                       v-model="item.progress"
@@ -91,9 +91,9 @@
           <transition name="van-fade">
             <div class="positionBox" v-if="!show">
               <!-- 上传媒体列表 竖 -->
-              <!-- <template v-for="(item) in updataLists"> -->
+              <!-- <template v-for="(item) in updateLists"> -->
               <media-list
-                :playInfoArr="updataLists"
+                :playInfoArr="updateLists"
                 :isDeviceInfo="false"
                 @viewMedia="viewMedia"
               ></media-list>
@@ -136,19 +136,16 @@ export default {
   name: "media-page",
   computed: {
     ...mapGetters(["show", "user"]),
-    storageUnusedPrecent() {
+    storageUnusedPercent() {
       if (isNaN((this.storageTotal - this.storageUsed) / this.storageTotal)) {
         return "0%";
       } else {
-        return (
-          (
-            ((this.storageTotal - this.storageUsed) / this.storageTotal) *
-            100
-          ).toFixed(2) + "%"
-        );
+        const unUsed =
+          ((this.storageTotal - this.storageUsed) / this.storageTotal) * 100;
+        return unUsed === 100 ? `${unUsed}%` : `${unUsed.toFixed(2)}%`;
       }
     },
-    storageUsedPrecent() {
+    storageUsedPercent() {
       return ((this.storageUsed / this.storageTotal) * 100).toFixed(2) + "%";
     },
   },
@@ -156,7 +153,7 @@ export default {
     return {
       id: 0,
       videoFrame: videoFrame,
-      updataLists: [], // 上传列表
+      updateLists: [], // 上传列表
       mediaLists: [], // 媒体列表
       test: {},
       storageTotal: 0,
@@ -209,7 +206,7 @@ export default {
       }
       filelist.forEach((file) => {
         const info = this.createFileInfo(file.file);
-        this.updataLists.push(info);
+        this.updateLists.push(info);
       });
       this.upload();
     });
@@ -227,8 +224,8 @@ export default {
         .catch((e) => console.log(e));
     },
     reset() {
-      this.storageUsedPrecent = 0;
-      this.storageUnusedPrecent = 0;
+      this.storageUsedPercent = 0;
+      this.storageUnusedPercent = 0;
     },
     // 获取媒体列表
     getMediaLists() {
@@ -299,7 +296,7 @@ export default {
 
       const promiseInfo = [];
       try {
-        this.updataLists.forEach((item) => {
+        this.updateLists.forEach((item) => {
           promiseUpload.push(this.createUploadPromise(item.file, item));
         });
         // 上传媒体至视频服务器
@@ -314,7 +311,7 @@ export default {
         await Promise.allSettled(promiseInfo).catch((e) => console.log(e));
 
         // 刷新列表
-        this.updataLists = [];
+        this.updateLists = [];
 
         this.onRefresh();
       } catch (e) {

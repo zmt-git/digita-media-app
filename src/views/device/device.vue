@@ -11,7 +11,7 @@
           :key="index"
           v-for="(item, index) in statusList"
         >
-          <van-tag class="status-item--title" :type="item.Tagtype">{{
+          <van-tag class="status-item--title" :color="item.color">{{
             item.statusTitle
           }}</van-tag>
           <div
@@ -68,31 +68,31 @@ export default {
       deviceLists: [],
       statusList: {
         online: {
-          Tagtype: "primary",
+          color: "#1989fa",
           statusType: "online",
           statusTitle: "在线",
           value: "0",
         },
         onwork: {
-          Tagtype: "success",
+          color: "#07c160",
           statusType: "work",
           statusTitle: "工作",
           value: "0",
         },
         sleep: {
-          Tagtype: "default",
+          color: "#e6a23c",
           statusType: "dormant",
           statusTitle: "休眠",
           value: "0",
         },
         alarm: {
-          Tagtype: "danger",
+          color: "#ee0a24",
           statusType: "alarm",
           statusTitle: "报警",
           value: "0",
         },
         offline: {
-          Tagtype: "default",
+          color: "#969799",
           statusType: "offline",
           statusTitle: "离线",
           value: "0",
