@@ -71,9 +71,9 @@ export const lightControl = Object.freeze([
 
 export const orientProjection = Object.freeze([
   { val: 1, text: "正向" },
-  { val: 2, text: "右转" },
+  { val: 2, text: "左转" },
   { val: 3, text: "反向" },
-  { val: 4, text: "左转" },
+  { val: 4, text: "右转" },
 ]);
 
 export const stateOrient = Object.freeze([

@@ -282,8 +282,9 @@ export default {
       }
     },
     temperature() {
-      if (this.detailInfo.stateWork == 1 || this.detailInfo.stateWork !== 0)
+      if (this.detailInfo.stateWork !== 1 && this.detailInfo.stateWork !== 0)
         return "";
+
       if (typeof this.detailInfo.temperature === "number") {
         return this.detailInfo.temperature + "℃";
       } else {
