@@ -40,18 +40,19 @@ const scenesFive = {
 
 // 设备类型-------------------------------------------------------------------------------------------
 export const deviceTypeArr = Object.freeze([
-  // ELF-A
-  { val: "ELF-A", text: "ELF-A", scenes: scenesOne, hasSwitch: false },
+  { value: "XA", label: "XA", scenes: scenesOne, hasSwitch: false },
   // TA
-  { val: "TA-W", text: "TA-W", scenes: scenesTwo, hasSwitch: false },
-  { val: "TA-RG", text: "TA-RG", scenes: scenesThree, hasSwitch: true },
-  { val: "TA-RG-S", text: "TA-RG-S", scenes: scenesFour, hasSwitch: true },
-  { val: "TA-RG-C", text: "TA-RG-C", scenes: scenesFive, hasSwitch: false },
+  { value: "TA", label: "TA", scenes: scenesThree, hasSwitch: true },
+  { value: "TA-C", label: "TA-C", scenes: scenesFive, hasSwitch: false },
+  { value: "TA-R", label: "TA-R", scenes: scenesFive, hasSwitch: false },
   // TB
-  { val: "TB-W", text: "TB-W", scenes: scenesTwo, hasSwitch: false },
-  { val: "TB-RG", text: "TB-RG", scenes: scenesThree, hasSwitch: true },
-  { val: "TB-RG-S", text: "TB-RG-S", scenes: scenesFour, hasSwitch: true },
-  { val: "TB-RG-C", text: "TB-RG-C", scenes: scenesFive, hasSwitch: false },
+  { value: "TB", label: "TB", scenes: scenesThree, hasSwitch: true },
+  { value: "TB-C", label: "TB-C", scenes: scenesFive, hasSwitch: false },
+  { value: "TB-R", label: "TB-R", scenes: scenesFive, hasSwitch: false },
+  // TC
+  { value: "TC", label: "TC", scenes: scenesThree, hasSwitch: true },
+  { value: "TC-C", label: "TC-C", scenes: scenesFive, hasSwitch: false },
+  { value: "TC-R", label: "TC-R", scenes: scenesFive, hasSwitch: false },
 ]);
 
 export const orientArr = Object.freeze([
@@ -74,6 +75,27 @@ export const orientProjection = Object.freeze([
   { val: 2, text: "左转" },
   { val: 3, text: "反向" },
   { val: 4, text: "右转" },
+]);
+
+// 投影雷达联动 警灯雷达联动 -------------------------------------------------------------------------------------------
+export const linkOptions = Object.freeze([
+  { val: 0, text: "联动关闭" },
+  { val: 1, text: "与本机雷达联动" },
+  { val: 2, text: "与远程雷达联动" },
+]);
+
+// 投影雷达联动模式 -------------------------------------------------------------------------------------------
+export const linkModeOptions = Object.freeze([
+  {
+    val: 0,
+    text: "模式 1：有车播放列表 1 / 无车播放列表 2",
+    content: "模式 1",
+  },
+  {
+    val: 1,
+    text: "模式 2：有车播放列表 1 / 无车关闭投影",
+    content: "模式 2",
+  },
 ]);
 
 export const stateOrient = Object.freeze([
@@ -204,4 +226,14 @@ export const scenesOptions = Object.freeze({
   "TB-RG": w,
   "TB-RG-S": s,
   "TB-RG-C": c,
+  XA: [{ value: 0, label: "默认场景" }],
+  TA: w,
+  "TA-C": c,
+  "TA-R": c,
+  TB: w,
+  "TB-C": c,
+  "TB-R": "",
+  TC: w,
+  "TC-C": c,
+  "TC-R": c,
 });

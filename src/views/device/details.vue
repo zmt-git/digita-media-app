@@ -92,12 +92,12 @@
         <!--        <van-cell center title="启用休眠">-->
         <!--          <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.timeControl" @change='setTimeControl' slot="right-icon" size="24" />-->
         <!--        </van-cell>-->
-        <van-cell center title="光源控制">
+        <van-cell center title="投影控制">
           <div class="cell-slot" slot="right-icon">
             <span
               class="cell-slot-left"
               :class="dataForm.lightControl !== 1 ? 'active' : ''"
-              >自动</span
+              >时间控制</span
             >
             <van-switch
               :disabled="disabled"
@@ -117,44 +117,98 @@
             >
           </div>
         </van-cell>
-        <van-cell center title="光源开关">
+        <van-cell center title="投影开关" v-if="timeDisabled">
           <div class="cell-slot" slot="right-icon">
             <span
               class="cell-slot-left"
               :class="!lightBrightness ? 'active' : ''"
-              >OFF</span
+              >开启</span
             >
             <van-switch
               :disabled="!timeDisabled || disabled"
               :active-value="true"
               :inactive-value="false"
               v-model="lightBrightness"
-              active-color="#07c160"
-              inactive-color="#ee0a24"
+              active-color="#ee0a24"
+              inactive-color="#07c160"
               @change="setLight"
               size="24"
             />
             <span
               class="cell-slot-right"
               :class="lightBrightness ? 'active' : ''"
-              >ON</span
+              >关闭</span
             >
           </div>
         </van-cell>
-        <van-cell
-          title="休眠时间"
-          :class="timeDisabled ? 'bg-1' : 'bg-0'"
-          is-link
-          @click="showPopup('timeClose')"
-          :value="dataForm.timeClose"
-        />
-        <van-cell
-          title="唤醒时间"
-          :class="timeDisabled ? 'bg-1' : 'bg-0'"
-          is-link
-          @click="showPopup('timeOpen')"
-          :value="dataForm.timeOpen"
-        />
+        <template v-if="!timeDisabled">
+          <van-cell
+            title="休眠时间"
+            :class="timeDisabled ? 'bg-1' : 'bg-0'"
+            is-link
+            @click="showPopup('timeClose')"
+            :value="dataForm.timeClose"
+          />
+          <van-cell
+            title="唤醒时间"
+            :class="timeDisabled ? 'bg-1' : 'bg-0'"
+            is-link
+            @click="showPopup('timeOpen')"
+            :value="dataForm.timeOpen"
+          />
+        </template>
+        <template v-if="isR">
+          <van-cell center title="警灯开关">
+            <div class="cell-slot" slot="right-icon">
+              <span
+                class="cell-slot-left"
+                :class="dataForm.lamp !== 1 ? 'active' : ''"
+                >开启</span
+              >
+              <van-switch
+                :disabled="disabled"
+                :active-value="1"
+                :inactive-value="0"
+                v-model="dataForm.lamp"
+                @change="onChangeLamp"
+                active-color="#ee0a24"
+                inactive-color="#07c160"
+                slot="right-icon"
+                size="24"
+              />
+              <span
+                class="cell-slot-right"
+                :class="dataForm.lamp === 0 ? 'active' : ''"
+                >关闭</span
+              >
+            </div>
+          </van-cell>
+          <van-cell center title="雷达开关">
+            <div class="cell-slot" slot="right-icon">
+              <span
+                class="cell-slot-left"
+                :class="dataForm.radar !== 0 ? 'active' : ''"
+                >开启</span
+              >
+              <van-switch
+                :disabled="disabled"
+                :active-value="1"
+                :inactive-value="0"
+                v-model="dataForm.radar"
+                @change="onChangeRadar"
+                active-color="#ee0a24"
+                inactive-color="#07c160"
+                slot="right-icon"
+                size="24"
+              />
+              <span
+                class="cell-slot-right"
+                :class="dataForm.radar === 0 ? 'active' : ''"
+                >关闭</span
+              >
+            </div>
+          </van-cell>
+        </template>
         <!-- <van-cell title="光源控制" is-link @click="showPopup('lightControl')" :value="dataForm.lightControl | statusControl" /> -->
         <!-- <van-cell title="光源亮度" is-link @click="showPopup('lightBrightness')" :value="dataForm.lightBrightness + '%'" /> -->
         <!--        <van-cell title="媒体音量" class="volume" :border='false'>-->
@@ -162,6 +216,94 @@
         <!--            <van-slider v-model="dataForm.stateVolume" :min="0" :max="15" bar-height="0.04rem" @change='setVolume'/>-->
         <!--          </div>-->
         <!--        </van-cell>-->
+      </div>
+
+      <!-- 参数设置 -->
+      <div class="infoItem-box">
+        <van-cell>
+          <template slot="title">
+            <p class="title">
+              <span class="title_bar"></span
+              ><span class="title_word">联动设置</span>
+            </p>
+          </template>
+        </van-cell>
+        <van-cell center title="交汇路口联动预警">
+          <div class="cell-slot" slot="right-icon">
+            <span
+              class="cell-slot-left"
+              :class="linkForm.lora === 1 ? 'active' : ''"
+              >开启</span
+            >
+            <van-switch
+              :disabled="disabled"
+              :active-value="1"
+              :inactive-value="0"
+              v-model="linkForm.lora"
+              @change="changeLora"
+              active-color="#ee0a24"
+              inactive-color="#07c160"
+              slot="right-icon"
+              size="24"
+            />
+            <span
+              class="cell-slot-right"
+              :class="linkForm.lora === 0 ? 'active' : ''"
+              >关闭</span
+            >
+          </div>
+        </van-cell>
+        <van-cell center title="本机安装方向">
+          <div class="cell-slot" slot="right-icon">
+            <span
+              class="cell-slot-left"
+              :class="linkForm.loraMode === 1 ? 'active' : ''"
+              >方向1</span
+            >
+            <van-switch
+              :disabled="disabled"
+              :active-value="1"
+              :inactive-value="0"
+              v-model="linkForm.loraMode"
+              @change="changeLora"
+              active-color="#07c160"
+              inactive-color="#1989fa"
+              slot="right-icon"
+              size="24"
+            />
+            <span
+              class="cell-slot-right"
+              :class="linkForm.loraMode === 0 ? 'active' : ''"
+              >方向2</span
+            >
+          </div>
+        </van-cell>
+
+        <van-cell
+          title="远程雷达设备编号"
+          is-link
+          @click="showDialog"
+          :value="linkForm.loraCode"
+        />
+
+        <van-cell
+          title="警灯雷达联动"
+          is-link
+          @click="showPopup('linkLamp')"
+          :value="linkForm.linkLamp | linkLampFilter"
+        />
+        <van-cell
+          title="投影雷达联动"
+          is-link
+          @click="showPopup('linkLight')"
+          :value="linkForm.linkLight | linkLightFilter"
+        />
+        <van-cell
+          title="投影雷达联动模式"
+          is-link
+          @click="showPopup('linkLightMode')"
+          :value="linkForm.linkLightMode | linkLightModeFilter"
+        />
       </div>
 
       <div class="infoItem-box">
@@ -221,6 +363,22 @@
         @confirm="onConfirm"
       />
     </van-popup>
+
+    <van-dialog
+      v-model="showInput"
+      title="远程雷达设备编号"
+      show-cancel-button
+      @cancel="onCancel"
+      @confirm="onConfirmCode"
+    >
+      <van-field
+        v-model="linkForm.loraCode"
+        label=""
+        placeholder="请输入远程雷达设备编号"
+        autofocus
+        maxlength="20"
+      />
+    </van-dialog>
   </div>
 </template>
 
@@ -244,8 +402,15 @@ import {
   uploadLog,
   reset,
 } from "@/api/device/details";
+import {
+  radarDevice,
+  lampDevice,
+  loraDevice,
+  linkLampDevice,
+  linkLightDevice,
+} from "@/api/device/device";
 import { Toast, Dialog } from "vant";
-
+import { omit, pick } from "lodash";
 import {
   lightControl,
   stateOrient,
@@ -253,6 +418,8 @@ import {
   orientArr,
   powerArr,
   orientProjection,
+  linkOptions,
+  linkModeOptions,
 } from "@/common/common";
 export default {
   name: "deviceDetails",
@@ -261,6 +428,9 @@ export default {
     DeviceItem,
   },
   computed: {
+    isR() {
+      return ["TA-R", "TB-R", "TC-R"].includes(this.detailInfo.type);
+    },
     orient() {
       const obj = orientArr.find(
         (item) => item.val === this.detailInfo.stateOrient
@@ -346,6 +516,9 @@ export default {
       timeShow: true,
       type: "",
       columns: [],
+      linkLightMode: linkModeOptions,
+      linkLight: linkOptions,
+      linkLamp: linkOptions,
       lightControl: lightControl,
       stateOrient: stateOrient,
       popupTitle: "",
@@ -356,12 +529,26 @@ export default {
         lightBrightness: "光源亮度",
         stateOrient: "投影方向",
         scenes: "切换场景",
+        linkLamp: "警灯雷达联动",
+        linkLight: "投影雷达联动",
+        linkLightMode: "投影雷达联动模式",
       },
       dataForm: {
         timeClose: "00:00",
         timeOpen: "00:00",
         lightControl: 0,
         lightBrightness: 1,
+        radar: 0,
+        lamp: 0,
+      },
+      showInput: false,
+      linkForm: {
+        lora: 0,
+        loraMode: 0,
+        loraCode: "",
+        linkLamp: 0,
+        linkLight: 0,
+        linkLightMode: 0,
       },
       stateOrientValue: 0,
       orderNumber: 0,
@@ -375,6 +562,9 @@ export default {
         lightControl: that.setLight,
         lightBrightness: that.setLight,
         stateOrient: that.setstateOrient,
+        linkLamp: that.changeLinkLamp,
+        linkLight: that.changeLinkLight,
+        linkLightMode: that.changeLinkLight,
         scenes: that.setScenes,
       },
     };
@@ -392,6 +582,18 @@ export default {
     stateOrientFilter(val) {
       const obj = orientProjection.find((item) => item.val === val);
       return obj ? obj.text : "";
+    },
+    linkLampFilter(val) {
+      const obj = linkOptions.find((item) => item.val === val);
+      return obj ? obj.text : "";
+    },
+    linkLightFilter(val) {
+      const obj = linkOptions.find((item) => item.val === val);
+      return obj ? obj.text : "";
+    },
+    linkLightModeFilter(val) {
+      const obj = linkModeOptions.find((item) => item.val === val);
+      return obj ? obj.content : "";
     },
     // 光源控制
     statusControl(val) {
@@ -530,10 +732,41 @@ export default {
     },
 
     setLightRequest() {
+      const param = omit(this.dataForm, "lamp", "radar");
       return light(this.id, {
         devid: this.detailInfo.id,
         deviceCode: this.detailInfo.code,
-        ...this.dataForm,
+        ...param,
+      })
+        .then((res) => {
+          this.prompt(res.state);
+        })
+        .catch((e) => {
+          console.log(e);
+          Toast.clear();
+        });
+    },
+
+    setLampRequest() {
+      return lampDevice(this.id, {
+        devid: this.detailInfo.id,
+        deviceCode: this.detailInfo.code,
+        lamp: this.dataForm.lamp,
+      })
+        .then((res) => {
+          this.prompt(res.state);
+        })
+        .catch((e) => {
+          console.log(e);
+          Toast.clear();
+        });
+    },
+
+    setRadarRequest() {
+      return radarDevice(this.id, {
+        devid: this.detailInfo.id,
+        deviceCode: this.detailInfo.code,
+        radar: this.detailInfo.radar,
       })
         .then((res) => {
           this.prompt(res.state);
@@ -570,6 +803,18 @@ export default {
           console.log(e);
           Toast.clear();
         });
+      this.getDeviceDetails(this.id);
+    },
+
+    async onChangeLamp() {
+      this.toast("设置中", "loading", 0);
+      await this.setLampRequest();
+      this.getDeviceDetails(this.id);
+    },
+
+    async onChangeRadar() {
+      this.toast("设置中", "loading", 0);
+      await this.setRadarRequest();
       this.getDeviceDetails(this.id);
     },
 
@@ -629,6 +874,79 @@ export default {
           Toast.clear();
         });
       this.getDeviceDetails(this.id);
+    },
+
+    showDialog() {
+      this.showInput = true;
+    },
+
+    onCancel() {
+      this.showInput = false;
+    },
+
+    async onConfirmCode() {
+      this.toast("设置中", "loading", 0);
+      await this.changeLora();
+      this.showInput = false;
+    },
+    async changeLora() {
+      this.toast("设置中", "loading", 0);
+      await this.setLora();
+      this.getDeviceDetails(this.id);
+    },
+
+    async changeLinkLamp() {
+      this.toast("设置中", "loading", 0);
+      await this.setLinkLamp();
+      this.getDeviceDetails(this.id);
+    },
+
+    async changeLinkLight() {
+      this.toast("设置中", "loading", 0);
+      await this.setLinkLight();
+      this.getDeviceDetails(this.id);
+    },
+
+    async setLora() {
+      try {
+        const params = pick(this.ruleForm, "lora", "loraMode", "loraCode");
+        const res = await loraDevice(this.id, {
+          devid: this.detailInfo.id,
+          deviceCode: this.detailInfo.code,
+          ...params,
+        });
+        this.prompt(res.state);
+      } catch (e) {
+        console.log("🚀 ~ file: details.vue:854 ~ setLora ~ e:", e);
+      }
+    },
+
+    async setLinkLamp() {
+      try {
+        const params = pick(this.linkForm, "linkLamp");
+        const res = await linkLampDevice(this.id, {
+          devid: this.detailInfo.id,
+          deviceCode: this.detailInfo.code,
+          ...params,
+        });
+        this.prompt(res.state);
+      } catch (e) {
+        console.log("🚀 ~ file: details.vue:868 ~ setLinkLamp ~ e:", e);
+      }
+    },
+
+    async setLinkLight() {
+      try {
+        const params = pick(this.linkForm, "linkLight", "linkLightMode");
+        const res = await linkLightDevice(this.id, {
+          devid: this.detailInfo.id,
+          deviceCode: this.detailInfo.code,
+          ...params,
+        });
+        this.prompt(res.state);
+      } catch (e) {
+        console.log("🚀 ~ file: details.vue:882 ~ setLinkLight ~ e:", e);
+      }
     },
 
     // 系统设置
@@ -702,6 +1020,18 @@ export default {
         } else if (type === "scenes") {
           this.defaultIndex = this.scenes.findIndex(
             (item) => item.value === this.detailInfo.playListNumber
+          );
+        } else if (type === "linkLamp") {
+          this.defaultIndex = this.linkLamp.findIndex(
+            (item) => item.value === this.detailInfo.linkLamp
+          );
+        } else if (type === "linkLight") {
+          this.defaultIndex = this.linkLight.findIndex(
+            (item) => item.value === this.detailInfo.linkLight
+          );
+        } else if (type === "linkLightMode") {
+          this.defaultIndex = this.linkLightMode.findIndex(
+            (item) => item.value === this.detailInfo.linkLightMode
           );
         }
       }
@@ -842,11 +1172,11 @@ $color1: #000;
   align-items: center;
   &-left {
     text-align: right;
-    width: 0.3rem;
+    width: 0.6rem;
     margin-right: 0.05rem;
   }
   &-right {
-    width: 0.3rem;
+    width: 0.4rem;
     margin-left: 0.05rem;
   }
 }

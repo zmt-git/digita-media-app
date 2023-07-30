@@ -73,3 +73,43 @@ export function save(data) {
     data,
   });
 }
+
+export function lampDevice(devid, params) {
+  return request({
+    url: `/device/device/lamp/${devid}`,
+    method: "POST",
+    params,
+  });
+}
+
+export function radarDevice(devid, params) {
+  return request({
+    url: `/device/device/radar/${devid}`,
+    method: "POST",
+    params,
+  });
+}
+
+export function loraDevice(devid, params) {
+  return request({
+    url: `/device/device/lora/${devid}`,
+    method: "POST",
+    params,
+  });
+}
+
+export function linkLampDevice(devid, params) {
+  return request({
+    url: `/device/device/linkLamp/${devid}`,
+    method: "POST",
+    params,
+  });
+}
+
+export function linkLightDevice(devid, params) {
+  return request({
+    url: `/device/device/linkLight/${devid}`,
+    method: "POST",
+    params,
+  });
+}
