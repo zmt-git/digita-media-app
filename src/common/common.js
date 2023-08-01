@@ -37,22 +37,41 @@ const scenesFive = {
     { type: "green", title: "绿灯", index: 1 },
   ],
 };
+const scenesSix = {
+  listScenes: [
+    { type: "list1", title: "列表1", index: 0 },
+    { type: "list2", title: "列表2", index: 1 },
+  ],
+};
 
 // 设备类型-------------------------------------------------------------------------------------------
 export const deviceTypeArr = Object.freeze([
-  { value: "XA", label: "XA", scenes: scenesOne, hasSwitch: false },
+  // ELF-A
+  { val: "ELF-A", text: "ELF-A", scenes: scenesOne, hasSwitch: false },
   // TA
-  { value: "TA", label: "TA", scenes: scenesThree, hasSwitch: true },
-  { value: "TA-C", label: "TA-C", scenes: scenesFive, hasSwitch: false },
-  { value: "TA-R", label: "TA-R", scenes: scenesFive, hasSwitch: false },
+  { val: "TA-W", text: "TA-W", scenes: scenesTwo, hasSwitch: false },
+  { val: "TA-RG", text: "TA-RG", scenes: scenesThree, hasSwitch: true },
+  { val: "TA-RG-S", text: "TA-RG-S", scenes: scenesFour, hasSwitch: true },
+  { val: "TA-RG-C", text: "TA-RG-C", scenes: scenesFive, hasSwitch: false },
   // TB
-  { value: "TB", label: "TB", scenes: scenesThree, hasSwitch: true },
-  { value: "TB-C", label: "TB-C", scenes: scenesFive, hasSwitch: false },
-  { value: "TB-R", label: "TB-R", scenes: scenesFive, hasSwitch: false },
+  { val: "TB-W", text: "TB-W", scenes: scenesTwo, hasSwitch: false },
+  { val: "TB-RG", text: "TB-RG", scenes: scenesThree, hasSwitch: true },
+  { val: "TB-RG-S", text: "TB-RG-S", scenes: scenesFour, hasSwitch: true },
+  { val: "TB-RG-C", text: "TB-RG-C", scenes: scenesFive, hasSwitch: false },
+
+  { val: "XA", text: "XA", scenes: scenesOne, hasSwitch: false },
+  // TA
+  { val: "TA", text: "TA", scenes: scenesThree, hasSwitch: true },
+  { val: "TA-C", text: "TA-C", scenes: scenesFive, hasSwitch: false },
+  { val: "TA-R", text: "TA-R", scenes: scenesSix, hasSwitch: true },
+  // TB
+  { val: "TB", text: "TB", scenes: scenesThree, hasSwitch: true },
+  { val: "TB-C", text: "TB-C", scenes: scenesFive, hasSwitch: false },
+  { val: "TB-R", text: "TB-R", scenes: scenesSix, hasSwitch: true },
   // TC
-  { value: "TC", label: "TC", scenes: scenesThree, hasSwitch: true },
-  { value: "TC-C", label: "TC-C", scenes: scenesFive, hasSwitch: false },
-  { value: "TC-R", label: "TC-R", scenes: scenesFive, hasSwitch: false },
+  { val: "TC", text: "TC", scenes: scenesThree, hasSwitch: true },
+  { val: "TC-C", text: "TC-C", scenes: scenesFive, hasSwitch: false },
+  { val: "TC-R", text: "TC-R", scenes: scenesSix, hasSwitch: true },
 ]);
 
 export const orientArr = Object.freeze([
@@ -186,12 +205,17 @@ const lightScenes = Object.freeze([
   { type: "red", title: "红灯", des: "适用于红色信号灯开启时" },
   { type: "green", title: "绿灯", des: "适用于绿色信号灯开启时" },
 ]);
-
+// 列表1 列表2-------------------------------------------------------------------------------------------
+const listScenes = Object.freeze([
+  { type: "list1", title: "列表1", des: "用户可根据需要自行配置" },
+  { type: "list2", title: "列表2", des: "用户可根据需要自行配置" },
+]);
 export const playlistType = Object.freeze({
   weatherScenes,
   roadScenes,
   customizeScenes,
   lightScenes,
+  listScenes,
 });
 // 切换场景 -------------------------------------------------------------------------------------------
 const w = [
@@ -216,6 +240,10 @@ const c = [
   { text: "红灯", value: 1 },
   { text: "绿灯", value: 2 },
 ];
+const r = [
+  { text: "列表1", value: 1 },
+  { text: "列表2", value: 2 },
+];
 export const scenesOptions = Object.freeze({
   "ELF-A": [{ value: 0, text: "默认场景" }],
   "TA-W": w,
@@ -229,11 +257,11 @@ export const scenesOptions = Object.freeze({
   XA: [{ value: 0, label: "默认场景" }],
   TA: w,
   "TA-C": c,
-  "TA-R": c,
+  "TA-R": r,
   TB: w,
   "TB-C": c,
-  "TB-R": "",
+  "TB-R": r,
   TC: w,
   "TC-C": c,
-  "TC-R": c,
+  "TC-R": r,
 });

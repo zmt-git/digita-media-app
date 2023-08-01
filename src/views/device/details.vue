@@ -909,7 +909,7 @@ export default {
 
     async setLora() {
       try {
-        const params = pick(this.ruleForm, "lora", "loraMode", "loraCode");
+        const params = pick(this.linkForm, "lora", "loraMode", "loraCode");
         const res = await loraDevice(this.id, {
           devid: this.detailInfo.id,
           deviceCode: this.detailInfo.code,

@@ -77,6 +77,7 @@ export default {
 
     scenes() {
       const scenes = deviceTypeArr.find((item) => item.text === this.info.type);
+      console.log("🚀 ~ file: playList.vue:80 ~ scenes ~ scenes:", scenes);
       return scenes || deviceTypeArr[0];
     },
 
