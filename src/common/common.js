@@ -106,12 +106,12 @@ export const linkOptions = Object.freeze([
 // 投影雷达联动模式 -------------------------------------------------------------------------------------------
 export const linkModeOptions = Object.freeze([
   {
-    val: 0,
+    val: 1,
     text: "模式 1：有车播放列表 1 / 无车播放列表 2",
     content: "模式 1",
   },
   {
-    val: 1,
+    val: 2,
     text: "模式 2：有车播放列表 1 / 无车关闭投影",
     content: "模式 2",
   },

@@ -101,12 +101,12 @@
             >
             <van-switch
               :disabled="disabled"
-              :active-value="1"
               :inactive-value="0"
+              :active-value="1"
               v-model="dataForm.lightControl"
               @change="setLight"
-              active-color="#07c160"
               inactive-color="#1989fa"
+              active-color="#07c160"
               slot="right-icon"
               size="24"
             />
@@ -126,8 +126,8 @@
             >
             <van-switch
               :disabled="!timeDisabled || disabled"
-              :active-value="true"
-              :inactive-value="false"
+              :inactive-value="true"
+              :active-value="false"
               v-model="lightBrightness"
               active-color="#ee0a24"
               inactive-color="#07c160"
@@ -167,8 +167,8 @@
               >
               <van-switch
                 :disabled="disabled"
-                :active-value="1"
-                :inactive-value="0"
+                :inactive-value="1"
+                :active-value="0"
                 v-model="dataForm.lamp"
                 @change="onChangeLamp"
                 active-color="#ee0a24"
@@ -192,8 +192,8 @@
               >
               <van-switch
                 :disabled="disabled"
-                :active-value="1"
-                :inactive-value="0"
+                :inactive-value="1"
+                :active-value="0"
                 v-model="dataForm.radar"
                 @change="onChangeRadar"
                 active-color="#ee0a24"
@@ -219,92 +219,95 @@
       </div>
 
       <!-- 参数设置 -->
-      <div class="infoItem-box">
-        <van-cell>
-          <template slot="title">
-            <p class="title">
-              <span class="title_bar"></span
-              ><span class="title_word">联动设置</span>
-            </p>
+      <template v-if="isR">
+        <div class="infoItem-box">
+          <van-cell>
+            <template slot="title">
+              <p class="title">
+                <span class="title_bar"></span
+                ><span class="title_word">联动设置</span>
+              </p>
+            </template>
+          </van-cell>
+          <van-cell center title="交汇路口联动预警">
+            <div class="cell-slot" slot="right-icon">
+              <span
+                class="cell-slot-left"
+                :class="linkForm.lora === 1 ? 'active' : ''"
+                >开启</span
+              >
+              <van-switch
+                :disabled="disabled"
+                :inactive-value="1"
+                :active-value="0"
+                v-model="linkForm.lora"
+                @change="changeLora"
+                active-color="#ee0a24"
+                inactive-color="#07c160"
+                slot="right-icon"
+                size="24"
+              />
+              <span
+                class="cell-slot-right"
+                :class="linkForm.lora === 0 ? 'active' : ''"
+                >关闭</span
+              >
+            </div>
+          </van-cell>
+          <template v-if="linkForm.lora === 1">
+            <van-cell center title="本机安装方向">
+              <div class="cell-slot" slot="right-icon">
+                <span
+                  class="cell-slot-left"
+                  :class="linkForm.loraMode === 1 ? 'active' : ''"
+                  >方向1</span
+                >
+                <van-switch
+                  :disabled="disabled"
+                  :inactive-value="1"
+                  :active-value="0"
+                  v-model="linkForm.loraMode"
+                  @change="changeLora"
+                  active-color="#07c160"
+                  inactive-color="#1989fa"
+                  slot="right-icon"
+                  size="24"
+                />
+                <span
+                  class="cell-slot-right"
+                  :class="linkForm.loraMode === 0 ? 'active' : ''"
+                  >方向2</span
+                >
+              </div>
+            </van-cell>
+            <van-cell
+              title="远程雷达设备编号"
+              is-link
+              @click="showDialog"
+              :value="linkForm.loraCode"
+            />
           </template>
-        </van-cell>
-        <van-cell center title="交汇路口联动预警">
-          <div class="cell-slot" slot="right-icon">
-            <span
-              class="cell-slot-left"
-              :class="linkForm.lora === 1 ? 'active' : ''"
-              >开启</span
-            >
-            <van-switch
-              :disabled="disabled"
-              :active-value="1"
-              :inactive-value="0"
-              v-model="linkForm.lora"
-              @change="changeLora"
-              active-color="#ee0a24"
-              inactive-color="#07c160"
-              slot="right-icon"
-              size="24"
-            />
-            <span
-              class="cell-slot-right"
-              :class="linkForm.lora === 0 ? 'active' : ''"
-              >关闭</span
-            >
-          </div>
-        </van-cell>
-        <van-cell center title="本机安装方向">
-          <div class="cell-slot" slot="right-icon">
-            <span
-              class="cell-slot-left"
-              :class="linkForm.loraMode === 1 ? 'active' : ''"
-              >方向1</span
-            >
-            <van-switch
-              :disabled="disabled"
-              :active-value="1"
-              :inactive-value="0"
-              v-model="linkForm.loraMode"
-              @change="changeLora"
-              active-color="#07c160"
-              inactive-color="#1989fa"
-              slot="right-icon"
-              size="24"
-            />
-            <span
-              class="cell-slot-right"
-              :class="linkForm.loraMode === 0 ? 'active' : ''"
-              >方向2</span
-            >
-          </div>
-        </van-cell>
 
-        <van-cell
-          title="远程雷达设备编号"
-          is-link
-          @click="showDialog"
-          :value="linkForm.loraCode"
-        />
-
-        <van-cell
-          title="警灯雷达联动"
-          is-link
-          @click="showPopup('linkLamp')"
-          :value="linkForm.linkLamp | linkLampFilter"
-        />
-        <van-cell
-          title="投影雷达联动"
-          is-link
-          @click="showPopup('linkLight')"
-          :value="linkForm.linkLight | linkLightFilter"
-        />
-        <van-cell
-          title="投影雷达联动模式"
-          is-link
-          @click="showPopup('linkLightMode')"
-          :value="linkForm.linkLightMode | linkLightModeFilter"
-        />
-      </div>
+          <van-cell
+            title="警灯雷达联动"
+            is-link
+            @click="showPopup('linkLamp')"
+            :value="linkForm.linkLamp | linkLampFilter"
+          />
+          <van-cell
+            title="投影雷达联动"
+            is-link
+            @click="showPopup('linkLight')"
+            :value="linkForm.linkLight | linkLightFilter"
+          />
+          <van-cell
+            title="投影雷达联动模式"
+            is-link
+            @click="showPopup('linkLightMode')"
+            :value="linkForm.linkLightMode | linkLightModeFilter"
+          />
+        </div>
+      </template>
 
       <div class="infoItem-box">
         <van-cell
@@ -672,6 +675,9 @@ export default {
         }
         this.dataForm[key] = this.detailInfo[key];
       }
+      for (const key in this.linkForm) {
+        this.linkForm[key] = this.detailInfo[key];
+      }
     },
     // 获取终端设备详情
     getDeviceDetails(id) {
@@ -766,7 +772,7 @@ export default {
       return radarDevice(this.id, {
         devid: this.detailInfo.id,
         deviceCode: this.detailInfo.code,
-        radar: this.detailInfo.radar,
+        radar: this.dataForm.radar,
       })
         .then((res) => {
           this.prompt(res.state);
@@ -1042,6 +1048,10 @@ export default {
         this.stateOrientValue = obj.val;
       } else if (this.type === "scenes") {
         this.orderNumber = obj.value;
+      } else if (
+        ["linkLight", "linkLightMode", "linkLamp"].includes(this.type)
+      ) {
+        this.linkForm[this.type] = obj.val;
       } else {
         this.dataForm[this.type] = obj.val;
       }
