@@ -46,6 +46,11 @@
             </template>
           </template>
         </van-cell>
+        <van-cell :value="registerTime">
+          <template slot="title">
+            <span class="custom-title">到期时间</span>
+          </template>
+        </van-cell>
         <!-- <van-cell :value="filtersStorage(detailInfo.storageTotal - detailInfo.storageUsable) + 'G/' + filtersStorage(detailInfo.storageTotal)+ 'G'">
          &lt;!&ndash; 使用 title 插槽来自定义标题 &ndash;&gt;
          <template slot="title">
@@ -121,7 +126,7 @@
           <div class="cell-slot" slot="right-icon">
             <span
               class="cell-slot-left"
-              :class="!lightBrightness ? 'active' : ''"
+              :class="lightBrightness ? 'active' : ''"
               >开启</span
             >
             <van-switch
@@ -136,7 +141,7 @@
             />
             <span
               class="cell-slot-right"
-              :class="lightBrightness ? 'active' : ''"
+              :class="!lightBrightness ? 'active' : ''"
               >关闭</span
             >
           </div>
@@ -162,7 +167,7 @@
             <div class="cell-slot" slot="right-icon">
               <span
                 class="cell-slot-left"
-                :class="dataForm.lamp !== 1 ? 'active' : ''"
+                :class="dataForm.lamp === 1 ? 'active' : ''"
                 >开启</span
               >
               <van-switch
@@ -463,6 +468,12 @@ export default {
       } else {
         return "0℃";
       }
+    },
+    registerTime() {
+      if (this.detailInfo.stateWork !== 1 && this.detailInfo.stateWork !== 0)
+        return "";
+
+      return this.detailInfo.registerTime;
     },
     storageStatus() {
       if (this.detailInfo.alarm) {
@@ -1029,15 +1040,15 @@ export default {
           );
         } else if (type === "linkLamp") {
           this.defaultIndex = this.linkLamp.findIndex(
-            (item) => item.value === this.detailInfo.linkLamp
+            (item) => item.val === this.detailInfo.linkLamp
           );
         } else if (type === "linkLight") {
           this.defaultIndex = this.linkLight.findIndex(
-            (item) => item.value === this.detailInfo.linkLight
+            (item) => item.val === this.detailInfo.linkLight
           );
         } else if (type === "linkLightMode") {
           this.defaultIndex = this.linkLightMode.findIndex(
-            (item) => item.value === this.detailInfo.linkLightMode
+            (item) => item.val === this.detailInfo.linkLightMode
           );
         }
       }

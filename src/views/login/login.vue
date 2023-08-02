@@ -342,7 +342,7 @@ $bg2: #d3e6fe;
   flex: 1;
   box-sizing: border-box;
   align-items: flex-end;
-  padding-bottom: 0.39rem;
+  padding-bottom: 0.49rem;
   display: flex;
   justify-content: center;
 }
