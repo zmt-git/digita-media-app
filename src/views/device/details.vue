@@ -306,6 +306,7 @@
             :value="linkForm.linkLight | linkLightFilter"
           />
           <van-cell
+            v-if="linkForm.linkLight !== 0"
             title="投影雷达联动模式"
             is-link
             @click="showPopup('linkLightMode')"

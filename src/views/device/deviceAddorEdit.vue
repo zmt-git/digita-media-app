@@ -99,7 +99,7 @@ import common from "@/mixins/common";
 // api
 import { save, deviceCheckCode } from "@/api/device/device";
 
-import { deviceTypeArr, orientArr, powerArr } from "@/common/common";
+import { deviceOptions, orientArr, powerArr } from "@/common/common";
 export default {
   name: "forgetWord",
   mixins: [common],
@@ -117,7 +117,7 @@ export default {
       msgStatus: 0, // 0隐藏，1成功 绿色
       currentType: "type",
       stateOrient: orientArr,
-      type: deviceTypeArr,
+      type: deviceOptions,
       power: powerArr,
       columns: [],
       dataForm: {

@@ -74,6 +74,22 @@ export const deviceTypeArr = Object.freeze([
   { val: "TC-R", text: "TC-R", scenes: scenesSix, hasSwitch: true },
 ]);
 
+export const deviceOptions = Object.freeze([
+  { val: "XA", text: "XA", scenes: scenesOne, hasSwitch: false },
+  // TA
+  { val: "TA", text: "TA", scenes: scenesThree, hasSwitch: true },
+  { val: "TA-C", text: "TA-C", scenes: scenesFive, hasSwitch: false },
+  { val: "TA-R", text: "TA-R", scenes: scenesSix, hasSwitch: true },
+  // TB
+  { val: "TB", text: "TB", scenes: scenesThree, hasSwitch: true },
+  { val: "TB-C", text: "TB-C", scenes: scenesFive, hasSwitch: false },
+  { val: "TB-R", text: "TB-R", scenes: scenesSix, hasSwitch: true },
+  // TC
+  { val: "TC", text: "TC", scenes: scenesThree, hasSwitch: true },
+  { val: "TC-C", text: "TC-C", scenes: scenesFive, hasSwitch: false },
+  { val: "TC-R", text: "TC-R", scenes: scenesSix, hasSwitch: true },
+]);
+
 export const orientArr = Object.freeze([
   { val: 0, text: "正向安装" },
   { val: 8, text: "方向安装" },
