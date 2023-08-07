@@ -1,4 +1,4 @@
-function isUpdateApp(currentVersion, latestVersion) {
+export function isUpdateApp(currentVersion, latestVersion) {
   if (currentVersion === latestVersion) return false;
   try {
     const current = currentVersion.split(".");
@@ -23,4 +23,3 @@ function isUpdateApp(currentVersion, latestVersion) {
     return false;
   }
 }
-console.log("🚀 ~ file: app.js:22 ~ 1:", isUpdateApp("3.0.11", "3.1.1"));
