@@ -1,20 +1,20 @@
-import router from '@/router'
-import { getToken } from '@/utils/auth'
+import router from "@/router";
+import { getToken } from "@/utils/auth";
 
-const whiteList = ['/login', '/signUp', '/forgetWord', '/code']
+const whiteList = ["/login", "/signUp", "/forgetWord", "/code"];
 
 router.beforeEach((to, form, next) => {
   if (getToken()) {
-    if (to.path === '/login') {
-      next({ path: '/' })
+    if (to.path === "/login") {
+      next({ path: "/" });
     } else {
-      next()
+      next();
     }
   } else {
     if (whiteList.includes(to.path)) {
-      next()
+      next();
     } else {
-      next(`/login?redirect=${to.path}`)
+      next(`/login?redirect=${to.path}`);
     }
   }
-})
+});

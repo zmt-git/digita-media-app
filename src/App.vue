@@ -1,196 +1,210 @@
 <template>
   <div id="app">
-    <router-view/>
-    <Update-app ref="updateApp" :appInfo='appInfo'></Update-app>
+    <router-view />
+    <update-app ref="updateApp" :appInfo="appInfo"></update-app>
   </div>
 </template>
 <script>
-import { Toast } from 'vant'
-import { freelogin } from '@/api/system/system'
-import { mapGetters } from 'vuex'
-import { setToken, removeToken, getToken } from '@/utils/auth'
-import UpdateApp from './components/UpdateApp/UpdateApp.vue'
-import { websocketDestory, initWebSocket } from './utils/websocket'
-import eventBus from './utils/eventBus'
+import { Toast } from "vant";
+import { freelogin } from "@/api/system/system";
+import { mapGetters } from "vuex";
+import { setToken, removeToken, getToken } from "@/utils/auth";
+import UpdateApp from "./components/UpdateApp/UpdateApp.vue";
+import { websocketDestroy, initWebSocket } from "./utils/websocket";
+import eventBus from "./utils/eventBus";
 export default {
-  name: 'app',
+  name: "app",
 
   components: {
-    UpdateApp
+    UpdateApp,
   },
 
   computed: {
-    ...mapGetters(['AppVersion', 'websocket', 'isImgview'])
+    ...mapGetters(["AppVersion", "websocket", "isImgview"]),
   },
 
-  data () {
+  data() {
     return {
       Splash: false,
       second: 5,
       myTime: null,
       exitAppTicker: 0,
-      homePage: ['/', '/media', '/task', '/mine', '/login'],
-      latestVersion: '',
-      currentVersion: '',
-      appInfo: {}
-    }
+      homePage: ["/", "/media", "/task", "/mine", "/login"],
+      latestVersion: "",
+      currentVersion: "",
+      appInfo: {},
+    };
   },
 
-  async created () {
+  async created() {
     if (!this.websocket && getToken()) {
-      websocketDestory()
-      initWebSocket()
+      websocketDestroy();
+      initWebSocket();
     }
-    this.resume()
+    this.resume();
   },
 
-  mounted () {
-    // eslint-disable-next-line no-undef
-    StatusBar.overlaysWebView(false)
+  mounted() {
+    try {
+      // eslint-disable-next-line no-undef
+      StatusBar.overlaysWebView(false);
 
-    const route = this.$route
-    // eslint-disable-next-line no-undef
-    if (route.path === '/mine' || route.path === '/login') {
-        // eslint-disable-next-line no-undef
+      const route = this.$route;
+      // eslint-disable-next-line no-undef
+      if (route.path === "/mine" || route.path === "/login") {
         // StatusBar.styleBlackTranslucent()
+        // eslint-disable-next-line no-undef
         StatusBar.backgroundColorByHexString("#398AFA");
-        StatusBar.styleBlackOpaque()
+        // eslint-disable-next-line no-undef
+        StatusBar.styleBlackOpaque();
       } else {
         // eslint-disable-next-line no-undef
         StatusBar.backgroundColorByHexString("#EDEDED");
-        StatusBar.styleDefault()
+        // eslint-disable-next-line no-undef
+        StatusBar.styleDefault();
       }
 
-    this.ready()
+      this.ready();
 
-    // eslint-disable-next-line no-undef
-    setTimeout(() => {
-      navigator.splashscreen.hide()
-    }, 2000)
+      // eslint-disable-next-line no-undef
+      setTimeout(() => {
+        navigator.splashscreen.hide();
+      }, 2000);
+    } catch (e) {
+      console.log(e);
+    }
   },
 
-  beforeDestroy () {
-    eventBus.$off('close')
-    websocketDestory()
-    document.removeEventListener('backbutton')
-    document.removeEventListener('resume')
+  beforeDestroy() {
+    eventBus.$off("close");
+    websocketDestroy();
+    document.removeEventListener("backbutton");
+    document.removeEventListener("resume");
   },
 
   methods: {
     // 设备准备就绪回调
-    ready () {
-      const that = this
+    ready() {
+      const that = this;
       // 点击返回按钮
-      document.addEventListener('backbutton', that.backButtom, false)
+      document.addEventListener("backbutton", that.backButtom, false);
       // 获取软件版本
-      this.onDeviceReady()
+      this.onDeviceReady();
     },
 
     // 获取本地版本号， 获取服务器版本号
-    async onDeviceReady () {
-      const that = this
+    async onDeviceReady() {
+      const that = this;
       // 获取本地软件版本号
       // 获取手机信息
       // eslint-disable-next-line no-undef
-      await that.loginUUID(device.uuid)
+      await that.loginUUID(device.uuid);
       // eslint-disable-next-line no-undef
-      cordova.getAppVersion.getVersionNumber()
-        .then(function (version) {
-          that.currentVersion = version
-          // 设置vuex软件本地版本
-          that.$store.commit('SET_CURRENT_VERSION', version)
-          // 获取版本 是否更新软件版本
-          that.$store.dispatch('getLatesVersion')
-            .then(res => {
-              that.appInfo = res
-              // if (that.currentVersion !== res.version) {
-              //   Toast.clear()
-              //   that.showUpdate(res)
-              // }
-            })
-            .catch(e => {
-              console.log(e)
-            })
-        })
+      cordova.getAppVersion.getVersionNumber().then(function (version) {
+        that.currentVersion = version;
+        // 设置vuex软件本地版本
+        that.$store.commit("SET_CURRENT_VERSION", version);
+        // 获取版本 是否更新软件版本
+        that.$store
+          .dispatch("getLatesVersion")
+          .then((res) => {
+            that.appInfo = res;
+            // if (that.currentVersion !== res.version) {
+            //   Toast.clear()
+            //   that.showUpdate(res)
+            // }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      });
     },
 
     // 双击返回按钮
-    backButtom () {
+    backButtom() {
       // alert('返回键')
       if (this.isHomePage()) {
         if (this.exitAppTicker === 0) {
-          this.exitAppTicker++
-          Toast({ message: '再点一次退出', position: 'bottom' })
+          this.exitAppTicker++;
+          Toast({ message: "再点一次退出", position: "bottom" });
           setTimeout(() => {
-            this.exitAppTicker = 0
-          }, 2000)
+            this.exitAppTicker = 0;
+          }, 2000);
         } else if (this.exitAppTicker === 1) {
-          navigator.app.exitApp() // 退出app
+          navigator.app.exitApp(); // 退出app
         }
       } else {
         // 大于一级页面历史返回
         if (this.isImgview) {
-          eventBus.$emit('close')
+          eventBus.$emit("close");
         } else if (this.isFullscreen) {
-          eventBus.$emit('setFullscreen')
+          eventBus.$emit("setFullscreen");
         } else {
-          history.back()
+          history.back();
         }
       }
     },
 
-
     // 判断是否为导航页
-    isHomePage () {
-      const result = this.homePage.includes(this.$route.path)
-      return result
+    isHomePage() {
+      const result = this.homePage.includes(this.$route.path);
+      return result;
     },
 
-    showUpdate (info) {
-      this.$refs.updateApp.showDialog(info)
+    showUpdate(info) {
+      this.$refs.updateApp.showDialog(info);
     },
 
-    loginUUID (uuid) {
+    loginUUID(uuid) {
       return freelogin({ uuid: uuid })
-        .then(res => {
+        .then((res) => {
           if (Object.keys(res.data).length > 0) {
-            setToken(res.data.token)
-            this.$router.push('/')
-            this.$store.commit('SET_USER', res.data)
+            setToken(res.data.token);
+            this.$router.push("/");
+            this.$store.commit("SET_USER", res.data);
           } else {
-            removeToken()
-            if (this.$route.path !== '/login') {
-              this.$router.push('/login')
+            removeToken();
+            if (this.$route.path !== "/login") {
+              this.$router.push("/login");
             }
           }
         })
-        .catch(e => {
-          console.log(e)
-        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
 
-    resume () {
-      const _this = this
-      const route = this.$route
-      document.addEventListener("resume", () => {
-        if (route.path === '/mine' || route.path === '/login') {
-          // eslint-disable-next-line no-undef
-          StatusBar.styleBlackOpaque()
-          StatusBar.backgroundColorByHexString("#398AFA");
-          
-        } else if (route.path === '/signUp' || route.path === '/forgetWord'|| route.path === '/code') {
-          // eslint-disable-next-line no-undef
-          StatusBar.styleDefault()
-          StatusBar.backgroundColorByHexString("#FFFFFF");
-        } else {
-          // eslint-disable-next-line no-undef
-          StatusBar.styleDefault()
-          StatusBar.backgroundColorByHexString("#EDEDED");
-        }
-      }, false)
-    }
-  }
-}
+    resume() {
+      const route = this.$route;
+      document.addEventListener(
+        "resume",
+        () => {
+          if (route.path === "/mine" || route.path === "/login") {
+            // eslint-disable-next-line no-undef
+            StatusBar.styleBlackOpaque();
+            // eslint-disable-next-line no-undef
+            StatusBar.backgroundColorByHexString("#398AFA");
+          } else if (
+            route.path === "/signUp" ||
+            route.path === "/forgetWord" ||
+            route.path === "/code"
+          ) {
+            // eslint-disable-next-line no-undef
+            StatusBar.styleDefault();
+            // eslint-disable-next-line no-undef
+            StatusBar.backgroundColorByHexString("#FFFFFF");
+          } else {
+            // eslint-disable-next-line no-undef
+            StatusBar.styleDefault();
+            // eslint-disable-next-line no-undef
+            StatusBar.backgroundColorByHexString("#EDEDED");
+          }
+        },
+        false
+      );
+    },
+  },
+};
 </script>
 <style lang="scss">
 #app {
@@ -214,7 +228,7 @@ export default {
     }
   }
 }
-.advertising{
+.advertising {
   width: 100%;
   height: 100%;
   background: #fff;
@@ -222,21 +236,21 @@ export default {
   top: 0;
   left: 0;
   z-index: 9999;
-  & img{
+  & img {
     width: 100%;
   }
 }
-.countDown{
-  width: .5rem;
-  height: .2rem;
-  font-size: .1rem;
+.countDown {
+  width: 0.5rem;
+  height: 0.2rem;
+  font-size: 0.1rem;
   color: #fff;
-  background: rgba(0,0,0, 0.4);
-  border-radius: .1rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 0.1rem;
   position: absolute;
-  top: .2rem;
-  right: .2rem;
+  top: 0.2rem;
+  right: 0.2rem;
   text-align: center;
-  line-height: .2rem;
+  line-height: 0.2rem;
 }
 </style>

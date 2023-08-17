@@ -1,4 +1,4 @@
-# terminal
+# digita-media-app
 
 ## Project setup
 ```

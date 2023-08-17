@@ -1,9 +1,9 @@
-import request from '@/utils/request'
+import request from "@/utils/request";
 // 下载app并安装 app/download GET 无
-export function download (params) {
+export function download(params) {
   return request({
-    url: 'app/download',
-    method: 'GET',
-    params
-  })
+    url: "app/download",
+    method: "GET",
+    params,
+  });
 }

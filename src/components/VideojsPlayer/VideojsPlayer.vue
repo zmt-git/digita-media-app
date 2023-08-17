@@ -1,126 +1,123 @@
-/*
- * @Author: ZMT
- * @Date: 2020-07-23 10:32:09
- * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2020-07-27 09:49:14
- */
+/* * @Author: ZMT * @Date: 2020-07-23 10:32:09 * @Last Modified by:
+mikey.zhaopeng * @Last Modified time: 2020-07-27 09:49:14 */
 <template>
   <div class="inlinevideo" ref="inlinevideo">
     <video
       ref="myPlayer"
       class="videoBox video-js vjs-default-skin vjs-big-play-centered"
       preload="auto"
-      :poster="videoInfo.addressOld + videoFrame"
+      :poster="videoInfo.address"
       crossorigin="anonymous"
       data-setup='{"html5" : { "nativeTextTracks" : false }}'
     >
-      <source :src="videoInfo.addressOld" type="video/mp4"/>
+      <source :src="videoInfo.addressOld" type="video/mp4" />
     </video>
   </div>
 </template>
 <script>
-import { downloadFile, videoFrame } from '@/oss/ossconfig'
-import { setOrientation } from '@/utils/cordovaMethod'
+import { videoFrame } from "@/oss/ossconfig";
+import { setOrientation } from "@/utils/cordovaMethod";
 
-import videojs from 'video.js'
-import 'video.js/dist/video-js.css'
+import videojs from "video.js";
+import "video.js/dist/video-js.css";
 export default {
-  name: 'videojs',
+  name: "video-js",
   props: {
     videoInfo: {
       type: Object,
-      default: ''
+      default: () => {},
     },
     videoOption: {
       type: Object,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
-  data () {
+  data() {
     return {
       defaultOptions: {
         autoplay: false, // 是否自动播放
-        aspectRatio: '16:9',
+        aspectRatio: "16:9",
         controls: true,
         fluid: true, // 宽高自适应
-        techOrder: ['html5'],
+        techOrder: ["html5"],
         bigPlayButton: true,
         textTrackDisplay: false,
         posterImage: true,
-        errorDisplay: false
+        errorDisplay: false,
       },
       player: null,
       isFullscreen: false,
-      videoFrame: videoFrame
-    }
+      videoFrame: videoFrame,
+    };
   },
 
   methods: {
     // 销毁video
-    dispose () {
+    dispose() {
       if (this.player) {
-        this.player.dispose()
+        this.player.dispose();
       }
     },
 
     // 播放
-    play () {
+    play() {
       if (this.player) {
-        this.player.play()
+        this.player.play();
       }
     },
 
     // 暂停
-    pause () {
+    pause() {
       if (this.player) {
-        this.player.pause()
+        this.player.pause();
       }
     },
 
     // 初始化
-    init () {
-      const that = this
+    init() {
+      const that = this;
       this.player = videojs(this.$refs.myPlayer, this.defaultOptions, () => {
         // that.play()
-      })
+      });
 
-      this.player.on('fullscreenchange', (res) => {
-        that.isFullscreen = !that.isFullscreen
+      this.player.on("fullscreenchange", () => {
+        that.isFullscreen = !that.isFullscreen;
         if (that.isFullscreen) {
-          console.log('全屏')
-          StatusBar.hide()
-          setOrientation(false)
+          console.log("全屏");
+          // eslint-disable-next-line no-undef
+          StatusBar.hide();
+          setOrientation(false);
         } else {
-          console.log('非全屏')
-          StatusBar.show()
-          setOrientation(true)
+          console.log("非全屏");
+          // eslint-disable-next-line no-undef
+          StatusBar.show();
+          setOrientation(true);
         }
-      })
+      });
     },
 
     // 重置
-    reset () {
+    reset() {
       if (this.player) {
-        this.player.reset()
+        this.player.reset();
       }
-    }
+    },
   },
 
-  mounted () {
-    this.init()
-    const _this = this
+  mounted() {
+    this.init();
   },
 
-  beforeDestroy () {
-    this.player.dispose()
-  }
-}
+  beforeDestroy() {
+    this.player.dispose();
+  },
+};
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .inlinevideo {
-  width:100%;
-  position:relative;
-  & video{
+  width: 100%;
+  position: relative;
+  & video {
     width: 100%;
   }
 }

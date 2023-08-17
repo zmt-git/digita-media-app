@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 'use strict'
 const path = require('path')
 const webpack = require('webpack')
@@ -59,3 +60,25 @@ module.exports = {
     }
   }
 }
+=======
+const { defineConfig } = require("@vue/cli-service");
+const path = require("path");
+function resolve(dir) {
+  return path.join(__dirname, dir);
+}
+
+module.exports = defineConfig({
+  transpileDependencies: true,
+  lintOnSave: false,
+  outputDir: "../digita-media-cordova/www",
+  publicPath: "./",
+  assetsDir: "static",
+  configureWebpack: {
+    resolve: {
+      alias: {
+        "@": resolve("src"),
+      },
+    },
+  },
+});
+>>>>>>> 6d726aca7b36707575d3d47ca165a0a551942d2e

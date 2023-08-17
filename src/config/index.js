@@ -9,17 +9,17 @@ export default {
   /**
    * @description token key请求token
    */
-  TokenKey: 'digitalMedia',
+  TokenKey: "digitalMedia",
   /**
    * @description记住密码key请求check
    */
-  RememberKey: 'rememberPassword',
+  RememberKey: "rememberPassword",
   /**
    * @description密码
    */
-  PasswordKey: 'userPassword',
+  PasswordKey: "userPassword",
   /**
    * @description 请求超时时间，毫秒（默认2分钟）
    */
-  timeout: 1200000
-}
+  timeout: 1200000,
+};

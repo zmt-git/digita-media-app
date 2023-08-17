@@ -17,9 +17,7 @@
         @blur="checkedNewPassword(dataForm.newPassword)"
       />
       <div class="btn">
-        <van-button type="info" native-type="submit">
-          确认
-        </van-button>
+        <van-button type="info" native-type="submit"> 确认 </van-button>
       </div>
     </van-form>
     <van-button type="default" @click.stop="cancel" class="cancel">
@@ -29,103 +27,102 @@
 </template>
 
 <script>
-import { Toast } from 'vant'
-import common from '@/mixins/common'
+import { Toast } from "vant";
+import common from "@/mixins/common";
 // components
-import TitleBar from '@/components/TitleBar/TitleBar'
+import TitleBar from "@/components/TitleBar/TitleBar";
 // api
-import { modifyPassword } from '@/api/mine/resetPassword'
+import { modifyPassword } from "@/api/mine/resetPassword";
 // import { getToken } from '../../utils/auth'
 export default {
-  name: 'suggest',
+  name: "suggest-list",
   mixins: [common],
   components: {
-    TitleBar
+    TitleBar,
   },
-  data () {
+  data() {
     return {
-      title: '修改密码',
+      title: "修改密码",
       dataForm: {
-        password: '',
-        newPassword: ''
+        password: "",
+        newPassword: "",
       },
       patternPassword: /[a-zA-Z0-9]{6,20}/,
       testNewPassword: false,
-      testPassword: false
-    }
+      testPassword: false,
+    };
   },
   methods: {
     // 验证密码
-    checkPassword (val) {
+    checkPassword() {
       if (!this.dataForm.password) {
-        this.testPassword = false
+        this.testPassword = false;
       } else {
-        this.testPassword = true
+        this.testPassword = true;
       }
     },
-    checkedNewPassword (val) {
+    checkedNewPassword(val) {
       if (!this.patternPassword.test(val)) {
-        this.testNewPassword = false
+        this.testNewPassword = false;
       } else {
-        this.testNewPassword = true
+        this.testNewPassword = true;
       }
     },
     // 验证密码
-    empty () {
+    empty() {
       if (!this.dataForm.password) {
-        this.toast('请填写旧密码', 'fail')
-        return false
+        this.toast("请填写旧密码", "fail");
+        return false;
       } else if (!this.testNewPassword) {
         if (this.dataForm.newPassword) {
-          this.toast('请输入密码(6-20位字母数字组合)', 'fail')
+          this.toast("请输入密码(6-20位字母数字组合)", "fail");
         } else {
-          this.toast('请填写新密码', 'fail')
+          this.toast("请填写新密码", "fail");
         }
-        return false
-      } else if (this.testPassword && this.testNewPassword) return true
+        return false;
+      } else if (this.testPassword && this.testNewPassword) return true;
     },
-    async onSubmit () {
-      if (!this.empty()) return
-      this.toast('修改中', 'laoding', 0)
+    async onSubmit() {
+      if (!this.empty()) return;
+      this.toast("修改中", "laoding", 0);
       modifyPassword(this.dataForm)
-        .then(res => {
-          this.toast('修改成功', 'success')
-          this.$store.dispatch('Logout')
-            .then(() => {
-              this.$router.push('/login')
-            })
+        .then(() => {
+          this.toast("修改成功", "success");
+          this.$store.dispatch("Logout").then(() => {
+            this.$router.push("/login");
+          });
         })
-        .catch(e => {
-          console.log(e)
-          this.toast('修改失败', 'fail')
-        })
-      Toast.clear()
+        .catch((e) => {
+          console.log(e);
+          this.toast("修改失败", "fail");
+        });
+      Toast.clear();
     },
     // 取消添加 编辑
-    cancel () {
-      this.$router.go(-1)
-    }
-  }
-}
+    cancel() {
+      this.$router.go(-1);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 .code {
-    height: 100%;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    background: #f6f6f6;
+  height: 100%;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background: #f6f6f6;
 }
-.btn{
+.btn {
   width: 100%;
-  height: .39rem;
+  height: 0.39rem;
   position: fixed;
   bottom: 0;
   right: 0;
   & button {
     width: 50%;
-    height: .39rem;
-    line-height: .39rem;
+    height: 0.39rem;
+    line-height: 0.39rem;
     float: right;
     border-radius: 0;
     border-bottom: none;
@@ -133,7 +130,7 @@ export default {
     border-left: none;
   }
 }
-.cancel{
+.cancel {
   border-radius: 0;
   border-bottom: none;
   border-right: none;
@@ -142,7 +139,7 @@ export default {
   bottom: 0;
   left: 0;
   width: 50%;
-  height: .39rem;
-  line-height: .39rem;
+  height: 0.39rem;
+  line-height: 0.39rem;
 }
 </style>
