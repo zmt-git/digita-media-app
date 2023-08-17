@@ -13,6 +13,7 @@
         </van-cell>
         <van-cell title="播放列表" is-link @click="toPlayList(detailInfo.id)"/>
       </div>
+
       <!-- 运行状态 -->
       <div class="infoItem-box">
         <van-cell>
@@ -30,16 +31,16 @@
             </template>
           </template>
         </van-cell>
-        <van-cell :value="filtersStorage(detailInfo.storageTotal - detailInfo.storageUsable) + 'G/' + filtersStorage(detailInfo.storageTotal)+ 'G'">
-          <!-- 使用 title 插槽来自定义标题 -->
+        <!-- <van-cell :value="filtersStorage(detailInfo.storageTotal - detailInfo.storageUsable) + 'G/' + filtersStorage(detailInfo.storageTotal)+ 'G'">
           <template slot="title">
             <span class="custom-title">内存使用</span>
             <template v-if="stor">
               <van-tag type="danger" style="margin-left: .1rem">存储将满</van-tag>
             </template>
           </template>
-        </van-cell>
+        </van-cell> -->
       </div>
+
       <!-- 参数设置 -->
       <div class="infoItem-box">
         <van-cell>
@@ -51,22 +52,26 @@
 <!--          <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.timeControl" @change='setTimeControl' slot="right-icon" size="24" />-->
 <!--        </van-cell>-->
         <van-cell center title="光源控制">
-          <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.timeControl" @change='setTimeControl' slot="right-icon" size="24" />
+          <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.lightControl" @change='setlLight' slot="right-icon" size="24" />
         </van-cell>
         <van-cell center title="光源开关">
-          <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.timeControl" @change='setTimeControl' slot="right-icon" size="24" />
+          <van-switch :active-value='100' :inactive-value='-1' v-model="dataForm.lightBrightness" @change='setlLight' slot="right-icon" size="24" />
         </van-cell>
         <van-cell title="休眠时间" :class="timeDisabled ? 'bg-1' : 'bg-0'" is-link @click="showPopup('timeClose')" :value="dataForm.timeClose" />
         <van-cell title="唤醒时间" :class="timeDisabled ? 'bg-1' : 'bg-0'" is-link @click="showPopup('timeOpen')" :value="dataForm.timeOpen" />
         <!-- <van-cell title="光源控制" is-link @click="showPopup('lightControl')" :value="dataForm.lightControl | statusControl" /> -->
         <!-- <van-cell title="光源亮度" is-link @click="showPopup('lightBrightness')" :value="dataForm.lightBrightness + '%'" /> -->
-        <van-cell title="画面方向" is-link @click="showPopup('stateOrient')" :value="dataForm.stateOrient | statusstateOrient" />
-        <van-cell title="切换场景" is-link @click="showPopup('stateOrient')" :value="dataForm.stateOrient | statusstateOrient" />
 <!--        <van-cell title="媒体音量" class="volume" :border='false'>-->
 <!--          <div class="volume-box">-->
 <!--            <van-slider v-model="dataForm.stateVolume" :min="0" :max="15" bar-height="0.04rem" @change='setVolume'/>-->
 <!--          </div>-->
 <!--        </van-cell>-->
+      </div>
+
+      <!-- 画面方向 切换场景 -->
+      <div class="infoItem-box">
+        <van-cell title="画面方向" is-link @click="showPopup('stateOrient')" :value="dataForm.stateOrient | statusstateOrient" />
+        <van-cell title="切换场景" is-link @click="showPopup('scenes')" :value="dataForm.scenes | scenesFilter" />
       </div>
 
       <!-- 系统设置 -->
@@ -135,11 +140,7 @@ export default {
   },
   computed: {
     timeDisabled () {
-      if (this.dataForm.timeControl === 0) {
-        return true
-      } else {
-        return false
-      }
+      return this.dataForm.lightControl === 1
     },
     temp () {
       if (this.detailInfo.alarm) {
@@ -149,7 +150,7 @@ export default {
       }
     },
     stor () {
-     if (this.detailInfo.alarm) {
+      if (this.detailInfo.alarm) {
         return this.detailInfo.alarm.includes('2002')
       } else {
         return false
@@ -178,13 +179,17 @@ export default {
       lightControl: ['手动', '自动'],
       lightBrightness: ['0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'],
       stateOrient: ['竖屏向上', '竖屏向下', '横屏向右', '横屏向左'],
+      // todo
+      scenes: ['默认场景', '浓雾场景', '雨雪天气', '交通事故', '道路施工', '红灯', '绿灯', '自定义场景1', '自定义场景2'],
       popupTitle: '',
       titleObj: {
         timeClose: '休眠时间',
         timeOpen: '唤醒时间',
         lightControl: '光源控制',
         lightBrightness: '光源亮度',
-        stateOrient: '画面方向'
+        stateOrient: '画面方向',
+        // todo
+        scenes: '切换场景'
       },
       dataForm: {
         timeControl: '',
@@ -195,7 +200,9 @@ export default {
         stateOrient: '',
         stateVolume: 10,
         stateLogo: '',
-        stateInfo: ''
+        stateInfo: '',
+        // todo
+        scenes: ''
       },
       dataForm1: {
         bootAnimation: '',
@@ -210,7 +217,9 @@ export default {
           { val: 1, name: '竖屏向上' },
           { val: 8, name: '横屏向左' },
           { val: 9, name: '竖屏向下' }
-        ]
+        ],
+        // todo
+        scenes: []
       },
       controlFunction: {
         timeClose: that.setTimeClose,
@@ -247,6 +256,10 @@ export default {
         case 8 : return '横屏向左'
         default : return ''
       }
+    },
+    //  TODO filter scenes
+    scenesFilter (val) {
+      return '默认场景'
     },
     // 光源控制
     statusControl (val) { // 1：命令控制；0：自动控制；
@@ -379,21 +392,11 @@ export default {
         })
       this.getDeviceDetails(this.id)
     },
-    // 光源参数
-    async setLightBrightness () {
-      this.toast('设置中', 'loading', 0)
-      await light(this.id, this.dataForm)
-        .then(res => {
-          this.prompt(res.state)
-        })
-        .catch(e => {
-          console.log(e)
-          Toast.clear()
-        })
-      this.getDeviceDetails(this.id)
-    },
-    // 设置光源控制
-    async setLightControl () {
+
+    //  TODO 接口未确定
+    // 光源模式
+    // 光源开关
+    async setlLight () {
       this.toast('设置中', 'loading', 0)
       await light(this.id, this.dataForm)
         .then(res => {
@@ -497,27 +500,30 @@ export default {
       }
       return val
     },
+    // todo
     // 弹出层弹出
     showPopup (type) {
       this.type = type
       this.popupTitle = this.titleObj[type]
       if (type === 'timeOpen' || type === 'timeClose') {
         // 判断是否为禁用模式
-        if (this.dataForm.timeControl === 1) {
-          this.showPicker = true
-          this.timeShow = true
-        }
-        if (type === 'timeOpen') {
-          this.currentTime = this.detailInfo.timeOpen
-        } else if (type === 'timeClose') {
-          this.currentTime = this.detailInfo.timeClose
-        }
+        if (this.timeDisabled) return
+        this.showPicker = true
+        this.timeShow = true
+        type === 'timeOpen' ? this.currentTime = this.detailInfo.timeOpen : this.currentTime = this.detailInfo.timeClose
       } else {
         this.showPicker = true
         this.timeShow = false
+        //  todo
         this.columns = this[type]
-        const i = this.statusstateOrient(this.detailInfo.stateOrient)
-        this.defaultIndex = this.stateOrient.findIndex(i)
+        if (this.type === 'stateOrient') {
+          const i = this.statusstateOrient(this.detailInfo.stateOrient)
+          this.defaultIndex = this.stateOrient.findIndex(i)
+        }
+        if (this.type === 'scenes') {
+          const i = this.scenesFilter(this.detailInfo.stateOrient)
+          this.defaultIndex = this.scenes.findIndex(i)
+        }
       }
     },
     // 选择器确定回调函数

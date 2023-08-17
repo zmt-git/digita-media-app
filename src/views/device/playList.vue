@@ -11,6 +11,7 @@
             @deteleMedia='deteleMedia'
             @changeOrder='changeOrder'
           />
+
         </transition>
       </template>
     </div>
@@ -161,7 +162,7 @@ export default {
       await MediaAdjustment({ playlistArr: str })
         .then(res => {
           if (res.state === 1) {
-            this.toast(`正在上传新的播放列表<br/>请在【任务】标签卡中查看结果`, 'html', 2000, false)
+            this.toast('正在上传新的播放列表<br/>请在【任务】标签卡中查看结果', 'html', 2000, false)
           } else {
             this.toast('媒体发布任务失败', 'fail')
           }
