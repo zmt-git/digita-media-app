@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-export const deviceTypeArr = [
-  { text: 'ELF-A', label: 'ELF-A' },
-  { text: 'ELF-T1-W', label: 'ELF-T1-W' },
-  { text: 'ELF-T1-RG', label: 'ELF-T1-RG' },
-  { text: 'ELF-T2-W', label: 'ELF-T2-W' },
-  { text: 'ELF-T2-RG', label: 'ELF-T2-RG' }
-]
-=======
 // 设备类型-------------------------------------------------------------------------------------------
 // 播放列表类型
 const scenesOne = {
@@ -290,4 +281,3 @@ export const scenesOptions = Object.freeze({
   "TC-C": c,
   "TC-R": r,
 });
->>>>>>> 6d726aca7b36707575d3d47ca165a0a551942d2e

@@ -42,12 +42,12 @@
           </template>
         </van-field>
       </template>
-      <div class="btn">
-        <van-button block type="info" @click="onSubmit">
-          {{ btnName }}
-        </van-button>
-      </div>
     </van-form>
+    <div class="btn">
+      <van-button block type="info" @click="onSubmit">
+        {{ btnName }}
+      </van-button>
+    </div>
     <slot name="tem"></slot>
     <slogan class="slogan"></slogan>
   </div>
