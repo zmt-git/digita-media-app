@@ -34,13 +34,13 @@
                   direction="horizontal"
                 >
                   <van-radio :name="1">企业</van-radio>
-                  <van-radio :name="2">个人</van-radio>
+                  <van-radio :name="0">个人</van-radio>
                 </van-radio-group>
               </template>
             </van-field>
             <!-- 姓名 -->
             <van-field
-              v-if="dataForm2.userType === 2"
+              v-if="dataForm2.userType === 0"
               v-model="dataForm2.username"
               name="name"
               clearable
@@ -49,7 +49,7 @@
             />
             <!-- 身份证号 -->
             <van-field
-              v-if="dataForm2.userType === 2"
+              v-if="dataForm2.userType === 0"
               v-model="dataForm2.isNumber"
               name="idCard"
               clearable
@@ -91,7 +91,7 @@
             >
             </van-field>
             <!-- 行业 -->
-            <van-field
+            <!-- <van-field
               v-model="tradeType"
               name="tradeType"
               label="行业"
@@ -100,7 +100,7 @@
               clickable
               placeholder="点击选择行业"
               @click="showPickerFn('tradeType')"
-            />
+            /> -->
             <!-- 密码 -->
             <van-field
               v-model="dataForm2.password"
@@ -586,7 +586,7 @@ export default {
 
     // 验证 身份证 企业代码
     checkNumber(val = "isNumber") {
-      if (this.dataForm2.userType === 2) {
+      if (this.dataForm2.userType === 0) {
         if (!this.dataForm2[val]) {
           this.toast("请填写身份证号码", "fail");
           return false;
@@ -611,7 +611,7 @@ export default {
     },
     // 验证名称
     checkUsername(val = "username") {
-      if (this.dataForm2.userType === 2) {
+      if (this.dataForm2.userType === 0) {
         if (!this.dataForm2[val]) {
           this.toast("请填写姓名", "fail");
           this.emptyList[val] = false;
