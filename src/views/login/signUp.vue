@@ -346,7 +346,7 @@ export default {
         username: false,
         isNumber: false,
         city: false,
-        tradeType: false,
+        // tradeType: false,
         password: false,
       },
       emptyMessage: {
