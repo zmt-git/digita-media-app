@@ -1070,8 +1070,9 @@ export default {
         } else if (type === "lightBlink") {
           this.columns = lightBlinkOptions;
           this.defaultIndex = lightBlinkOptions.findIndex(
-            (item) => item.val === this.detailInfo.lightBlinkO
+            (item) => item.val === this.detailInfo.lightBlink
           );
+          console.log("🚀 ~ showPopup ~ this.defaultIndex:", this.defaultIndex);
         }
       }
     },
