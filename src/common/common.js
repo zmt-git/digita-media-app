@@ -112,6 +112,11 @@ export const orientProjection = Object.freeze([
   { val: 4, text: "右转" },
 ]);
 
+export const lightBlinkOptions = Object.freeze([
+  { val: 0, text: "常亮" },
+  { val: 1, text: "闪烁" },
+]);
+
 // 投影雷达联动 警灯雷达联动 -------------------------------------------------------------------------------------------
 export const linkOptions = Object.freeze([
   { val: 0, text: "联动关闭" },

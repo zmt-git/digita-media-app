@@ -94,6 +94,13 @@
           @click="showPopup('stateOrient')"
           :value="stateOrientValue | stateOrientFilter"
         />
+        <van-cell
+          title="投影闪烁"
+          :disabled="disabled"
+          is-link
+          @click="showPopup('lightBlink')"
+          :value="dataForm.lightBlink | stateBlinkFilter"
+        />
         <!--        <van-cell center title="启用休眠">-->
         <!--          <van-switch :active-value='1' :inactive-value='0' v-model="dataForm.timeControl" @change='setTimeControl' slot="right-icon" size="24" />-->
         <!--        </van-cell>-->
@@ -427,6 +434,7 @@ import {
   orientArr,
   powerArr,
   orientProjection,
+  lightBlinkOptions,
   linkOptions,
   linkModeOptions,
 } from "@/common/common";
@@ -542,6 +550,7 @@ export default {
         timeOpen: "唤醒时间",
         lightControl: "光源控制",
         lightBrightness: "光源亮度",
+        lightBlink: "投影闪烁",
         stateOrient: "投影方向",
         scenes: "切换场景",
         linkLamp: "警灯雷达联动",
@@ -553,6 +562,7 @@ export default {
         timeOpen: "00:00",
         lightControl: 0,
         lightBrightness: 1,
+        lightBlink: 1,
         radar: 0,
         lamp: 0,
       },
@@ -576,6 +586,7 @@ export default {
         timeOpen: that.setTimeOpen,
         lightControl: that.setLight,
         lightBrightness: that.setLight,
+        lightBlink: that.setLight,
         stateOrient: that.setstateOrient,
         linkLamp: that.changeLinkLamp,
         linkLight: that.changeLinkLight,
@@ -596,6 +607,11 @@ export default {
     // 画面方向
     stateOrientFilter(val) {
       const obj = orientProjection.find((item) => item.val === val);
+      return obj ? obj.text : "";
+    },
+    // 画面方向
+    stateBlinkFilter(val) {
+      const obj = lightBlinkOptions.find((item) => item.val === val);
       return obj ? obj.text : "";
     },
     linkLampFilter(val) {
@@ -1011,10 +1027,10 @@ export default {
     },
     // 弹出层弹出
     showPopup(type) {
-      if (this.disabled) {
-        Toast.fail("设备离线");
-        return;
-      }
+      // if (this.disabled) {
+      //   Toast.fail("设备离线");
+      //   return;
+      // }
       this.type = type;
       this.popupTitle = this.titleObj[type];
       if (type === "timeOpen" || type === "timeClose") {
@@ -1050,6 +1066,11 @@ export default {
         } else if (type === "linkLightMode") {
           this.defaultIndex = this.linkLightMode.findIndex(
             (item) => item.val === this.detailInfo.linkLightMode
+          );
+        } else if (type === "lightBlink") {
+          this.columns = lightBlinkOptions;
+          this.defaultIndex = lightBlinkOptions.findIndex(
+            (item) => item.val === this.detailInfo.lightBlinkO
           );
         }
       }

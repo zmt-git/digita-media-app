@@ -29,6 +29,7 @@ export function setTime(devid, params) {
  * @param {* Long id} devid
  * @param {lightBrightness 0--100数字} params
  * @param {lightControl 0 1} params
+ * @param {lightBlink 0 1} params
  */
 export function light(devid, params) {
   return request({
