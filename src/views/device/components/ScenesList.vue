@@ -31,6 +31,7 @@
             :name="9"
             @click="onClick(9)"
             class="radio-item yellow"
+            v-if="!isFA"
           ></van-radio>
         </van-radio-group>
       </template>
@@ -99,6 +100,9 @@ export default {
   components: { playItem },
 
   computed: {
+    isFA() {
+      return ["FA"].includes(this.info.type);
+    },
     mediaList() {
       try {
         return JSON.parse(this.list[this.index].content);

@@ -98,6 +98,7 @@
           title="投影闪烁"
           :disabled="disabled"
           is-link
+          v-if="!isFA"
           @click="showPopup('lightBlink')"
           :value="dataForm.lightBlink | stateBlinkFilter"
         />
@@ -445,6 +446,9 @@ export default {
     DeviceItem,
   },
   computed: {
+    isFA() {
+      return ["FA"].includes(this.detailInfo.type);
+    },
     isR() {
       return ["TA-R", "TB-R", "TC-R"].includes(this.detailInfo.type);
     },
@@ -1027,10 +1031,10 @@ export default {
     },
     // 弹出层弹出
     showPopup(type) {
-      // if (this.disabled) {
-      //   Toast.fail("设备离线");
-      //   return;
-      // }
+      if (this.disabled) {
+        Toast.fail("设备离线");
+        return;
+      }
       this.type = type;
       this.popupTitle = this.titleObj[type];
       if (type === "timeOpen" || type === "timeClose") {
